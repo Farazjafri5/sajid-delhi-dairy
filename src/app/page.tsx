@@ -248,12 +248,12 @@ export default function Home() {
               </div>
 
               <h1 className="heading-serif-hero text-primary uppercase">
-                We make brands <br />
-                <span className="italic font-normal text-gradient-premium">worth stopping</span> for.
+                {siteContent.hero?.heading || "We make brands"} <br />
+                <span className="italic font-normal text-gradient-premium">{siteContent.hero?.headingItalic || "worth stopping"}</span> for.
               </h1>
 
               <p className="mt-6 max-w-xl text-sm sm:text-base md:text-lg font-semibold leading-relaxed text-studio-muted">
-                Reels, content, social media, and creative campaigns for brands people remember. Built for restaurants, cafes, luxury hospitality, and D2C brands.
+                {siteContent.hero?.subtitle || "Reels, content, social media, and creative campaigns for brands people remember. Built for restaurants, cafes, luxury hospitality, and D2C brands."}
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4 max-sm:w-full">
@@ -405,11 +405,11 @@ export default function Home() {
                 Studio Reel
               </span>
               <h2 className="mt-4 heading-serif-section text-studio-bg uppercase">
-                This is what we do.
+                {siteContent.showreel?.heading || "This is what we do."}
               </h2>
             </div>
             <p className="max-w-md text-sm text-studio-accent/75 font-normal leading-relaxed text-left">
-              We shoot short-form videos designed to convert casual scrollers into loyal customers. No stock templates, no boring structures.
+              {siteContent.showreel?.description || "We shoot short-form videos designed to convert casual scrollers into loyal customers. No stock templates, no boring structures."}
             </p>
           </div>
 
