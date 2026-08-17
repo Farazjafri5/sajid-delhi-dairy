@@ -649,6 +649,14 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                             </div>
                           </div>
                           <div>
+                            <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/40 mb-1 block">Video URL / Link (Paste Video Link or Direct Upload above)</label>
+                            <input value={reel.videoUrl} onChange={(e) => updateContent(c => {
+                              const reels = [...c.hero.mockReels];
+                              reels[idx] = { ...reels[idx], videoUrl: e.target.value };
+                              return { ...c, hero: { ...c.hero, mockReels: reels } };
+                            })} className="w-full border border-[#0A1628]/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C5A880]" placeholder="https://assets.mixkit.co/... or video link" />
+                          </div>
+                          <div>
                             <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/40 mb-1 block">Caption</label>
                             <input value={reel.caption} onChange={(e) => updateContent(c => {
                               const reels = [...c.hero.mockReels];
