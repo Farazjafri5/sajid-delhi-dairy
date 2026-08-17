@@ -607,34 +607,55 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                   const isActive = reel.active !== false;
                   return (
                     <div key={idx} className={`bg-white rounded-xl border p-6 transition-all shadow-sm ${isActive ? "border-[#0A1628]/5" : "border-red-200 bg-red-50/20 opacity-75"}`}>
-                      <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-6">
-                        <div>
-                          <MediaBox
-                            src={reel.videoUrl || reel.poster}
-                            label={`Reel ${idx + 1} Video/Poster`}
-                            isActive={isActive}
-                            onToggleActive={() => updateContent(c => {
-                              const reels = [...c.hero.mockReels];
-                              reels[idx] = { ...reels[idx], active: !isActive };
-                              return { ...c, hero: { ...c.hero, mockReels: reels } };
-                            })}
-                            onUpload={(b64) => updateContent(c => {
-                              const reels = [...c.hero.mockReels];
-                              if (b64.startsWith("data:video")) {
-                                reels[idx] = { ...reels[idx], videoUrl: b64 };
-                              } else {
+                      <div className="grid grid-cols-1 xl:grid-cols-[440px_1fr] gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          {/* 1. Cover Photo / Thumbnail */}
+                          <div>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/60 mb-1.5 block">
+                              🖼️ 1. Cover Image (Thumbnail with Play Icon)
+                            </span>
+                            <MediaBox
+                              src={reel.poster}
+                              label="Thumbnail Photo"
+                              accept="image/*"
+                              isActive={isActive}
+                              onUpload={(b64) => updateContent(c => {
+                                const reels = [...c.hero.mockReels];
                                 reels[idx] = { ...reels[idx], poster: b64 };
-                              }
-                              return { ...c, hero: { ...c.hero, mockReels: reels } };
-                            })}
-                            onRemove={() => updateContent(c => ({
-                              ...c,
-                              hero: {
-                                ...c.hero,
-                                mockReels: c.hero.mockReels.filter((_, i) => i !== idx)
-                              }
-                            }))}
-                          />
+                                return { ...c, hero: { ...c.hero, mockReels: reels } };
+                              })}
+                            />
+                          </div>
+
+                          {/* 2. Video when Played */}
+                          <div>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/60 mb-1.5 block">
+                              🎬 2. Video (Plays when clicked)
+                            </span>
+                            <MediaBox
+                              src={reel.videoUrl}
+                              label="Video File / Preview"
+                              accept="video/*"
+                              isActive={isActive}
+                              onUpload={(b64) => updateContent(c => {
+                                const reels = [...c.hero.mockReels];
+                                reels[idx] = { ...reels[idx], videoUrl: b64 };
+                                return { ...c, hero: { ...c.hero, mockReels: reels } };
+                              })}
+                              onToggleActive={() => updateContent(c => {
+                                const reels = [...c.hero.mockReels];
+                                reels[idx] = { ...reels[idx], active: !isActive };
+                                return { ...c, hero: { ...c.hero, mockReels: reels } };
+                              })}
+                              onRemove={() => updateContent(c => ({
+                                ...c,
+                                hero: {
+                                  ...c.hero,
+                                  mockReels: c.hero.mockReels.filter((_, i) => i !== idx)
+                                }
+                              }))}
+                            />
+                          </div>
                         </div>
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
