@@ -3,7 +3,7 @@ import { SiteContent } from "@/data/siteContent";
 
 export const defaultSiteContent: SiteContent = {
   "hero": {
-    "heading": "We make brands in our",
+    "heading": "We make brands etc",
     "headingItalic": "worth stopping",
     "subtitle": "Reels, content, social media, and creative campaigns for brands people remember. Built for restaurants, cafes, luxury hospitality, and D2C brands.",
     "mockReels": [
