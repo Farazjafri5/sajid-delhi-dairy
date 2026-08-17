@@ -377,10 +377,23 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
   // Project editor
   const [editingProjectSlug, setEditingProjectSlug] = useState<string | null>(null);
 
+  // Auto-clean oversized old base64 cache on mount to prevent browser memory crash
+  useEffect(() => {
+    try {
+      const siteContentStr = localStorage.getItem("dd_site_content");
+      if (siteContentStr && siteContentStr.length > 500000) {
+        // Contains giant base64 video string, clear it immediately
+        localStorage.removeItem("dd_site_content");
+      }
+    } catch (e) {}
+  }, []);
+
   // Check login session
   useEffect(() => {
-    const isLoggedIn = sessionStorage.getItem("dd_admin_auth");
-    if (isLoggedIn === "true") setIsAuthenticated(true);
+    try {
+      const isLoggedIn = sessionStorage.getItem("dd_admin_auth");
+      if (isLoggedIn === "true") setIsAuthenticated(true);
+    } catch (e) {}
   }, []);
 
   // Load data safely with corruption protection
