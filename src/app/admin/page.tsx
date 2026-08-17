@@ -1689,8 +1689,11 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
 
               {/* Fallback Manual Copy */}
               <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 shadow-sm">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#0A1628]">Or Copy Code Manually (Optional Backup)</span>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]">Export / Backup Code</h4>
+                    <p className="text-xs text-[#0A1628]/50 mt-1">Copy the entire clean site content configuration code to your clipboard.</p>
+                  </div>
                   <button
                     type="button"
                     onClick={() => {
@@ -1698,15 +1701,12 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                       setIsCopied(true);
                       setTimeout(() => setIsCopied(false), 2000);
                     }}
-                    className="flex items-center gap-2 bg-[#C5A880] text-[#0A1628] px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-[#BCA078] cursor-pointer"
+                    className="flex items-center gap-2 bg-[#C5A880] text-[#0A1628] px-5 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-[#BCA078] cursor-pointer shadow-sm shrink-0"
                   >
                     {isCopied ? <Check size={14} /> : <Copy size={14} />}
-                    {isCopied ? "Copied!" : "Copy Code to Clipboard"}
+                    {isCopied ? "Copied to Clipboard!" : "📋 Copy Clean Code"}
                   </button>
                 </div>
-                <pre className="bg-[#0A1628] text-white/80 p-4 rounded-lg text-xs font-mono max-h-[300px] overflow-auto select-all">
-                  {generatedCode}
-                </pre>
               </div>
             </div>
           )}
