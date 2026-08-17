@@ -378,22 +378,44 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
     if (isLoggedIn === "true") setIsAuthenticated(true);
   }, []);
 
-  // Load data
+  // Load data safely with corruption protection
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    // Load projects
-    let loadedProjects = [...initialProjects];
-    const localProjects = localStorage.getItem("dd_projects");
-    if (localProjects) {
-      try { loadedProjects = JSON.parse(localProjects); } catch {}
+    // Load projects safely
+    try {
+      const localProjects = localStorage.getItem("dd_projects");
+      if (localProjects) {
+        const parsed = JSON.parse(localProjects);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setProjects(parsed);
+        } else {
+          setProjects([...initialProjects]);
+        }
+      } else {
+        setProjects([...initialProjects]);
+      }
+    } catch (e) {
+      console.warn("Cleared corrupted projects cache");
+      setProjects([...initialProjects]);
     }
-    setProjects(loadedProjects);
 
-    // Load site content
-    const localContent = localStorage.getItem("dd_site_content");
-    if (localContent) {
-      try { setSiteContent(JSON.parse(localContent)); } catch {}
+    // Load site content safely
+    try {
+      const localContent = localStorage.getItem("dd_site_content");
+      if (localContent) {
+        const parsed = JSON.parse(localContent);
+        if (parsed && typeof parsed === "object" && parsed.hero) {
+          setSiteContent(parsed);
+        } else {
+          setSiteContent(defaultSiteContent);
+        }
+      } else {
+        setSiteContent(defaultSiteContent);
+      }
+    } catch (e) {
+      console.warn("Cleared corrupted site content cache");
+      setSiteContent(defaultSiteContent);
     }
   }, [isAuthenticated]);
 
