@@ -824,6 +824,7 @@ export default function Home() {
             {instagramFeed.map((tile, idx) => (
               <div
                 key={idx}
+                onClick={() => setLightboxImage(tile.image)}
                 className="relative aspect-square bg-studio-accent overflow-hidden group cursor-pointer"
               >
                 <Image
@@ -836,9 +837,14 @@ export default function Home() {
                 
                 {/* Hover overlay detail */}
                 <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-3 md:p-6 text-studio-bg z-10 text-left">
-                  <span className="text-[8px] md:text-[10px] tracking-widest uppercase bg-studio-bg/15 py-0.5 px-2 md:py-1 md:px-3 self-start rounded-full">
-                    {tile.type}
-                  </span>
+                  <div className="flex items-center justify-between w-full">
+                    <span className="text-[8px] md:text-[10px] tracking-widest uppercase bg-studio-bg/15 py-0.5 px-2 md:py-1 md:px-3 self-start rounded-full">
+                      {tile.type}
+                    </span>
+                    <span className="hidden sm:inline-block text-[9px] text-[#C5A880] uppercase tracking-wider font-semibold">
+                      🔍 Tap to expand
+                    </span>
+                  </div>
                   
                   <div>
                     <h4 className="font-serif text-xs md:text-lg font-bold">{tile.client}</h4>
@@ -1217,23 +1223,29 @@ export default function Home() {
 
       {/* 13. LIGHTBOX IMAGE MODAL */}
       {lightboxImage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/95 p-4 md:p-6 backdrop-blur-md">
+        <div 
+          onClick={() => setLightboxImage(null)}
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-primary/95 p-4 md:p-8 backdrop-blur-md cursor-pointer select-none"
+        >
+          {/* Close button */}
           <button
             onClick={() => setLightboxImage(null)}
-            className="absolute top-6 right-6 text-studio-bg hover:text-studio-accent transition-colors p-2 z-55 cursor-pointer"
+            className="absolute top-6 right-6 text-studio-bg hover:text-[#C5A880] transition-colors p-2.5 z-[10000] cursor-pointer rounded-full bg-white/10 hover:bg-white/20"
             aria-label="Close image"
           >
-            <X width={32} height={32} />
+            <X width={24} height={24} />
           </button>
-          <div className="relative max-w-4xl max-h-[85vh] w-full h-full flex items-center justify-center">
-            <div className="relative w-full h-full aspect-[9/16] md:aspect-[3/4] lg:aspect-[9/16] max-h-[80vh] overflow-hidden rounded-xl">
-              <Image
+
+          {/* Media container */}
+          <div 
+            className="relative max-w-5xl max-h-[85vh] w-full h-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative w-auto h-auto max-w-full max-h-[80vh] flex items-center justify-center overflow-hidden rounded-xl shadow-2xl border border-white/10">
+              <img
                 src={lightboxImage}
-                alt="Enlarged gallery shoot"
-                fill
-                className="object-contain"
-                sizes="100vw"
-                priority
+                alt="Enlarged studio visual"
+                className="max-h-[80vh] max-w-full w-auto h-auto object-contain rounded-xl"
               />
             </div>
           </div>
