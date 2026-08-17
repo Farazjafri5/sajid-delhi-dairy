@@ -1,9 +1,9 @@
-import { SiteContent } from "@/types/siteContent";
-export * from "@/types/siteContent";
+// Auto-generated from Delhi Diaries Admin Panel
+import { SiteContent } from "@/data/siteContent";
 
 export const defaultSiteContent: SiteContent = {
   "hero": {
-    "heading": "We make brands etc1233",
+    "heading": "We make brands sajid",
     "headingItalic": "worth stopping",
     "subtitle": "Reels, content, social media, and creative campaigns for brands people remember. Built for restaurants, cafes, luxury hospitality, and D2C brands.",
     "mockReels": [
