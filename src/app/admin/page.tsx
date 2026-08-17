@@ -40,9 +40,59 @@ const sidebarItems: { id: SidebarPage; label: string; icon: React.ReactNode }[] 
   { id: "settings", label: "Settings", icon: <Settings size={18} /> },
 ];
 
-// ─── Helpers ──────────────────────────────────────────────────────
+// Automatic Client-side Image Compression to keep repository lightweight and under GitHub 1MB API limit
 function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
+    // If it's an image, resize & compress it via HTML5 Canvas
+    if (file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new window.Image();
+        img.onload = () => {
+          const maxDim = 1200; // max 1200px width/height
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            // Export compressed WebP/JPEG
+            const compressed = canvas.toDataURL("image/jpeg", 0.75);
+            resolve(compressed);
+          } else {
+            resolve(e.target?.result as string);
+          }
+        };
+        img.onerror = reject;
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+      return;
+    }
+
+    // If it's a video, check file size (< 800 KB for direct commit, otherwise ask for video URL)
+    if (file.type.startsWith("video/")) {
+      if (file.size > 800 * 1024) {
+        alert("⚠️ Video file is too large (" + (file.size / (1024 * 1024)).toFixed(1) + "MB) to commit directly to GitHub via API (GitHub max limit is 1MB).\n\n👉 Please paste the Video Link (Mixkit, Cloudinary, Vimeo, Drive, or any MP4 URL) in the Video URL box instead!");
+        reject(new Error("Video file too large"));
+        return;
+      }
+    }
+
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result as string);
     reader.onerror = reject;
