@@ -1,3 +1,4 @@
+// Auto-generated from Delhi Diaries Admin Panel
 import { SiteContent } from "@/types/siteContent";
 export * from "@/types/siteContent";
 
@@ -8,8 +9,8 @@ export const defaultSiteContent: SiteContent = {
     "subtitle": "Reels, content, social media, and creative campaigns for brands people remember. Built for restaurants, cafes, luxury hospitality, and D2C brands.",
     "mockReels": [
       {
-        "poster": "/images/project_cafe.png",
-        "videoUrl": "https://assets.mixkit.co/videos/preview/mixkit-slow-motion-of-pouring-milk-into-a-cup-of-coffee-41875-large.mp4",
+        "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787000830/it3vjysjdbyjlu4slkfg.png",
+        "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787000839/ekodpgjwqjbli8dked8i.mp4",
         "caption": "We make reels, shoot content, and build digital spaces that people remember. Delhi's social creative partner.",
         "likes": "12.8k",
         "comments": "342",
