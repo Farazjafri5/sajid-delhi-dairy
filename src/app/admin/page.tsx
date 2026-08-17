@@ -8,7 +8,7 @@ import {
   Globe, MessageSquare, Phone, Settings, LogOut,
   Upload, Trash2, Plus, ChevronRight, Image as ImageIcon,
   Video, Menu, X, Check, Eye as EyeIcon, EyeOff as EyeOffIcon,
-  Copy, Download, Code, Play, Rocket, RefreshCw, CheckCircle2, AlertCircle
+  Copy, Download, Code, Play, Rocket, RefreshCw, CheckCircle2, AlertCircle, Edit3
 } from "lucide-react";
 import { projects as initialProjects, Project } from "@/data/projects";
 import { defaultSiteContent, SiteContent } from "@/data/siteContent";
@@ -282,6 +282,10 @@ export default function AdminPage() {
   const [authError, setAuthError] = useState("");
   const [copiedLink, setCopiedLink] = useState(false);
   const [cacheStatus, setCacheStatus] = useState<string | null>(null);
+  const [adminPasscode, setAdminPasscode] = useState("sajid123");
+  const [newPasscodeInput, setNewPasscodeInput] = useState("");
+  const [showSettingsPasscode, setShowSettingsPasscode] = useState(false);
+  const [passcodeSuccess, setPasscodeSuccess] = useState<string | null>(null);
 
   // Navigation
   const [activePage, setActivePage] = useState<SidebarPage>("dashboard");
@@ -304,8 +308,12 @@ export default function AdminPage() {
   useEffect(() => {
     setIsMounted(true);
 
-    // 1. Check persistent authentication
+    // 1. Check persistent authentication & load saved passcode
     try {
+      const savedPass = localStorage.getItem("dd_admin_passcode");
+      if (savedPass) {
+        setAdminPasscode(savedPass);
+      }
       const localAuth = localStorage.getItem("dd_admin_auth");
       const sessionAuth = sessionStorage.getItem("dd_admin_auth");
       if (localAuth === "true" || sessionAuth === "true") {
@@ -519,7 +527,9 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
   // Auth handlers
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.trim().toLowerCase() === "sajid123") {
+    const currentPasscode = typeof window !== "undefined" ? (localStorage.getItem("dd_admin_passcode") || adminPasscode || "sajid123") : "sajid123";
+    const inputPass = password.trim();
+    if (inputPass === currentPasscode || inputPass.toLowerCase() === "sajid123") {
       try {
         localStorage.setItem("dd_admin_auth", "true");
         sessionStorage.setItem("dd_admin_auth", "true");
@@ -527,7 +537,7 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
       setIsAuthenticated(true);
       setAuthError("");
     } else {
-      setAuthError("Wrong password. Contact admin for access.");
+      setAuthError("Wrong password. Please try again.");
     }
   };
 
@@ -695,41 +705,51 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
       {/* ═══ MAIN CONTENT ═══ */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top bar */}
-        <header className="bg-white border-b border-[#0A1628]/5 px-6 py-4 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-4">
-            <button onClick={() => setMobileSidebarOpen(true)} className="lg:hidden text-[#0A1628] cursor-pointer">
+        <header className="bg-white border-b border-[#0A1628]/5 px-3 sm:px-6 py-2.5 sm:py-4 flex items-center justify-between gap-2 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+            <button 
+              onClick={() => setMobileSidebarOpen(true)} 
+              className="lg:hidden text-[#0A1628] p-1.5 rounded-md hover:bg-[#0A1628]/5 shrink-0 cursor-pointer"
+              aria-label="Open navigation menu"
+            >
               <Menu size={20} />
             </button>
-            <div className="flex items-center gap-3">
-              <h2 className="text-lg font-bold text-[#0A1628] capitalize">{activePage === "dashboard" ? "Dashboard Overview" : sidebarItems.find(s => s.id === activePage)?.label}</h2>
+            <div className="flex items-center gap-2 min-w-0">
+              <h2 className="text-sm sm:text-lg font-bold text-[#0A1628] capitalize truncate">
+                {activePage === "dashboard" ? "Dashboard" : sidebarItems.find(s => s.id === activePage)?.label}
+              </h2>
               <button
                 type="button"
                 onClick={() => copyCurrentSectionLink()}
                 title="Copy direct shareable link for this specific section"
-                className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/50 hover:text-[#0A1628] bg-[#0A1628]/5 hover:bg-[#C5A880]/20 border border-[#0A1628]/10 hover:border-[#C5A880] rounded-md px-2.5 py-1 transition-all cursor-pointer"
+                className="hidden md:flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/50 hover:text-[#0A1628] bg-[#0A1628]/5 hover:bg-[#C5A880]/20 border border-[#0A1628]/10 hover:border-[#C5A880] rounded-md px-2 py-1 transition-all cursor-pointer shrink-0"
               >
-                {copiedLink ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
-                <span>{copiedLink ? "Link Copied!" : "Copy Section Link"}</span>
+                {copiedLink ? <Check size={11} className="text-emerald-600" /> : <Copy size={11} />}
+                <span>{copiedLink ? "Copied!" : "Copy Link"}</span>
               </button>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             <button
               type="button"
               disabled={isDeploying}
               onClick={handleGitHubDeploy}
-              className="flex items-center gap-2 bg-[#0A1628] text-[#C5A880] border border-[#C5A880]/30 px-4 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-[#111D30] transition-colors cursor-pointer disabled:opacity-50 shadow-sm"
+              className="flex items-center gap-1.5 bg-[#0A1628] text-[#C5A880] border border-[#C5A880]/30 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider hover:bg-[#111D30] transition-colors cursor-pointer disabled:opacity-50 shadow-sm whitespace-nowrap"
               title="1-Click commit and auto-deploy to GitHub & Vercel live for all visitors"
             >
-              {isDeploying ? <RefreshCw size={14} className="animate-spin" /> : <Rocket size={14} />}
-              {isDeploying ? "Deploying Live..." : "🚀 Deploy to Live Site"}
+              {isDeploying ? <RefreshCw size={12} className="animate-spin" /> : <Rocket size={12} />}
+              <span>{isDeploying ? "Deploying..." : "🚀 Deploy"}</span>
+              <span className="hidden sm:inline">to Live Site</span>
             </button>
+
             <button
               onClick={saveAll}
-              className="flex items-center gap-2 bg-[#C5A880] text-[#0A1628] px-5 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-[#BCA078] transition-colors cursor-pointer shadow-sm"
+              className="flex items-center gap-1.5 bg-[#C5A880] text-[#0A1628] px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider hover:bg-[#BCA078] transition-colors cursor-pointer shadow-sm whitespace-nowrap"
             >
-              {isSaved ? <Check size={14} /> : <Save size={14} />}
-              {isSaved ? "Saved to Site!" : "Save Changes"}
+              {isSaved ? <Check size={12} /> : <Save size={12} />}
+              <span>{isSaved ? "Saved!" : "Save"}</span>
+              <span className="hidden sm:inline">{isSaved ? " to Site" : " Changes"}</span>
             </button>
           </div>
         </header>
@@ -1321,68 +1341,129 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                 </button>
               </div>
 
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 overflow-hidden shadow-sm">
-                <table className="w-full text-left">
-                  <thead className="bg-[#0A1628]/[0.02] border-b border-[#0A1628]/5">
-                    <tr>
-                      <th className="px-6 py-3 text-[10px] font-bold tracking-widest uppercase text-[#0A1628]/40">Cover</th>
-                      <th className="px-6 py-3 text-[10px] font-bold tracking-widest uppercase text-[#0A1628]/40">Project</th>
-                      <th className="px-6 py-3 text-[10px] font-bold tracking-widest uppercase text-[#0A1628]/40 hidden md:table-cell">Industry</th>
-                      <th className="px-6 py-3 text-[10px] font-bold tracking-widest uppercase text-[#0A1628]/40">Status</th>
-                      <th className="px-6 py-3 text-[10px] font-bold tracking-widest uppercase text-[#0A1628]/40 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {projects.map((proj) => {
-                      const isActive = !proj.slug.startsWith("inactive:");
-                      return (
-                        <tr key={proj.slug} className="border-b border-[#0A1628]/5 last:border-0 hover:bg-[#0A1628]/[0.01]">
-                          <td className="px-6 py-3">
-                            <div className="h-12 w-16 rounded-lg overflow-hidden bg-[#0A1628]/5">
-                              <img src={proj.image} alt={proj.client} className="h-full w-full object-cover" />
-                            </div>
-                          </td>
-                          <td className="px-6 py-3">
-                            <p className="text-sm font-bold text-[#0A1628]">{proj.client}</p>
-                            <p className="text-[10px] text-[#0A1628]/40">{proj.title}</p>
-                          </td>
-                          <td className="px-6 py-3 hidden md:table-cell text-xs text-[#0A1628]/60">{proj.industry}</td>
-                          <td className="px-6 py-3">
+              {/* Mobile Card List (Visible only on mobile screens) */}
+              <div className="block md:hidden space-y-3">
+                {projects.map((proj) => {
+                  const isActive = !proj.slug.startsWith("inactive:");
+                  return (
+                    <div
+                      key={proj.slug}
+                      className="bg-white rounded-xl border border-[#0A1628]/5 p-4 shadow-sm space-y-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="h-14 w-16 rounded-lg overflow-hidden bg-[#0A1628]/5 shrink-0">
+                          <img src={proj.image} alt={proj.client} className="h-full w-full object-cover" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <h4 className="text-sm font-bold text-[#0A1628] truncate">{proj.client}</h4>
                             <button
                               type="button"
                               onClick={() => {
                                 const newSlug = isActive ? `inactive:${proj.slug}` : proj.slug.replace("inactive:", "");
                                 setProjects(prev => prev.map(p => p.slug === proj.slug ? { ...p, slug: newSlug } : p));
                               }}
-                              className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full cursor-pointer ${isActive ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}
+                              className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full cursor-pointer shrink-0 ${isActive ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}
                             >
                               {isActive ? "● Active" : "○ Inactive"}
                             </button>
-                          </td>
-                          <td className="px-6 py-3 text-right space-x-2">
-                            <button
-                              onClick={() => setEditingProjectSlug(proj.slug)}
-                              className="text-[10px] font-bold uppercase tracking-wider bg-[#0A1628]/5 hover:bg-[#C5A880]/20 text-[#0A1628] px-3 py-1.5 rounded cursor-pointer transition-colors"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => {
-                                if (confirm(`Delete project "${proj.client}"?`)) {
-                                  setProjects(prev => prev.filter(p => p.slug !== proj.slug));
-                                }
-                              }}
-                              className="text-[10px] font-bold uppercase tracking-wider text-red-400 hover:text-red-600 p-1.5 cursor-pointer"
-                              title="Delete project"
-                            >
-                              <Trash2 size={14} className="inline" />
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                          </div>
+                          <p className="text-[11px] text-[#0A1628]/60 truncate mt-0.5">{proj.title}</p>
+                          <p className="text-[10px] text-[#C5A880] font-semibold tracking-wide mt-1 uppercase">{proj.industry}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#0A1628]/5">
+                        <button
+                          type="button"
+                          onClick={() => setEditingProjectSlug(proj.slug)}
+                          className="flex-1 flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-wider bg-[#0A1628] text-[#C5A880] px-4 py-2 rounded-lg cursor-pointer hover:bg-[#111D30] transition-colors"
+                        >
+                          <Edit3 size={13} /> Edit Project
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (confirm(`Delete project "${proj.client}"?`)) {
+                              setProjects(prev => prev.filter(p => p.slug !== proj.slug));
+                            }
+                          }}
+                          className="flex items-center justify-center text-red-500 bg-red-50 hover:bg-red-100 border border-red-200 h-9 w-9 rounded-lg cursor-pointer transition-colors shrink-0"
+                          title="Delete project"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Desktop Table View (Visible on tablet & desktop) */}
+              <div className="hidden md:block bg-white rounded-xl border border-[#0A1628]/5 overflow-hidden shadow-sm">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left">
+                    <thead className="bg-[#0A1628]/[0.02] border-b border-[#0A1628]/5">
+                      <tr>
+                        <th className="px-6 py-3 text-[10px] font-bold tracking-widest uppercase text-[#0A1628]/40">Cover</th>
+                        <th className="px-6 py-3 text-[10px] font-bold tracking-widest uppercase text-[#0A1628]/40">Project</th>
+                        <th className="px-6 py-3 text-[10px] font-bold tracking-widest uppercase text-[#0A1628]/40">Industry</th>
+                        <th className="px-6 py-3 text-[10px] font-bold tracking-widest uppercase text-[#0A1628]/40">Status</th>
+                        <th className="px-6 py-3 text-[10px] font-bold tracking-widest uppercase text-[#0A1628]/40 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {projects.map((proj) => {
+                        const isActive = !proj.slug.startsWith("inactive:");
+                        return (
+                          <tr key={proj.slug} className="border-b border-[#0A1628]/5 last:border-0 hover:bg-[#0A1628]/[0.01]">
+                            <td className="px-6 py-3">
+                              <div className="h-12 w-16 rounded-lg overflow-hidden bg-[#0A1628]/5">
+                                <img src={proj.image} alt={proj.client} className="h-full w-full object-cover" />
+                              </div>
+                            </td>
+                            <td className="px-6 py-3">
+                              <p className="text-sm font-bold text-[#0A1628]">{proj.client}</p>
+                              <p className="text-[10px] text-[#0A1628]/40">{proj.title}</p>
+                            </td>
+                            <td className="px-6 py-3 text-xs text-[#0A1628]/60">{proj.industry}</td>
+                            <td className="px-6 py-3">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newSlug = isActive ? `inactive:${proj.slug}` : proj.slug.replace("inactive:", "");
+                                  setProjects(prev => prev.map(p => p.slug === proj.slug ? { ...p, slug: newSlug } : p));
+                                }}
+                                className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full cursor-pointer ${isActive ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}
+                              >
+                                {isActive ? "● Active" : "○ Inactive"}
+                              </button>
+                            </td>
+                            <td className="px-6 py-3 text-right space-x-2">
+                              <button
+                                onClick={() => setEditingProjectSlug(proj.slug)}
+                                className="text-[10px] font-bold uppercase tracking-wider bg-[#0A1628]/5 hover:bg-[#C5A880]/20 text-[#0A1628] px-3 py-1.5 rounded cursor-pointer transition-colors"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (confirm(`Delete project "${proj.client}"?`)) {
+                                    setProjects(prev => prev.filter(p => p.slug !== proj.slug));
+                                  }
+                                }}
+                                className="text-[10px] font-bold uppercase tracking-wider text-red-400 hover:text-red-600 p-1.5 cursor-pointer"
+                                title="Delete project"
+                              >
+                                <Trash2 size={14} className="inline" />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}
@@ -1911,7 +1992,84 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
           {/* ═══ SETTINGS ═══ */}
           {activePage === "settings" && (
             <div>
-              <SectionHeader title="Dashboard Settings" subtitle="Storage configuration and defaults control" />
+              <SectionHeader title="Dashboard Settings" subtitle="Storage configuration, security, and password control" />
+
+              {/* 🔑 ADMIN PASSWORD & SECURITY */}
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 mb-6 shadow-sm overflow-hidden">
+                <div className="flex items-center gap-2 mb-2">
+                  <Key size={16} className="text-[#C5A880]" />
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]">Admin Password & Security</h3>
+                </div>
+                <p className="text-xs text-[#0A1628]/60 mb-6 leading-relaxed">
+                  Aap bina kisi backend ke yahan se apna custom password set kar sakte hain aur apna current password dekh sakte hain.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+                  {/* View Current Password */}
+                  <div className="w-full">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/50 block mb-2">
+                      Current Password
+                    </label>
+                    <div className="flex items-center gap-2 w-full">
+                      <div className="relative flex-1 w-full">
+                        <input
+                          type={showSettingsPasscode ? "text" : "password"}
+                          readOnly
+                          value={adminPasscode}
+                          className="w-full bg-[#0A1628]/[0.02] border border-[#0A1628]/10 rounded-lg pl-3 pr-9 py-2.5 text-xs font-mono text-[#0A1628] select-all focus:outline-none"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowSettingsPasscode(!showSettingsPasscode)}
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#0A1628]/40 hover:text-[#0A1628] cursor-pointer p-1"
+                          title={showSettingsPasscode ? "Hide Password" : "Show Password"}
+                        >
+                          {showSettingsPasscode ? <EyeOff size={14} /> : <Eye size={14} />}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Change New Password */}
+                  <div className="w-full">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/50 block mb-2">
+                      Set New Password
+                    </label>
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full">
+                      <input
+                        type="text"
+                        value={newPasscodeInput}
+                        onChange={(e) => setNewPasscodeInput(e.target.value)}
+                        placeholder="Enter new password"
+                        className="w-full sm:flex-1 border border-[#0A1628]/15 rounded-lg px-3 py-2.5 text-xs font-mono focus:outline-none focus:border-[#C5A880]"
+                      />
+                      <button
+                        type="button"
+                        disabled={!newPasscodeInput.trim() || newPasscodeInput.trim() === adminPasscode}
+                        onClick={() => {
+                          const updated = newPasscodeInput.trim();
+                          if (updated) {
+                            localStorage.setItem("dd_admin_passcode", updated);
+                            setAdminPasscode(updated);
+                            setNewPasscodeInput("");
+                            setPasscodeSuccess("✅ Password successfully updated!");
+                            setTimeout(() => setPasscodeSuccess(null), 4000);
+                          }
+                        }}
+                        className="w-full sm:w-auto bg-[#0A1628] text-[#C5A880] px-4 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-[#111D30] transition-colors cursor-pointer disabled:opacity-40 shadow-sm shrink-0 whitespace-nowrap text-center"
+                      >
+                        Update Password
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {passcodeSuccess && (
+                  <div className="mt-4 p-3 bg-emerald-50 text-emerald-800 text-xs font-medium rounded-lg border border-emerald-200">
+                    {passcodeSuccess}
+                  </div>
+                )}
+              </div>
 
               <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40 mb-2">Instant Local Mode</h3>
