@@ -322,10 +322,17 @@ export * from "@/types/siteContent";
 
 export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
 `;
-      // UTF-8 to Base64
+      // UTF-8 to Base64 (Chunk-safe to prevent memory/fetch crashes)
       const utf8Bytes = new TextEncoder().encode(newFileContent);
       let binary = "";
-      utf8Bytes.forEach((b) => (binary += String.fromCharCode(b)));
+      const len = utf8Bytes.byteLength;
+      const chunkSize = 0x8000; // 32KB chunks
+      for (let i = 0; i < len; i += chunkSize) {
+        binary += String.fromCharCode.apply(
+          null,
+          Array.from(utf8Bytes.subarray(i, Math.min(i + chunkSize, len)))
+        );
+      }
       const base64Content = btoa(binary);
 
       // 2. Get current file SHA from GitHub
