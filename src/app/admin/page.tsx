@@ -280,10 +280,7 @@ export default function AdminPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authError, setAuthError] = useState("");
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   // Navigation
   const [activePage, setActivePage] = useState<SidebarPage>("dashboard");
@@ -302,13 +299,76 @@ export default function AdminPage() {
   const [isDeploying, setIsDeploying] = useState(false);
   const [deployStatus, setDeployStatus] = useState<{ success?: boolean; message?: string } | null>(null);
 
+  // Check login session & read URL tab on mount
+  useEffect(() => {
+    setIsMounted(true);
+
+    // 1. Check persistent authentication
+    try {
+      const localAuth = localStorage.getItem("dd_admin_auth");
+      const sessionAuth = sessionStorage.getItem("dd_admin_auth");
+      if (localAuth === "true" || sessionAuth === "true") {
+        setIsAuthenticated(true);
+      }
+    } catch (e) {}
+
+    // 2. Read tab from URL query params (e.g. ?tab=hero)
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get("tab") as SidebarPage | null;
+      if (tabParam && sidebarItems.some((item) => item.id === tabParam)) {
+        setActivePage(tabParam);
+      }
+    } catch (e) {}
+
+    // 3. Listen to browser back/forward buttons
+    const handlePopState = () => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const tabParam = params.get("tab") as SidebarPage | null;
+        if (tabParam && sidebarItems.some((item) => item.id === tabParam)) {
+          setActivePage(tabParam);
+        } else {
+          setActivePage("dashboard");
+        }
+      } catch (e) {}
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
   // Load custom token from localStorage if saved in UI
   useEffect(() => {
-    const savedToken = localStorage.getItem("dd_gh_token");
-    if (savedToken) setGhToken(savedToken);
-    const savedRepo = localStorage.getItem("dd_gh_repo");
-    if (savedRepo) setGhRepo(savedRepo);
+    try {
+      const savedToken = localStorage.getItem("dd_gh_token");
+      if (savedToken) setGhToken(savedToken);
+      const savedRepo = localStorage.getItem("dd_gh_repo");
+      if (savedRepo) setGhRepo(savedRepo);
+    } catch (e) {}
   }, []);
+
+  // Navigate to tab with distinct URL update
+  const navigateToTab = (tab: SidebarPage) => {
+    setActivePage(tab);
+    setMobileSidebarOpen(false);
+    setEditingProjectSlug(null);
+    try {
+      const url = tab === "dashboard" ? window.location.pathname : `${window.location.pathname}?tab=${tab}`;
+      window.history.pushState({ tab }, "", url);
+    } catch (e) {}
+  };
+
+  // Copy direct link to current section
+  const copyCurrentSectionLink = (tab?: SidebarPage) => {
+    const targetTab = tab || activePage;
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const path = typeof window !== "undefined" ? window.location.pathname : "/admin";
+    const fullUrl = targetTab === "dashboard" ? `${origin}${path}` : `${origin}${path}?tab=${targetTab}`;
+    navigator.clipboard.writeText(fullUrl);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
 
   // 1-Click Direct Commit & Deploy to GitHub
   const handleGitHubDeploy = async () => {
@@ -388,14 +448,6 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
     } catch (e) {}
   }, []);
 
-  // Check login session
-  useEffect(() => {
-    try {
-      const isLoggedIn = sessionStorage.getItem("dd_admin_auth");
-      if (isLoggedIn === "true") setIsAuthenticated(true);
-    } catch (e) {}
-  }, []);
-
   // Load data safely with corruption protection
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -441,7 +493,10 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password.trim().toLowerCase() === "sajid123") {
-      sessionStorage.setItem("dd_admin_auth", "true");
+      try {
+        localStorage.setItem("dd_admin_auth", "true");
+        sessionStorage.setItem("dd_admin_auth", "true");
+      } catch (e) {}
       setIsAuthenticated(true);
       setAuthError("");
     } else {
@@ -450,7 +505,10 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem("dd_admin_auth");
+    try {
+      localStorage.removeItem("dd_admin_auth");
+      sessionStorage.removeItem("dd_admin_auth");
+    } catch (e) {}
     setIsAuthenticated(false);
   };
 
@@ -575,7 +633,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
           {sidebarItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => { setActivePage(item.id); setMobileSidebarOpen(false); setEditingProjectSlug(null); }}
+              onClick={() => navigateToTab(item.id)}
               className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-bold tracking-wider uppercase transition-all cursor-pointer ${
                 activePage === item.id
                   ? "bg-[#C5A880] text-[#0A1628]"
@@ -607,7 +665,18 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
             <button onClick={() => setMobileSidebarOpen(true)} className="lg:hidden text-[#0A1628] cursor-pointer">
               <Menu size={20} />
             </button>
-            <h2 className="text-lg font-bold text-[#0A1628] capitalize">{activePage === "dashboard" ? "Dashboard Overview" : sidebarItems.find(s => s.id === activePage)?.label}</h2>
+            <div className="flex items-center gap-3">
+              <h2 className="text-lg font-bold text-[#0A1628] capitalize">{activePage === "dashboard" ? "Dashboard Overview" : sidebarItems.find(s => s.id === activePage)?.label}</h2>
+              <button
+                type="button"
+                onClick={() => copyCurrentSectionLink()}
+                title="Copy direct shareable link for this specific section"
+                className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/50 hover:text-[#0A1628] bg-[#0A1628]/5 hover:bg-[#C5A880]/20 border border-[#0A1628]/10 hover:border-[#C5A880] rounded-md px-2.5 py-1 transition-all cursor-pointer"
+              >
+                {copiedLink ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
+                <span>{copiedLink ? "Link Copied!" : "Copy Section Link"}</span>
+              </button>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <button
@@ -645,20 +714,48 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               </div>
 
               {/* Quick Section Jump */}
-              <h3 className="text-sm font-bold text-[#0A1628]/60 uppercase tracking-wider mb-4">Manage Content Sections</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-bold text-[#0A1628]/60 uppercase tracking-wider">Manage Content Sections & Direct Links</h3>
+                <span className="text-[11px] text-[#0A1628]/40">Click any card to open its editor or copy its distinct URL</span>
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {sidebarItems.filter(s => s.id !== "dashboard").map((item) => (
-                  <button
+                  <div
                     key={item.id}
-                    onClick={() => setActivePage(item.id)}
-                    className="flex items-center justify-between bg-white rounded-xl border border-[#0A1628]/5 p-4 hover:border-[#C5A880]/50 hover:shadow-md transition-all group cursor-pointer"
+                    className="flex items-center justify-between bg-white rounded-xl border border-[#0A1628]/5 p-4 hover:border-[#C5A880]/50 hover:shadow-md transition-all group"
                   >
-                    <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => navigateToTab(item.id)}
+                      className="flex-1 flex items-center gap-3 text-left cursor-pointer"
+                    >
                       <div className="text-[#0A1628]/40 group-hover:text-[#C5A880] transition-colors">{item.icon}</div>
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#0A1628]">{item.label}</span>
+                      <div>
+                        <span className="text-xs font-bold uppercase tracking-wider text-[#0A1628] block">{item.label}</span>
+                        <span className="text-[10px] text-[#0A1628]/40 font-mono">/admin?tab={item.id}</span>
+                      </div>
+                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          copyCurrentSectionLink(item.id);
+                        }}
+                        title={`Copy direct link for ${item.label}`}
+                        className="p-1.5 text-[#0A1628]/30 hover:text-[#C5A880] hover:bg-[#0A1628]/5 rounded-md transition-colors cursor-pointer"
+                      >
+                        <Copy size={13} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => navigateToTab(item.id)}
+                        className="p-1.5 text-[#0A1628]/20 group-hover:text-[#C5A880] transition-colors cursor-pointer"
+                      >
+                        <ChevronRight size={16} />
+                      </button>
                     </div>
-                    <ChevronRight size={14} className="text-[#0A1628]/20 group-hover:text-[#C5A880] transition-colors" />
-                  </button>
+                  </div>
                 ))}
               </div>
             </div>
@@ -1790,6 +1887,33 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                 >
                   Reset Everything to Defaults
                 </button>
+              </div>
+
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40 mb-3">Direct Section URLs & Bookmarks</h3>
+                <p className="text-xs text-[#0A1628]/60 mb-4">You can bookmark or directly navigate to any of these section links:</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {sidebarItems.map((item) => (
+                    <div key={item.id} className="flex items-center justify-between p-3 rounded-lg bg-[#0A1628]/[0.02] border border-[#0A1628]/5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[#0A1628]/50">{item.icon}</span>
+                        <div>
+                          <p className="text-xs font-bold text-[#0A1628]">{item.label}</p>
+                          <p className="text-[10px] text-[#0A1628]/40 font-mono">
+                            {item.id === "dashboard" ? "/admin" : `/admin?tab=${item.id}`}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => copyCurrentSectionLink(item.id)}
+                        className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/60 hover:text-[#C5A880] border border-[#0A1628]/10 hover:border-[#C5A880] rounded transition-all cursor-pointer flex items-center gap-1"
+                      >
+                        <Copy size={11} /> Copy
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 shadow-sm">
