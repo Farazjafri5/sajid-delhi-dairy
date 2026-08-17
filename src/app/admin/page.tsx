@@ -277,7 +277,11 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
           success: true,
           message: msg,
         });
-        saveAll();
+        try {
+          saveAll();
+        } catch (e) {
+          // Ignore localStorage errors during deploy
+        }
         alert(msg);
       } else {
         const err = await putRes.json();
