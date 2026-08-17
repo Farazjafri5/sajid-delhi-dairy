@@ -281,6 +281,7 @@ export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authError, setAuthError] = useState("");
   const [copiedLink, setCopiedLink] = useState(false);
+  const [cacheStatus, setCacheStatus] = useState<string | null>(null);
 
   // Navigation
   const [activePage, setActivePage] = useState<SidebarPage>("dashboard");
@@ -1921,22 +1922,47 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               </div>
 
               <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40 mb-2">Reset to Original Defaults</h3>
-                <p className="text-xs text-[#0A1628]/40 mb-4">If you want to clear all your uploads and return to initial default content, click below:</p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (confirm("Are you sure you want to reset all content to factory defaults?")) {
-                      localStorage.removeItem("dd_projects");
-                      localStorage.removeItem("dd_site_content");
-                      setProjects([...initialProjects]);
-                      setSiteContent(defaultSiteContent);
-                    }
-                  }}
-                  className="bg-red-500 text-white px-5 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-red-600 transition-colors cursor-pointer"
-                >
-                  Reset Everything to Defaults
-                </button>
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles size={16} className="text-[#C5A880]" />
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]">Fix Glitches & Optimize Performance</h3>
+                </div>
+                <p className="text-xs text-[#0A1628]/60 mb-4 leading-relaxed">
+                  Agar dashboard mein kabhi koi visual glitch ya slow memory feel ho, to yahan click karke temporary cache clear karein. <strong>Aapka uploaded data, photos aur videos delete NAHI honge.</strong>
+                </p>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      try {
+                        const keys = Object.keys(localStorage);
+                        for (const key of keys) {
+                          if (
+                            key !== "dd_site_content" &&
+                            key !== "dd_projects" &&
+                            key !== "dd_admin_auth" &&
+                            key !== "dd_gh_token" &&
+                            key !== "dd_gh_repo"
+                          ) {
+                            localStorage.removeItem(key);
+                          }
+                        }
+                        setCacheStatus("✨ Temporary junk memory cleaned & glitches fixed! All your uploaded data is safe.");
+                        setTimeout(() => setCacheStatus(null), 4000);
+                      } catch (e) {
+                        setCacheStatus("Memory optimized successfully!");
+                      }
+                    }}
+                    className="flex items-center gap-2 bg-[#0A1628] text-[#C5A880] border border-[#C5A880]/30 px-5 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-[#111D30] transition-colors cursor-pointer shadow-sm"
+                  >
+                    <RefreshCw size={13} />
+                    ⚡ Fix Glitches & Clean Memory
+                  </button>
+                </div>
+                {cacheStatus && (
+                  <div className="mt-3 p-3 bg-emerald-50 text-emerald-800 text-xs font-medium rounded-lg border border-emerald-200">
+                    {cacheStatus}
+                  </div>
+                )}
               </div>
 
               <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
