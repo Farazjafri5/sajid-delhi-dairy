@@ -1,0 +1,272 @@
+@import "tailwindcss";
+
+@source "../**/*.{ts,tsx}";
+
+@theme {
+  --color-primary: #1A1715;
+  --color-studio-bg: #F5F3EF;
+  --color-studio-white: #FFFFFF;
+  --color-studio-text: #2B2521;
+  --color-studio-muted: #7E7364;
+  --color-studio-accent: #EAE6DF;
+  
+  --font-serif: var(--font-playfair), serif;
+  --font-sans: var(--font-poppins), sans-serif;
+  
+  --animate-marquee: marquee 35s linear infinite;
+  --animate-marquee-reverse: marquee-reverse 35s linear infinite;
+  --animate-vertical-loop-slow: scroll-y-loop 24s linear infinite;
+  --animate-vertical-loop-reverse: scroll-y-loop-reverse 20s linear infinite;
+  
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes marquee-reverse {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0%); }
+  }
+  @keyframes scroll-y-loop {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
+  @keyframes scroll-y-loop-reverse {
+    0% { transform: translateY(-50%); }
+    100% { transform: translateY(0); }
+  }
+}
+
+:root {
+  --background: #F5F3EF;
+  --foreground: #1A1715;
+}
+
+* {
+  box-sizing: border-box;
+  letter-spacing: -0.01em;
+}
+
+/* Base resets & smooth transitions */
+html, body {
+  background-color: var(--background);
+  color: var(--foreground);
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-poppins), sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: 
+    radial-gradient(circle at 15% 15%, rgba(253, 250, 245, 0.98) 0%, transparent 55%),
+    radial-gradient(circle at 85% 25%, rgba(244, 232, 212, 0.9) 0%, transparent 60%),
+    radial-gradient(circle at 50% 80%, rgba(246, 236, 222, 0.95) 0%, transparent 65%),
+    radial-gradient(circle at 10% 70%, rgba(248, 238, 225, 0.85) 0%, transparent 50%),
+    #F5F3EF;
+  background-attachment: fixed;
+}
+
+/* Cinematic preloader vignette with animating warm golden spotlight pulse */
+@keyframes preloader-pulse {
+  0%, 100% { background: radial-gradient(circle at center, #2C221A 0%, #0A0807 100%); }
+  50% { background: radial-gradient(circle at center, #3F2E24 0%, #0A0807 100%); }
+}
+
+.preloader-bg {
+  animation: preloader-pulse 8s ease-in-out infinite;
+}
+
+/* Multi-layered luxury drifting waves (non-repeating fluid effect) */
+@keyframes footer-wave-motion-1 {
+  0% {
+    transform: translate(0%, 0%) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(12%, -8%) rotate(180deg) scale(1.08);
+  }
+  100% {
+    transform: translate(0%, 0%) rotate(360deg) scale(1);
+  }
+}
+
+@keyframes footer-wave-motion-2 {
+  0% {
+    transform: translate(0%, 0%) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(-8%, 12%) rotate(-180deg) scale(0.92);
+  }
+  100% {
+    transform: translate(0%, 0%) rotate(-360deg) scale(1);
+  }
+}
+
+.footer-gold-glow {
+  background: #1A1715; /* Clean base color */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Layer 1: Champagne Gold Wave (Clockwise) */
+.footer-gold-glow::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 75% 30%, rgba(212, 175, 55, 0.16) 0%, transparent 45%);
+  pointer-events: none;
+  z-index: 0;
+  animation: footer-wave-motion-1 37s linear infinite;
+}
+
+/* Layer 2: Warm Ivory Gold Wave (Counter-Clockwise) */
+.footer-gold-glow::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 25% 70%, rgba(245, 229, 201, 0.12) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+  animation: footer-wave-motion-2 23s linear infinite;
+}
+
+/* 🎨 PREMIUM GRAIN/NOISE OVERLAY */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0.035;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Custom Scrollbar for a premium editorial feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F5F3EF;
+}
+::-webkit-scrollbar-thumb {
+  background: #0A0A0A;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #333333;
+}
+
+/* Hide standard cursor when custom cursor is active on desktop */
+@media (min-width: 1024px) {
+  .custom-cursor-enabled {
+    cursor: none;
+  }
+  .custom-cursor-enabled a,
+  .custom-cursor-enabled button,
+  .custom-cursor-enabled [role="button"],
+  .custom-cursor-enabled iframe,
+  .custom-cursor-enabled video {
+    cursor: none;
+  }
+}
+
+/* Fluid Typographic Clamps for Responsive Headers */
+.heading-serif-hero {
+  font-family: var(--font-playfair), serif;
+  font-size: clamp(2.4rem, 6.5vw, 6.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.heading-serif-section {
+  font-family: var(--font-playfair), serif;
+  font-size: clamp(1.8rem, 4.5vw, 4.2rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+/* Premium Champagne Gold to Dark Metallic text gradient */
+.text-gradient-premium {
+  background: linear-gradient(135deg, #0A0A0A 0%, #353027 35%, #9E8B65 65%, #25221B 85%, #0A0A0A 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shine 8s linear infinite;
+  display: inline-block;
+}
+
+/* Gold/Champagne metallic gradient for dark backgrounds */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F5E5C9 30%, #D4AF37 60%, #F0D399 85%, #FFFFFF 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shine 8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Hairline dividers for clean editorial look */
+.editorial-border {
+  border: 1px solid rgba(10, 10, 10, 0.08);
+}
+
+.editorial-border-b {
+  border-bottom: 1px solid rgba(10, 10, 10, 0.08);
+}
+
+.editorial-border-t {
+  border-top: 1px solid rgba(10, 10, 10, 0.08);
+}
+
+.editorial-border-l {
+  border-left: 1px solid rgba(10, 10, 10, 0.08);
+}
+
+.editorial-border-r {
+  border-right: 1px solid rgba(10, 10, 10, 0.08);
+}
+
+/* Custom Text Reveal / Underline Animations */
+.hover-underline-animated {
+  position: relative;
+}
+
+.hover-underline-animated::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: currentColor;
+  transform-origin: bottom right;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.hover-underline-animated:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+.pause-on-hover:hover {
+  animation-play-state: paused;
+}
