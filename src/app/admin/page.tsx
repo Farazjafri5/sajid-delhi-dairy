@@ -40,16 +40,40 @@ const sidebarItems: { id: SidebarPage; label: string; icon: React.ReactNode }[] 
   { id: "settings", label: "Settings", icon: <Settings size={18} /> },
 ];
 
-// Automatic Client-side Image Compression to keep repository lightweight and under GitHub 1MB API limit
+// Cloudinary Configuration for Direct Fast Heavy Media Uploads
+const CLOUDINARY_CLOUD_NAME = "yan3h0ri";
+const CLOUDINARY_UPLOAD_PRESET = "delhi_diaries";
+
+// Direct High-Speed Cloudinary Upload for Videos (up to 100MB) and High-Res Photos
+async function uploadToCloudinary(file: File, onProgress?: (percent: number) => void): Promise<string> {
+  const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+  const res = await fetch(url, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error?.message || "Failed to upload file to Cloudinary");
+  }
+
+  const data = await res.json();
+  return data.secure_url;
+}
+
+// Client-side image fallback
 function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
-    // If it's an image, resize & compress it via HTML5 Canvas
     if (file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new window.Image();
         img.onload = () => {
-          const maxDim = 1200; // max 1200px width/height
+          const maxDim = 1200;
           let width = img.width;
           let height = img.height;
 
@@ -69,7 +93,6 @@ function fileToBase64(file: File): Promise<string> {
           const ctx = canvas.getContext("2d");
           if (ctx) {
             ctx.drawImage(img, 0, 0, width, height);
-            // Export compressed WebP/JPEG
             const compressed = canvas.toDataURL("image/jpeg", 0.75);
             resolve(compressed);
           } else {
@@ -82,15 +105,6 @@ function fileToBase64(file: File): Promise<string> {
       reader.onerror = reject;
       reader.readAsDataURL(file);
       return;
-    }
-
-    // If it's a video, check file size (< 800 KB for direct commit, otherwise ask for video URL)
-    if (file.type.startsWith("video/")) {
-      if (file.size > 800 * 1024) {
-        alert("⚠️ Video file is too large (" + (file.size / (1024 * 1024)).toFixed(1) + "MB) to commit directly to GitHub via API (GitHub max limit is 1MB).\n\n👉 Please paste the Video Link (Mixkit, Cloudinary, Vimeo, Drive, or any MP4 URL) in the Video URL box instead!");
-        reject(new Error("Video file too large"));
-        return;
-      }
     }
 
     const reader = new FileReader();
@@ -134,7 +148,7 @@ function MediaBox({
   accept = "image/*,video/*"
 }: {
   src: string;
-  onUpload: (b64: string) => void;
+  onUpload: (url: string) => void;
   onRemove?: () => void;
   isActive?: boolean;
   onToggleActive?: () => void;
@@ -142,12 +156,18 @@ function MediaBox({
   accept?: string;
 }) {
   const ref = useRef<HTMLInputElement>(null);
-  const isVideo = src.startsWith("data:video") || src.endsWith(".mp4") || src.includes("mixkit") || src.includes("video");
+  const [isUploading, setIsUploading] = useState(false);
+  const isVideo = src.startsWith("data:video") || src.endsWith(".mp4") || src.includes("mixkit") || src.includes("video") || src.includes("cloudinary.com") && (src.includes("/video/") || src.endsWith(".mp4"));
 
   return (
     <div className={`relative group rounded-xl border transition-all ${isActive ? "border-[#0A1628]/10 bg-white" : "border-red-200 bg-red-50/30 opacity-60"}`}>
       <div className="aspect-video bg-[#0A1628]/5 rounded-t-xl overflow-hidden flex items-center justify-center relative">
-        {src ? (
+        {isUploading ? (
+          <div className="text-center text-[#C5A880] p-4 flex flex-col items-center gap-2">
+            <RefreshCw size={24} className="animate-spin" />
+            <span className="text-[10px] uppercase tracking-wider font-bold text-[#0A1628]">Uploading to Cloud...</span>
+          </div>
+        ) : src ? (
           isVideo ? (
             <video src={src} className="w-full h-full object-cover" muted loop playsInline />
           ) : (
@@ -161,29 +181,33 @@ function MediaBox({
         )}
 
         {/* Video badge */}
-        {isVideo && src && (
+        {!isUploading && isVideo && src && (
           <div className="absolute top-2 left-2 bg-[#0A1628]/80 text-white text-[8px] font-bold px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
             <Play size={8} fill="currentColor" /> Video
           </div>
         )}
 
         {/* Status badge */}
-        <div className="absolute top-2 right-2">
-          <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${isActive ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
-            {isActive ? "Active" : "Inactive"}
-          </span>
-        </div>
+        {!isUploading && (
+          <div className="absolute top-2 right-2">
+            <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${isActive ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
+              {isActive ? "Active" : "Inactive"}
+            </span>
+          </div>
+        )}
 
         {/* Hover overlay with Upload button */}
-        <div className="absolute inset-0 bg-[#0A1628]/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-          <button
-            type="button"
-            onClick={() => ref.current?.click()}
-            className="bg-[#C5A880] text-[#0A1628] px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider cursor-pointer hover:bg-[#BCA078]"
-          >
-            <Upload size={12} className="inline mr-1" /> Upload
-          </button>
-        </div>
+        {!isUploading && (
+          <div className="absolute inset-0 bg-[#0A1628]/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+            <button
+              type="button"
+              onClick={() => ref.current?.click()}
+              className="bg-[#C5A880] text-[#0A1628] px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider cursor-pointer hover:bg-[#BCA078] shadow-md"
+            >
+              <Upload size={12} className="inline mr-1" /> Upload Heavy Media
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Hidden file input for direct file upload */}
@@ -195,8 +219,22 @@ function MediaBox({
         onChange={async (e) => {
           const f = e.target.files?.[0];
           if (f) {
-            const b64 = await fileToBase64(f);
-            onUpload(b64);
+            setIsUploading(true);
+            try {
+              // Direct high-speed upload to Cloudinary
+              const cloudUrl = await uploadToCloudinary(f);
+              onUpload(cloudUrl);
+            } catch (err: any) {
+              console.warn("Cloudinary upload failed, using optimized local compression fallback", err);
+              try {
+                const b64 = await fileToBase64(f);
+                onUpload(b64);
+              } catch (fallbackErr: any) {
+                alert("Upload failed: " + (err.message || fallbackErr.message));
+              }
+            } finally {
+              setIsUploading(false);
+            }
           }
           e.target.value = "";
         }}
