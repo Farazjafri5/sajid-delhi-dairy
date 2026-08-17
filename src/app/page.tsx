@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { Play, ArrowRight, MessageSquare, Mail, MapPin, Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { Play, ArrowRight, MessageSquare, Mail, MapPin, Check, ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
 import Button from "@/components/Button";
 import ServiceCard from "@/components/ServiceCard";
 import IndustryCard from "@/components/IndustryCard";
@@ -109,6 +109,7 @@ export default function Home() {
 
   const [reelIndex, setReelIndex] = useState(0);
   const [isPlayingReel, setIsPlayingReel] = useState(false);
+  const [isReelMuted, setIsReelMuted] = useState(false);
 
   // Timer for Instagram Reel mockup slideshow (every 4 seconds, pauses when video is playing)
   useEffect(() => {
@@ -299,7 +300,7 @@ export default function Home() {
                       src={mockReels[reelIndex].videoUrl}
                       autoPlay
                       loop
-                      muted
+                      muted={isReelMuted}
                       playsInline
                       className="absolute inset-0 w-full h-full object-cover z-0"
                     />
@@ -325,6 +326,22 @@ export default function Home() {
                     </AnimatePresence>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-transparent to-primary/20 z-0 pointer-events-none" />
+
+                  {/* Speaker Mute/Unmute Icon Button */}
+                  {isPlayingReel && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsReelMuted(!isReelMuted);
+                      }}
+                      className="absolute top-4 right-4 z-30 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 shadow-lg hover:scale-110 active:scale-95 transition-transform cursor-pointer"
+                      aria-label={isReelMuted ? "Unmute audio" : "Mute audio"}
+                      title={isReelMuted ? "Click to Unmute" : "Click to Mute"}
+                    >
+                      {isReelMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                    </button>
+                  )}
 
                   {/* Play icon overlay */}
                   {!isPlayingReel && (
@@ -1211,7 +1228,7 @@ export default function Home() {
           </button>
           <div className="aspect-video w-full max-w-5xl bg-[#000000] relative flex items-center justify-center rounded-xl overflow-hidden shadow-2xl border border-studio-bg/10">
             <video
-              src="https://assets.mixkit.co/videos/preview/mixkit-pouring-hot-coffee-into-a-cup-42207-large.mp4"
+              src={centerVideos[videoIndex]?.src || "https://assets.mixkit.co/videos/preview/mixkit-pouring-hot-coffee-into-a-cup-42207-large.mp4"}
               className="w-full h-full object-cover"
               controls
               autoPlay
