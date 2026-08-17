@@ -315,58 +315,31 @@ export default function AdminPage() {
     setDeployStatus(null);
 
     try {
-      // 1. Prepare file content in base64 with clean type imports
+      // 1. Prepare file content with clean type imports
       const newFileContent = `// Auto-generated from Delhi Diaries Admin Panel
 import { SiteContent } from "@/types/siteContent";
 export * from "@/types/siteContent";
 
 export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
 `;
-      // UTF-8 to Base64 (Chunk-safe to prevent memory/fetch crashes)
-      const utf8Bytes = new TextEncoder().encode(newFileContent);
-      let binary = "";
-      const len = utf8Bytes.byteLength;
-      const chunkSize = 0x8000; // 32KB chunks
-      for (let i = 0; i < len; i += chunkSize) {
-        binary += String.fromCharCode.apply(
-          null,
-          Array.from(utf8Bytes.subarray(i, Math.min(i + chunkSize, len)))
-        );
-      }
-      const base64Content = btoa(binary);
 
-      // 2. Get current file SHA from GitHub
-      const fileUrl = `https://api.github.com/repos/${ghRepo}/contents/src/data/siteContent.ts?ref=${ghBranch}`;
-      const getRes = await fetch(fileUrl, {
+      // 2. Call Server-side Secure Deploy API (Bypasses Browser CORS / Adblockers)
+      const res = await fetch("/api/deploy", {
+        method: "POST",
         headers: {
-          Authorization: `Bearer ${ghToken}`,
-          Accept: "application/vnd.github.v3+json",
-        },
-      });
-
-      let sha = "";
-      if (getRes.ok) {
-        const fileData = await getRes.json();
-        sha = fileData.sha;
-      }
-
-      // 3. Commit updated file to GitHub repo
-      const putRes = await fetch(`https://api.github.com/repos/${ghRepo}/contents/src/data/siteContent.ts`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${ghToken}`,
-          Accept: "application/vnd.github.v3+json",
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: "CMS Update from Delhi Diaries Admin Dashboard",
-          content: base64Content,
+          token: ghToken,
+          repo: ghRepo,
           branch: ghBranch,
-          ...(sha ? { sha } : {}),
+          content: newFileContent,
         }),
       });
 
-      if (putRes.ok) {
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && data.success) {
         const msg = "🎉 Success! Changes committed to GitHub. Vercel is now building and deploying your live site (takes ~20 seconds)!";
         setDeployStatus({
           success: true,
@@ -374,13 +347,10 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
         });
         try {
           saveAll();
-        } catch (e) {
-          // Ignore localStorage errors during deploy
-        }
+        } catch (e) {}
         alert(msg);
       } else {
-        const err = await putRes.json();
-        const msg = `⚠️ GitHub Deploy Failed: ${err.message || "Please check your GitHub Token permissions in the '1-Click GitHub Deploy' tab."}`;
+        const msg = `⚠️ GitHub Deploy Failed: ${data.error || "Please check your GitHub Token permissions in the '1-Click GitHub Deploy' tab."}`;
         setDeployStatus({
           success: false,
           message: msg,
