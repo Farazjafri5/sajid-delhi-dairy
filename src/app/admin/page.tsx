@@ -345,10 +345,18 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
     setIsAuthenticated(false);
   };
 
-  // Save all data
+  // Save all data safely (guarded against localStorage quota limits)
   const saveAll = () => {
-    localStorage.setItem("dd_projects", JSON.stringify(projects));
-    localStorage.setItem("dd_site_content", JSON.stringify(siteContent));
+    try {
+      localStorage.setItem("dd_projects", JSON.stringify(projects));
+    } catch (e) {
+      console.warn("Could not cache projects in localStorage (quota exceeded)", e);
+    }
+    try {
+      localStorage.setItem("dd_site_content", JSON.stringify(siteContent));
+    } catch (e) {
+      console.warn("Could not cache siteContent in localStorage (quota exceeded)", e);
+    }
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 2000);
   };
