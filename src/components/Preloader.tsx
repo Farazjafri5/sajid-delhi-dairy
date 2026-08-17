@@ -2,11 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 export default function Preloader() {
+  const pathname = usePathname();
   const [loading, setLoading] = useState(true);
+  const isAdmin = pathname === "/admin";
 
   useEffect(() => {
+    if (isAdmin) {
+      setLoading(false);
+      return;
+    }
     // Lock scroll on mount
     document.body.style.overflow = "hidden";
     
@@ -20,7 +27,9 @@ export default function Preloader() {
       clearTimeout(timer);
       document.body.style.overflow = "";
     };
-  }, []);
+  }, [isAdmin]);
+
+  if (isAdmin) return null;
 
   return (
     <AnimatePresence>
