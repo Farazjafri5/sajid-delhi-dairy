@@ -489,12 +489,16 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
     setProjects(prev => prev.map(p => p.slug === slug ? updater(p) : p));
   };
 
-  // Generate code string for permanent git commit
-  const generatedCode = `// Generated from Delhi Diaries Admin Panel
-import { SiteContent } from "@/data/siteContent";
+  // Generate code string for permanent git commit (Only computed when export tab is opened)
+  const generatedCode = React.useMemo(() => {
+    if (activePage !== "export") return "";
+    return `// Generated from Delhi Diaries Admin Panel
+import { SiteContent } from "@/types/siteContent";
+export * from "@/types/siteContent";
 
 export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
 `;
+  }, [siteContent, activePage]);
 
   // ─── MAIN DASHBOARD ──────────────────────────────────────────
   return (
