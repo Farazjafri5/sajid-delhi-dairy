@@ -274,11 +274,16 @@ function MediaBox({
 
 // ─── Main Component ───────────────────────────────────────────────
 export default function AdminPage() {
+  const [isMounted, setIsMounted] = useState(false);
   // Auth state
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authError, setAuthError] = useState("");
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Navigation
   const [activePage, setActivePage] = useState<SidebarPage>("dashboard");
@@ -456,6 +461,15 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
   const updateContent = (updater: (prev: SiteContent) => SiteContent) => {
     setSiteContent((prev) => updater(prev));
   };
+
+  // ─── MOUNT GUARD ─────────────────────────────────────────────
+  if (!isMounted) {
+    return (
+      <div className="flex-1 bg-[#0A1628] flex items-center justify-center min-h-screen">
+        <div className="h-8 w-8 rounded-full border-2 border-[#C5A880] border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
   // ─── LOGIN SCREEN ─────────────────────────────────────────────
   if (!isAuthenticated) {
