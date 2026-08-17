@@ -271,23 +271,29 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
       });
 
       if (putRes.ok) {
+        const msg = "🎉 Success! Changes committed to GitHub. Vercel is now building and deploying your live site (takes ~20 seconds)!";
         setDeployStatus({
           success: true,
-          message: "🎉 Successfully committed to GitHub! Vercel is now deploying your website live for all clients!",
+          message: msg,
         });
         saveAll();
+        alert(msg);
       } else {
         const err = await putRes.json();
+        const msg = `⚠️ GitHub Deploy Failed: ${err.message || "Please check your GitHub Token permissions in the '1-Click GitHub Deploy' tab."}`;
         setDeployStatus({
           success: false,
-          message: `GitHub Error: ${err.message || "Could not push to repository. Check token permissions."}`,
+          message: msg,
         });
+        alert(msg);
       }
     } catch (err: any) {
+      const msg = `⚠️ Deploy Error: ${err.message || "Failed to connect to GitHub API."}`;
       setDeployStatus({
         success: false,
-        message: `Network Error: ${err.message || "Failed to connect to GitHub API."}`,
+        message: msg,
       });
+      alert(msg);
     } finally {
       setIsDeploying(false);
     }
