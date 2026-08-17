@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 export default function Preloader() {
   const pathname = usePathname();
   const [loading, setLoading] = useState(true);
-  const isAdmin = pathname === "/admin";
+  const isAdmin = pathname?.startsWith("/admin") || pathname?.startsWith("/dashboard");
 
   useEffect(() => {
     if (isAdmin) {

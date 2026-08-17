@@ -63,9 +63,14 @@ export default function CaseStudyClient({
     loadDynamicData();
   }, [slug]);
 
-  // Helper to filter out inactive items (prefixed with "inactive:")
-  const activeGallery = project.gallery.filter((url) => !url.startsWith("inactive:"));
-  const activeReels = project.reels.filter((url) => !url.startsWith("inactive:"));
+  // Helper to filter out inactive items and convert to string URL array
+  const activeGallery: string[] = (project.gallery || [])
+    .filter((item) => (typeof item === "string" ? !item.startsWith("inactive:") : item.active !== false))
+    .map((item) => (typeof item === "string" ? item : item.src));
+
+  const activeReels: string[] = (project.reels || [])
+    .filter((item) => (typeof item === "string" ? !item.startsWith("inactive:") : item.active !== false))
+    .map((item) => (typeof item === "string" ? item : item.src));
 
   return (
     <article className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24">

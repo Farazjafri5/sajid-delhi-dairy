@@ -1,32 +1,23 @@
 // Auto-generated from Delhi Diaries Admin Panel
+export type ProjectMedia = string | { id?: string; src: string; caption?: string; type?: "image" | "video"; active?: boolean };
+
 export interface Project {
   slug: string;
+  client: string;
   title: string;
-  category: string;
+  subtitle: string;
   industry: string;
-  summary: string;
-  coverImage: string;
-  featured?: boolean;
+  services: string[];
+  description: string;
+  image: string;
+  video: string;
+  brief: string;
+  idea: string;
+  execution: string;
+  results: string[];
+  gallery: ProjectMedia[];
+  reels: ProjectMedia[];
   active?: boolean;
-  services?: string[];
-  deliverables?: string[];
-  clientQuote?: {
-    quote: string;
-    author: string;
-    role: string;
-  };
-  metrics?: {
-    value: string;
-    label: string;
-  }[];
-  gallery?: {
-    src: string;
-    caption: string;
-    type?: "image" | "video";
-  }[];
-  challenge?: string;
-  solution?: string;
-  results?: string[];
 }
 
 export const projects: Project[] = [

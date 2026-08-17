@@ -299,7 +299,7 @@ export default function AdminPage() {
   const [isDeploying, setIsDeploying] = useState(false);
   const [deployStatus, setDeployStatus] = useState<{ success?: boolean; message?: string } | null>(null);
 
-  // Check login session & read URL tab on mount
+  // Check login session & read clean URL path on mount
   useEffect(() => {
     setIsMounted(true);
 
@@ -312,10 +312,16 @@ export default function AdminPage() {
       }
     } catch (e) {}
 
-    // 2. Read tab from URL query params (e.g. ?tab=hero)
+    // 2. Read tab from clean URL path (e.g. /admin/showreel or /dashboard/showreel) or query param fallback
     try {
+      const pathname = window.location.pathname.replace(/\/$/, "");
+      const segments = pathname.split("/").filter(Boolean);
+      const lastSegment = segments[segments.length - 1] as SidebarPage | undefined;
       const params = new URLSearchParams(window.location.search);
-      const tabParam = params.get("tab") as SidebarPage | null;
+      const tabParam = (lastSegment && sidebarItems.some(i => i.id === lastSegment))
+        ? lastSegment
+        : (params.get("tab") as SidebarPage | null);
+
       if (tabParam && sidebarItems.some((item) => item.id === tabParam)) {
         setActivePage(tabParam);
       }
@@ -324,8 +330,14 @@ export default function AdminPage() {
     // 3. Listen to browser back/forward buttons
     const handlePopState = () => {
       try {
+        const pathname = window.location.pathname.replace(/\/$/, "");
+        const segments = pathname.split("/").filter(Boolean);
+        const lastSegment = segments[segments.length - 1] as SidebarPage | undefined;
         const params = new URLSearchParams(window.location.search);
-        const tabParam = params.get("tab") as SidebarPage | null;
+        const tabParam = (lastSegment && sidebarItems.some(i => i.id === lastSegment))
+          ? lastSegment
+          : (params.get("tab") as SidebarPage | null);
+
         if (tabParam && sidebarItems.some((item) => item.id === tabParam)) {
           setActivePage(tabParam);
         } else {
@@ -348,86 +360,100 @@ export default function AdminPage() {
     } catch (e) {}
   }, []);
 
-  // Navigate to tab with distinct URL update
+  // Navigate to tab with clean URL (e.g. /admin/showreel or /dashboard/showreel)
   const navigateToTab = (tab: SidebarPage) => {
     setActivePage(tab);
     setMobileSidebarOpen(false);
     setEditingProjectSlug(null);
     try {
-      const url = tab === "dashboard" ? window.location.pathname : `${window.location.pathname}?tab=${tab}`;
-      window.history.pushState({ tab }, "", url);
+      const isDashboardRoute = window.location.pathname.startsWith("/dashboard");
+      const rootPath = isDashboardRoute ? "/dashboard" : "/admin";
+      const cleanUrl = tab === "dashboard" ? rootPath : `${rootPath}/${tab}`;
+      window.history.pushState({ tab }, "", cleanUrl);
     } catch (e) {}
   };
 
-  // Copy direct link to current section
+  // Copy direct clean link to current section
   const copyCurrentSectionLink = (tab?: SidebarPage) => {
     const targetTab = tab || activePage;
     const origin = typeof window !== "undefined" ? window.location.origin : "";
-    const path = typeof window !== "undefined" ? window.location.pathname : "/admin";
-    const fullUrl = targetTab === "dashboard" ? `${origin}${path}` : `${origin}${path}?tab=${targetTab}`;
-    navigator.clipboard.writeText(fullUrl);
+    const isDashboardRoute = typeof window !== "undefined" && window.location.pathname.startsWith("/dashboard");
+    const rootPath = isDashboardRoute ? "/dashboard" : "/admin";
+    const cleanUrl = targetTab === "dashboard" ? `${origin}${rootPath}` : `${origin}${rootPath}/${targetTab}`;
+    navigator.clipboard.writeText(cleanUrl);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  // 1-Click Direct Commit & Deploy to GitHub
+  // 1-Click Direct Save & Deploy (Supports Zero-Token Local Git Push & Remote API)
   const handleGitHubDeploy = async () => {
-    if (!ghToken) {
-      alert("Please enter a GitHub Personal Access Token.");
-      return;
-    }
     setIsDeploying(true);
     setDeployStatus(null);
 
     try {
-      // 1. Prepare file content with clean type imports
-      const newFileContent = `// Auto-generated from Delhi Diaries Admin Panel
+      // 1. Save directly to codebase and push using local git credentials
+      const saveRes = await fetch("/api/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          siteContent,
+          projects,
+          shouldGitPush: true,
+        }),
+      });
+
+      const saveData = await saveRes.json().catch(() => ({}));
+
+      if (saveRes.ok && saveData.gitPush?.success) {
+        const msg = "🎉 Success! Changes saved to codebase & pushed to GitHub. Vercel is now deploying your live site (takes ~20 seconds)!";
+        setDeployStatus({ success: true, message: msg });
+        saveAll();
+        alert(msg);
+        return;
+      }
+
+      // 2. Fallback to GitHub API (if token provided)
+      if (ghToken) {
+        const newFileContent = `// Auto-generated from Delhi Diaries Admin Panel
 import { SiteContent } from "@/types/siteContent";
 export * from "@/types/siteContent";
 
 export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
 `;
-
-      // 2. Call Server-side Secure Deploy API (Bypasses Browser CORS / Adblockers)
-      const res = await fetch("/api/deploy", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token: ghToken,
-          repo: ghRepo,
-          branch: ghBranch,
-          content: newFileContent,
-        }),
-      });
-
-      const data = await res.json().catch(() => ({}));
-
-      if (res.ok && data.success) {
-        const msg = "🎉 Success! Changes committed to GitHub. Vercel is now building and deploying your live site (takes ~20 seconds)!";
-        setDeployStatus({
-          success: true,
-          message: msg,
+        const res = await fetch("/api/deploy", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token: ghToken,
+            repo: ghRepo,
+            branch: ghBranch,
+            content: newFileContent,
+          }),
         });
-        try {
+
+        const data = await res.json().catch(() => ({}));
+
+        if (res.ok && data.success) {
+          const msg = "🎉 Success! Changes committed to GitHub. Vercel is now building and deploying your live site!";
+          setDeployStatus({ success: true, message: msg });
           saveAll();
-        } catch (e) {}
+          alert(msg);
+          return;
+        }
+      }
+
+      // If local save succeeded without git push
+      if (saveRes.ok) {
+        const msg = "✅ Changes saved to local files successfully!";
+        setDeployStatus({ success: true, message: msg });
+        saveAll();
         alert(msg);
       } else {
-        const msg = `⚠️ GitHub Deploy Failed: ${data.error || "Please check your GitHub Token permissions in the '1-Click GitHub Deploy' tab."}`;
-        setDeployStatus({
-          success: false,
-          message: msg,
-        });
-        alert(msg);
+        throw new Error(saveData.error || "Could not complete save.");
       }
     } catch (err: any) {
-      const msg = `⚠️ Deploy Error: ${err.message || "Failed to connect to GitHub API."}`;
-      setDeployStatus({
-        success: false,
-        message: msg,
-      });
+      const msg = `⚠️ Deploy Error: ${err.message || "Failed to save or deploy."}`;
+      setDeployStatus({ success: false, message: msg });
       alert(msg);
     } finally {
       setIsDeploying(false);
@@ -512,18 +538,26 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
     setIsAuthenticated(false);
   };
 
-  // Save all data safely (guarded against localStorage quota limits)
+  // Save all data safely (LocalStorage + local disk files sync)
   const saveAll = () => {
     try {
       localStorage.setItem("dd_projects", JSON.stringify(projects));
     } catch (e) {
-      console.warn("Could not cache projects in localStorage (quota exceeded)", e);
+      console.warn("Could not cache projects in localStorage", e);
     }
     try {
       localStorage.setItem("dd_site_content", JSON.stringify(siteContent));
     } catch (e) {
-      console.warn("Could not cache siteContent in localStorage (quota exceeded)", e);
+      console.warn("Could not cache siteContent in localStorage", e);
     }
+
+    // Also persist to local codebase files in background
+    fetch("/api/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ siteContent, projects }),
+    }).catch(() => {});
+
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 2000);
   };
@@ -532,6 +566,28 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
   const updateContent = (updater: (prev: SiteContent) => SiteContent) => {
     setSiteContent((prev) => updater(prev));
   };
+
+  // ─── Stats for Dashboard ──────────────────────────────────────
+  const totalImages = (siteContent.industries?.length || 0) + (siteContent.instagramFeed?.length || 0) + (siteContent.showreel?.leftImages?.length || 0) + (siteContent.showreel?.rightImages?.length || 0);
+  const totalVideos = (siteContent.showreel?.centerVideos?.length || 0) + (siteContent.hero?.mockReels?.length || 0);
+  const activeProjects = projects.filter(p => !p.slug.startsWith("inactive:")).length;
+
+  // ─── Editing project helper ───────────────────────────────────
+  const editingProject = editingProjectSlug ? projects.find(p => p.slug === editingProjectSlug) : null;
+  const updateProject = (slug: string, updater: (p: Project) => Project) => {
+    setProjects(prev => prev.map(p => p.slug === slug ? updater(p) : p));
+  };
+
+  // Generate code string for permanent git commit (Always declared in top-level hook scope)
+  const generatedCode = React.useMemo(() => {
+    if (activePage !== "export") return "";
+    return `// Generated from Delhi Diaries Admin Panel
+import { SiteContent } from "@/types/siteContent";
+export * from "@/types/siteContent";
+
+export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
+`;
+  }, [siteContent, activePage]);
 
   // ─── MOUNT GUARD ─────────────────────────────────────────────
   if (!isMounted) {
@@ -584,28 +640,6 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
       </main>
     );
   }
-
-  // ─── Stats for Dashboard ──────────────────────────────────────
-  const totalImages = (siteContent.industries?.length || 0) + (siteContent.instagramFeed?.length || 0) + (siteContent.showreel?.leftImages?.length || 0) + (siteContent.showreel?.rightImages?.length || 0);
-  const totalVideos = (siteContent.showreel?.centerVideos?.length || 0) + (siteContent.hero?.mockReels?.length || 0);
-  const activeProjects = projects.filter(p => !p.slug.startsWith("inactive:")).length;
-
-  // ─── Editing project helper ───────────────────────────────────
-  const editingProject = editingProjectSlug ? projects.find(p => p.slug === editingProjectSlug) : null;
-  const updateProject = (slug: string, updater: (p: Project) => Project) => {
-    setProjects(prev => prev.map(p => p.slug === slug ? updater(p) : p));
-  };
-
-  // Generate code string for permanent git commit (Only computed when export tab is opened)
-  const generatedCode = React.useMemo(() => {
-    if (activePage !== "export") return "";
-    return `// Generated from Delhi Diaries Admin Panel
-import { SiteContent } from "@/types/siteContent";
-export * from "@/types/siteContent";
-
-export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
-`;
-  }, [siteContent, activePage]);
 
   // ─── MAIN DASHBOARD ──────────────────────────────────────────
   return (
@@ -732,7 +766,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                       <div className="text-[#0A1628]/40 group-hover:text-[#C5A880] transition-colors">{item.icon}</div>
                       <div>
                         <span className="text-xs font-bold uppercase tracking-wider text-[#0A1628] block">{item.label}</span>
-                        <span className="text-[10px] text-[#0A1628]/40 font-mono">/admin?tab={item.id}</span>
+                        <span className="text-[10px] text-[#0A1628]/40 font-mono">/admin/{item.id}</span>
                       </div>
                     </button>
                     <div className="flex items-center gap-1">
@@ -1431,9 +1465,9 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                   </button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {editingProject.gallery.map((img, idx) => {
-                    const isActive = !img.startsWith("inactive:");
-                    const cleanSrc = img.replace("inactive:", "");
+                  {editingProject.gallery.map((item, idx) => {
+                    const cleanSrc = typeof item === "string" ? item.replace("inactive:", "") : item.src;
+                    const isActive = typeof item === "string" ? !item.startsWith("inactive:") : item.active !== false;
                     return (
                       <div key={idx}>
                         <MediaBox
@@ -1442,12 +1476,20 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                           isActive={isActive}
                           onToggleActive={() => updateProject(editingProject.slug, p => {
                             const g = [...p.gallery];
-                            g[idx] = isActive ? `inactive:${cleanSrc}` : cleanSrc;
+                            if (typeof g[idx] === "string") {
+                              g[idx] = isActive ? `inactive:${cleanSrc}` : cleanSrc;
+                            } else {
+                              g[idx] = { ...(g[idx] as object), src: cleanSrc, active: !isActive };
+                            }
                             return { ...p, gallery: g };
                           })}
                           onUpload={(b64) => updateProject(editingProject.slug, p => {
                             const g = [...p.gallery];
-                            g[idx] = isActive ? b64 : `inactive:${b64}`;
+                            if (typeof g[idx] === "string") {
+                              g[idx] = isActive ? b64 : `inactive:${b64}`;
+                            } else {
+                              g[idx] = { ...(g[idx] as object), src: b64, active: isActive };
+                            }
                             return { ...p, gallery: g };
                           })}
                           onRemove={() => updateProject(editingProject.slug, p => ({
@@ -1477,9 +1519,9 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                   </button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {editingProject.reels.map((reelUrl, idx) => {
-                    const isActive = !reelUrl.startsWith("inactive:");
-                    const cleanUrl = reelUrl.replace("inactive:", "");
+                  {editingProject.reels.map((item, idx) => {
+                    const cleanUrl = typeof item === "string" ? item.replace("inactive:", "") : item.src;
+                    const isActive = typeof item === "string" ? !item.startsWith("inactive:") : item.active !== false;
                     return (
                       <div key={idx}>
                         <MediaBox
@@ -1488,12 +1530,20 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                           isActive={isActive}
                           onToggleActive={() => updateProject(editingProject.slug, p => {
                             const r = [...p.reels];
-                            r[idx] = isActive ? `inactive:${cleanUrl}` : cleanUrl;
+                            if (typeof r[idx] === "string") {
+                              r[idx] = isActive ? `inactive:${cleanUrl}` : cleanUrl;
+                            } else {
+                              r[idx] = { ...(r[idx] as object), src: cleanUrl, active: !isActive };
+                            }
                             return { ...p, reels: r };
                           })}
                           onUpload={(b64) => updateProject(editingProject.slug, p => {
                             const r = [...p.reels];
-                            r[idx] = isActive ? b64 : `inactive:${b64}`;
+                            if (typeof r[idx] === "string") {
+                              r[idx] = isActive ? b64 : `inactive:${b64}`;
+                            } else {
+                              r[idx] = { ...(r[idx] as object), src: b64, active: isActive };
+                            }
                             return { ...p, reels: r };
                           })}
                           onRemove={() => updateProject(editingProject.slug, p => ({
@@ -1900,7 +1950,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                         <div>
                           <p className="text-xs font-bold text-[#0A1628]">{item.label}</p>
                           <p className="text-[10px] text-[#0A1628]/40 font-mono">
-                            {item.id === "dashboard" ? "/admin" : `/admin?tab=${item.id}`}
+                            {item.id === "dashboard" ? "/admin" : `/admin/${item.id}`}
                           </p>
                         </div>
                       </div>

@@ -48,7 +48,7 @@ export default function WorkPage() {
 
   const filteredProjects = projectsList.filter((project) => {
     if (activeFilter === "ALL") return true;
-    return project.industry.toUpperCase() === activeFilter;
+    return (project.industry || "").toUpperCase() === activeFilter;
   });
 
   return (

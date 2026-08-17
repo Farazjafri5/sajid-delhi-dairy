@@ -21,7 +21,7 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  if (pathname === "/admin") {
+  if (pathname?.startsWith("/admin") || pathname?.startsWith("/dashboard")) {
     return null;
   }
 

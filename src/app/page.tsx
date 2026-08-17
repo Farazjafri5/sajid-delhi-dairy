@@ -78,10 +78,10 @@ export default function Home() {
   const [showreelOpen, setShowreelOpen] = useState(false);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
-  // 📸 SLIDER ARRAYS & DYNAMICS (filtered active only)
-  const leftImages = (siteContent.showreel.leftImages || []).filter(img => img.active !== false);
-  const rightImages = (siteContent.showreel.rightImages || []).filter(img => img.active !== false);
-  const centerVideos = (siteContent.showreel.centerVideos || []).filter(vid => vid.active !== false);
+  // 📸 SLIDER ARRAYS & DYNAMICS (filtered active only, fully guarded against null)
+  const leftImages = (siteContent?.showreel?.leftImages || []).filter(img => img && img.active !== false);
+  const rightImages = (siteContent?.showreel?.rightImages || []).filter(img => img && img.active !== false);
+  const centerVideos = (siteContent?.showreel?.centerVideos || []).filter(vid => vid && vid.active !== false);
 
   const [imageIndex, setImageIndex] = useState(0);
   const [videoIndex, setVideoIndex] = useState(0);
@@ -104,8 +104,8 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [centerVideos.length]);
 
-  // 📱 INSTAGRAM REEL MOCKUP DYNAMICS (filtered active only)
-  const mockReels = (siteContent.hero.mockReels || []).filter(reel => reel.active !== false);
+  // 📱 INSTAGRAM REEL MOCKUP DYNAMICS (filtered active only, safe fallback)
+  const mockReels = (siteContent?.hero?.mockReels || []).filter(reel => reel && reel.active !== false);
 
   const [reelIndex, setReelIndex] = useState(0);
   const [isPlayingReel, setIsPlayingReel] = useState(false);
@@ -120,7 +120,7 @@ export default function Home() {
   }, [isPlayingReel, mockReels.length]);
 
   // Active Testimonials
-  const testimonials = (siteContent.testimonials || []).filter(t => t.active !== false);
+  const testimonials = (siteContent?.testimonials || []).filter(t => t && t.active !== false);
 
   // Auto-play timer for Testimonials Carousel (every 6 seconds)
   useEffect(() => {
@@ -223,11 +223,11 @@ export default function Home() {
     });
   };
 
-  // Industries Data (filtered active only)
-  const industriesList = (siteContent.industries || []).filter(ind => ind.active !== false);
+  // Industries Data (filtered active only, safe fallback)
+  const industriesList = (siteContent?.industries || []).filter(ind => ind && ind.active !== false);
 
-  // Instagram Feed Data (filtered active only)
-  const instagramFeed = (siteContent.instagramFeed || []).filter(feed => feed.active !== false);
+  // Instagram Feed Data (filtered active only, safe fallback)
+  const instagramFeed = (siteContent?.instagramFeed || []).filter(feed => feed && feed.active !== false);
 
 
   return (

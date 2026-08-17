@@ -17,7 +17,7 @@ export default function CustomCursor() {
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 
-  const isAdmin = pathname === "/admin";
+  const isAdmin = pathname?.startsWith("/admin") || pathname?.startsWith("/dashboard");
 
   useEffect(() => {
     if (isAdmin) return;
