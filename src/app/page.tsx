@@ -335,6 +335,34 @@ export default function Home() {
                     </div>
                   )}
 
+                  {/* Mobile Previous / Next Arrows for Hero Phone Mockup */}
+                  {mockReels.length > 1 && !isPlayingReel && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setReelIndex((prev) => (prev - 1 + mockReels.length) % mockReels.length);
+                        }}
+                        className="lg:hidden absolute left-2 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 active:scale-90 transition-transform cursor-pointer"
+                        aria-label="Previous Reel"
+                      >
+                        <ChevronLeft size={16} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setReelIndex((prev) => (prev + 1) % mockReels.length);
+                        }}
+                        className="lg:hidden absolute right-2 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 active:scale-90 transition-transform cursor-pointer"
+                        aria-label="Next Reel"
+                      >
+                        <ChevronRight size={16} />
+                      </button>
+                    </>
+                  )}
+
                   {/* Vertical Instagram Action Bar (Likes, Comments, Shares) */}
                   <div className="absolute right-4 bottom-16 flex flex-col items-center gap-5 text-studio-bg z-10 select-none pointer-events-none">
                     <div className="flex flex-col items-center">
@@ -446,6 +474,42 @@ export default function Home() {
 
             {/* Center Main Showreel player (Reel layout on mobile, Cinema layout on desktop) */}
             <div className="lg:col-span-2 relative aspect-[9/16] md:aspect-video bg-studio-muted/10 order-1 lg:order-2 overflow-hidden flex items-center justify-center group">
+              {/* Mobile Previous / Next Arrows (Visible only on mobile/tablet screens) */}
+              {centerVideos.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setVideoIndex((prev) => (prev - 1 + centerVideos.length) % centerVideos.length);
+                    }}
+                    className="lg:hidden absolute left-3 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 shadow-xl active:scale-90 transition-transform cursor-pointer"
+                    aria-label="Previous Video"
+                  >
+                    <ChevronLeft size={22} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setVideoIndex((prev) => (prev + 1) % centerVideos.length);
+                    }}
+                    className="lg:hidden absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 shadow-xl active:scale-90 transition-transform cursor-pointer"
+                    aria-label="Next Video"
+                  >
+                    <ChevronRight size={22} />
+                  </button>
+
+                  {/* Video Counter Indicator for Mobile */}
+                  <div className="lg:hidden absolute top-4 right-4 z-20 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-full text-[10px] font-bold text-white tracking-widest uppercase">
+                    <span>{videoIndex + 1}</span>
+                    <span className="text-white/40">/</span>
+                    <span className="text-white/60">{centerVideos.length}</span>
+                  </div>
+                </>
+              )}
+
               <AnimatePresence mode="popLayout">
                 <motion.div
                   key={videoIndex}
