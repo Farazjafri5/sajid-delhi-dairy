@@ -844,11 +844,11 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                       mockReels: [
                         ...c.hero.mockReels,
                         {
-                          poster: "/images/project_restaurant.png",
-                          videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-pouring-hot-coffee-into-a-cup-42207-large.mp4",
-                          caption: "New viral reel content by Delhi Diaries",
-                          likes: "15.2k",
-                          comments: "240",
+                          poster: "",
+                          videoUrl: "",
+                          caption: "",
+                          likes: "0",
+                          comments: "0",
                           active: true
                         }
                       ]
@@ -1042,7 +1042,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                       ...c,
                       showreel: {
                         ...c.showreel,
-                        leftImages: [...c.showreel.leftImages, { src: "/images/project_cafe.png", label: "New Photo", active: true }]
+                        leftImages: [...c.showreel.leftImages, { src: "", label: "", active: true }]
                       }
                     }))}
                     className="flex items-center gap-1.5 bg-[#0A1628] text-[#C5A880] px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider hover:bg-[#111D30] cursor-pointer"
@@ -1101,9 +1101,9 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                         centerVideos: [
                           ...c.showreel.centerVideos,
                           {
-                            src: "https://assets.mixkit.co/videos/preview/mixkit-pouring-hot-coffee-into-a-cup-42207-large.mp4",
-                            poster: "/images/project_restaurant.png",
-                            label: "Watch New Showcase",
+                            src: "",
+                            poster: "",
+                            label: "",
                             active: true
                           }
                         ]
@@ -1118,56 +1118,120 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                   {siteContent.showreel.centerVideos.map((vid, idx) => {
                     const isActive = vid.active !== false;
                     return (
-                      <div key={idx} className={`p-4 border rounded-xl ${isActive ? "border-[#0A1628]/5 bg-white" : "border-red-200 bg-red-50/20"}`}>
-                        <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-4">
-                          <MediaBox
-                            src={vid.src || vid.poster}
-                            label={vid.label}
-                            isActive={isActive}
-                            onToggleActive={() => updateContent(c => {
-                              const vids = [...c.showreel.centerVideos];
-                              vids[idx] = { ...vids[idx], active: !isActive };
-                              return { ...c, showreel: { ...c.showreel, centerVideos: vids } };
-                            })}
-                            onUpload={(b64) => updateContent(c => {
-                              const vids = [...c.showreel.centerVideos];
-                              if (b64.startsWith("data:video")) {
-                                vids[idx] = { ...vids[idx], src: b64 };
-                              } else {
-                                vids[idx] = { ...vids[idx], poster: b64 };
-                              }
-                              return { ...c, showreel: { ...c.showreel, centerVideos: vids } };
-                            })}
-                            onRemove={() => updateContent(c => ({
-                              ...c,
-                              showreel: {
-                                ...c.showreel,
-                                centerVideos: c.showreel.centerVideos.filter((_, i) => i !== idx)
-                              }
-                            }))}
-                          />
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold uppercase tracking-wider text-[#0A1628]">Video Reel #{idx + 1}</span>
-                              <button
-                                type="button"
-                                onClick={() => updateContent(c => {
+                      <div key={idx} className={`p-6 border rounded-xl shadow-sm transition-all ${isActive ? "border-[#0A1628]/5 bg-white" : "border-red-200 bg-red-50/20"}`}>
+                        <div className="grid grid-cols-1 xl:grid-cols-[440px_1fr] gap-6">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {/* 1. Thumbnail Photo / Poster */}
+                            <div>
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/60 mb-1.5 block">
+                                🖼️ 1. Poster Photo
+                              </span>
+                              <MediaBox
+                                src={vid.poster}
+                                label="Poster Image"
+                                accept="image/*"
+                                isActive={isActive}
+                                onUpload={(url) => updateContent(c => {
+                                  const vids = [...c.showreel.centerVideos];
+                                  vids[idx] = { ...vids[idx], poster: url };
+                                  return { ...c, showreel: { ...c.showreel, centerVideos: vids } };
+                                })}
+                              />
+                            </div>
+
+                            {/* 2. Video File / Stream */}
+                            <div>
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/60 mb-1.5 block">
+                                🎬 2. Reel Video (Upload)
+                              </span>
+                              <MediaBox
+                                src={vid.src}
+                                label="Video File / Clip"
+                                accept="video/*"
+                                isActive={isActive}
+                                onUpload={(url) => updateContent(c => {
+                                  const vids = [...c.showreel.centerVideos];
+                                  vids[idx] = { ...vids[idx], src: url };
+                                  return { ...c, showreel: { ...c.showreel, centerVideos: vids } };
+                                })}
+                                onToggleActive={() => updateContent(c => {
                                   const vids = [...c.showreel.centerVideos];
                                   vids[idx] = { ...vids[idx], active: !isActive };
                                   return { ...c, showreel: { ...c.showreel, centerVideos: vids } };
                                 })}
-                                className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full cursor-pointer ${isActive ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}
-                              >
-                                {isActive ? "● Active" : "○ Inactive"}
-                              </button>
+                                onRemove={() => updateContent(c => ({
+                                  ...c,
+                                  showreel: {
+                                    ...c.showreel,
+                                    centerVideos: c.showreel.centerVideos.filter((_, i) => i !== idx)
+                                  }
+                                }))}
+                              />
                             </div>
+                          </div>
+
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold uppercase tracking-wider text-[#0A1628]">Video Reel #{idx + 1}</span>
+                              <div className="flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => updateContent(c => {
+                                    const vids = [...c.showreel.centerVideos];
+                                    vids[idx] = { ...vids[idx], active: !isActive };
+                                    return { ...c, showreel: { ...c.showreel, centerVideos: vids } };
+                                  })}
+                                  className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full cursor-pointer ${isActive ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}
+                                >
+                                  {isActive ? "● Active" : "○ Inactive (Hidden)"}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => updateContent(c => ({
+                                    ...c,
+                                    showreel: {
+                                      ...c.showreel,
+                                      centerVideos: c.showreel.centerVideos.filter((_, i) => i !== idx)
+                                    }
+                                  }))}
+                                  className="text-red-400 hover:text-red-600 p-1 cursor-pointer"
+                                  title="Delete video reel"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </div>
+                            </div>
+
                             <div>
-                              <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/40 mb-1 block">Label / Button Text</label>
-                              <input value={vid.label} onChange={(e) => updateContent(c => {
-                                const vids = [...c.showreel.centerVideos];
-                                vids[idx] = { ...vids[idx], label: e.target.value };
-                                return { ...c, showreel: { ...c.showreel, centerVideos: vids } };
-                              })} className="w-full border border-[#0A1628]/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C5A880]" />
+                              <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/40 mb-1 block">
+                                Video URL / Link (Upload Video above or Paste URL)
+                              </label>
+                              <input
+                                value={vid.src}
+                                onChange={(e) => updateContent(c => {
+                                  const vids = [...c.showreel.centerVideos];
+                                  vids[idx] = { ...vids[idx], src: e.target.value };
+                                  return { ...c, showreel: { ...c.showreel, centerVideos: vids } };
+                                })}
+                                placeholder="https://res.cloudinary.com/... or mp4 link"
+                                className="w-full border border-[#0A1628]/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C5A880]"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/40 mb-1 block">
+                                Button / Reel Label
+                              </label>
+                              <input
+                                value={vid.label}
+                                onChange={(e) => updateContent(c => {
+                                  const vids = [...c.showreel.centerVideos];
+                                  vids[idx] = { ...vids[idx], label: e.target.value };
+                                  return { ...c, showreel: { ...c.showreel, centerVideos: vids } };
+                                })}
+                                placeholder="e.g. Watch 2026 Showreel"
+                                className="w-full border border-[#0A1628]/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C5A880]"
+                              />
                             </div>
                           </div>
                         </div>
@@ -1187,7 +1251,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                       ...c,
                       showreel: {
                         ...c.showreel,
-                        rightImages: [...c.showreel.rightImages, { src: "/images/project_lifestyle.png", label: "New Photo", active: true }]
+                        rightImages: [...c.showreel.rightImages, { src: "", label: "", active: true }]
                       }
                     }))}
                     className="flex items-center gap-1.5 bg-[#0A1628] text-[#C5A880] px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider hover:bg-[#111D30] cursor-pointer"
@@ -1250,9 +1314,9 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                     industries: [
                       ...c.industries,
                       {
-                        name: "New Industry",
-                        statement: "Transform your industry presence.",
-                        image: "/images/project_restaurant.png",
+                        name: "",
+                        statement: "",
+                        image: "",
                         active: true
                       }
                     ]
@@ -1328,20 +1392,20 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                     const newSlug = `project-${Date.now()}`;
                     const newProj: Project = {
                       slug: newSlug,
-                      client: "New Brand",
-                      title: "Brand Campaign: Title Here",
-                      subtitle: "A short memorable subtitle about the project.",
+                      client: "",
+                      title: "",
+                      subtitle: "",
                       industry: "Restaurant & Hospitality",
-                      services: ["Social Media Management", "Reels Production"],
-                      description: "Detailed description of the client engagement and creative execution.",
-                      image: "/images/project_restaurant.png",
-                      video: "https://assets.mixkit.co/videos/preview/mixkit-pouring-hot-coffee-into-a-cup-42207-large.mp4",
-                      brief: "The core challenge and brief provided by the brand.",
-                      idea: "Our custom visual strategy and creative idea for the campaign.",
-                      execution: "How we produced, filmed, and published the content.",
-                      results: ["+100% Growth", "1M+ Impressions", "+20K Followers", "15% Engagement Rate"],
-                      gallery: ["/images/restaurant_1.png", "/images/restaurant_2.png", "/images/restaurant_3.png"],
-                      reels: ["https://assets.mixkit.co/videos/preview/mixkit-slow-motion-of-pouring-milk-into-a-cup-of-coffee-41875-large.mp4"]
+                      services: [],
+                      description: "",
+                      image: "",
+                      video: "",
+                      brief: "",
+                      idea: "",
+                      execution: "",
+                      results: [],
+                      gallery: [],
+                      reels: []
                     };
                     setProjects(prev => [...prev, newProj]);
                     setEditingProjectSlug(newSlug);
@@ -1550,7 +1614,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                     type="button"
                     onClick={() => updateProject(editingProject.slug, p => ({
                       ...p,
-                      gallery: [...p.gallery, "/images/restaurant_1.png"]
+                      gallery: [...p.gallery, ""]
                     }))}
                     className="flex items-center gap-1.5 bg-[#0A1628] text-[#C5A880] px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider hover:bg-[#111D30] cursor-pointer"
                   >
@@ -1562,10 +1626,11 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                     const cleanSrc = typeof item === "string" ? item.replace("inactive:", "") : item.src;
                     const isActive = typeof item === "string" ? !item.startsWith("inactive:") : item.active !== false;
                     return (
-                      <div key={idx}>
+                      <div key={idx} className="space-y-2">
                         <MediaBox
                           src={cleanSrc}
                           label={`Gallery Photo ${idx + 1}`}
+                          accept="image/*"
                           isActive={isActive}
                           onToggleActive={() => updateProject(editingProject.slug, p => {
                             const g = [...p.gallery];
@@ -1576,12 +1641,12 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                             }
                             return { ...p, gallery: g };
                           })}
-                          onUpload={(b64) => updateProject(editingProject.slug, p => {
+                          onUpload={(url) => updateProject(editingProject.slug, p => {
                             const g = [...p.gallery];
                             if (typeof g[idx] === "string") {
-                              g[idx] = isActive ? b64 : `inactive:${b64}`;
+                              g[idx] = isActive ? url : `inactive:${url}`;
                             } else {
-                              g[idx] = { ...(g[idx] as object), src: b64, active: isActive };
+                              g[idx] = { ...(g[idx] as object), src: url, active: isActive };
                             }
                             return { ...p, gallery: g };
                           })}
@@ -1589,6 +1654,23 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                             ...p,
                             gallery: p.gallery.filter((_, i) => i !== idx)
                           }))}
+                        />
+                        <input
+                          value={cleanSrc}
+                          onChange={(e) => {
+                            const newUrl = e.target.value;
+                            updateProject(editingProject.slug, p => {
+                              const g = [...p.gallery];
+                              if (typeof g[idx] === "string") {
+                                g[idx] = isActive ? newUrl : `inactive:${newUrl}`;
+                              } else {
+                                g[idx] = { ...(g[idx] as object), src: newUrl, active: isActive };
+                              }
+                              return { ...p, gallery: g };
+                            });
+                          }}
+                          placeholder="Photo URL (Upload above or Paste link)"
+                          className="w-full border border-[#0A1628]/10 rounded-lg px-2.5 py-1.5 text-[11px] focus:outline-none focus:border-[#C5A880]"
                         />
                       </div>
                     );
@@ -1604,7 +1686,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                     type="button"
                     onClick={() => updateProject(editingProject.slug, p => ({
                       ...p,
-                      reels: [...p.reels, "https://assets.mixkit.co/videos/preview/mixkit-pouring-hot-coffee-into-a-cup-42207-large.mp4"]
+                      reels: [...p.reels, ""]
                     }))}
                     className="flex items-center gap-1.5 bg-[#0A1628] text-[#C5A880] px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider hover:bg-[#111D30] cursor-pointer"
                   >
@@ -1616,10 +1698,11 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                     const cleanUrl = typeof item === "string" ? item.replace("inactive:", "") : item.src;
                     const isActive = typeof item === "string" ? !item.startsWith("inactive:") : item.active !== false;
                     return (
-                      <div key={idx}>
+                      <div key={idx} className="space-y-2">
                         <MediaBox
                           src={cleanUrl}
                           label={`Reel Video ${idx + 1}`}
+                          accept="video/*"
                           isActive={isActive}
                           onToggleActive={() => updateProject(editingProject.slug, p => {
                             const r = [...p.reels];
@@ -1630,12 +1713,12 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                             }
                             return { ...p, reels: r };
                           })}
-                          onUpload={(b64) => updateProject(editingProject.slug, p => {
+                          onUpload={(url) => updateProject(editingProject.slug, p => {
                             const r = [...p.reels];
                             if (typeof r[idx] === "string") {
-                              r[idx] = isActive ? b64 : `inactive:${b64}`;
+                              r[idx] = isActive ? url : `inactive:${url}`;
                             } else {
-                              r[idx] = { ...(r[idx] as object), src: b64, active: isActive };
+                              r[idx] = { ...(r[idx] as object), src: url, active: isActive };
                             }
                             return { ...p, reels: r };
                           })}
@@ -1643,6 +1726,23 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                             ...p,
                             reels: p.reels.filter((_, i) => i !== idx)
                           }))}
+                        />
+                        <input
+                          value={cleanUrl}
+                          onChange={(e) => {
+                            const newUrl = e.target.value;
+                            updateProject(editingProject.slug, p => {
+                              const r = [...p.reels];
+                              if (typeof r[idx] === "string") {
+                                r[idx] = isActive ? newUrl : `inactive:${newUrl}`;
+                              } else {
+                                r[idx] = { ...(r[idx] as object), src: newUrl, active: isActive };
+                              }
+                              return { ...p, reels: r };
+                            });
+                          }}
+                          placeholder="Video URL (Upload above or Paste mp4 link)"
+                          className="w-full border border-[#0A1628]/10 rounded-lg px-2.5 py-1.5 text-[11px] focus:outline-none focus:border-[#C5A880]"
                         />
                       </div>
                     );
@@ -1718,9 +1818,9 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                       ...c.instagramFeed,
                       {
                         type: "Reel",
-                        client: "New Client",
-                        campaign: "Campaign Name",
-                        image: "/images/restaurant_1.png",
+                        client: "",
+                        campaign: "",
+                        image: "",
                         active: true
                       }
                     ]
@@ -1793,10 +1893,10 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                     testimonials: [
                       ...c.testimonials,
                       {
-                        quote: "Delhi Diaries delivered phenomenal content that transformed our engagement and sales.",
-                        author: "Founder Name",
-                        company: "Brand Name",
-                        industry: "Industry Type",
+                        quote: "",
+                        author: "",
+                        company: "",
+                        industry: "",
                         active: true
                       }
                     ]

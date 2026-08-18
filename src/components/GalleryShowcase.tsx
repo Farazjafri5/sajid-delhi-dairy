@@ -10,93 +10,81 @@ interface GalleryShowcaseProps {
   client: string;
 }
 
-export default function GalleryShowcase({ gallery, reels, client }: GalleryShowcaseProps) {
+export default function GalleryShowcase({ gallery = [], reels = [], client }: GalleryShowcaseProps) {
   const [activeMedia, setActiveMedia] = useState<{ type: "video" | "image"; src: string } | null>(null);
 
   const handleClose = () => setActiveMedia(null);
 
-  const videoSrc = reels && reels.length > 0 ? reels[0] : null;
+  const cleanReels = (reels || []).filter(Boolean);
+  const cleanGallery = (gallery || []).filter(Boolean);
 
   return (
-    <div className="space-y-6">
-      {/* Gallery Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        {/* Column 1: Video Preview (Reel) */}
-        {videoSrc ? (
-          <div
-            onClick={() => setActiveMedia({ type: "video", src: videoSrc })}
-            className="relative aspect-[4/5] bg-studio-accent overflow-hidden group cursor-pointer shadow-sm rounded-sm"
-          >
-            <video
-              src={videoSrc}
-              muted
-              autoPlay
-              loop
-              playsInline
-              className="w-full h-full object-cover hover:scale-103 transition-transform duration-700 pointer-events-none"
-            />
-            {/* Play Button Overlay */}
-            <div className="absolute inset-0 bg-primary/10 flex items-center justify-center group-hover:bg-primary/25 transition-colors">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-studio-bg text-primary shadow-xl scale-95 group-hover:scale-100 transition-transform duration-300">
-                <Play fill="currentColor" size={16} className="ml-0.5" />
+    <div className="space-y-12">
+      {/* 🎬 VERTICAL REEL VIDEOS SECTION (All active reels rendered dynamically) */}
+      {cleanReels.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold tracking-widest uppercase text-studio-muted">
+              Campaign Reels ({cleanReels.length})
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {cleanReels.map((reelSrc, idx) => (
+              <div
+                key={idx}
+                onClick={() => setActiveMedia({ type: "video", src: reelSrc })}
+                className="relative aspect-[9/16] bg-studio-accent overflow-hidden group cursor-pointer shadow-md rounded-2xl border border-primary/10"
+              >
+                <video
+                  src={reelSrc}
+                  muted
+                  autoPlay
+                  loop
+                  playsInline
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 pointer-events-none"
+                />
+                {/* Play Button Overlay */}
+                <div className="absolute inset-0 bg-primary/15 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-studio-bg text-primary shadow-xl scale-95 group-hover:scale-110 transition-transform duration-300">
+                    <Play fill="currentColor" size={18} className="ml-0.5" />
+                  </div>
+                </div>
+                {/* Badge Indicator */}
+                <div className="absolute bottom-4 left-4 bg-[#C5A880] text-[#1A1715] text-[9px] tracking-widest uppercase py-1.5 px-3.5 rounded-full font-bold select-none shadow-sm">
+                  Watch Reel #{idx + 1}
+                </div>
               </div>
-            </div>
-            {/* Badge Indicator */}
-            <div className="absolute bottom-4 left-4 bg-[#C5A880] text-[#1A1715] text-[8px] tracking-widest uppercase py-1 px-3 rounded-full font-bold select-none shadow-sm">
-              Watch Reel
-            </div>
+            ))}
           </div>
-        ) : (
-          /* Fallback to first image if no video reel is present */
-          <div
-            onClick={() => setActiveMedia({ type: "image", src: gallery[0] })}
-            className="relative aspect-[4/5] bg-studio-accent overflow-hidden cursor-pointer group shadow-sm rounded-sm"
-          >
-            <Image
-              src={gallery[0]}
-              alt={`${client} Showcase 1`}
-              fill
-              className="object-cover hover:scale-103 transition-transform duration-700"
-              sizes="(max-width: 768px) 100vw, 33vw"
-            />
-          </div>
-        )}
+        </div>
+      )}
 
-        {/* Column 2: Showcase Image 2 */}
-        {gallery.length > 1 && (
-          <div
-            onClick={() => setActiveMedia({ type: "image", src: gallery[1] })}
-            className="relative aspect-[4/5] bg-studio-accent overflow-hidden cursor-pointer group shadow-sm rounded-sm"
-          >
-            <Image
-              src={gallery[1]}
-              alt={`${client} Showcase 2`}
-              fill
-              className="object-cover hover:scale-103 transition-transform duration-700"
-              sizes="(max-width: 768px) 100vw, 33vw"
-            />
-            <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors duration-500" />
+      {/* 📸 HIGH-RES PHOTO GALLERY (All active gallery images rendered dynamically) */}
+      {cleanGallery.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold tracking-widest uppercase text-studio-muted">
+              Production Photography ({cleanGallery.length})
+            </span>
           </div>
-        )}
-
-        {/* Column 3: Showcase Image 3 */}
-        {gallery.length > 2 && (
-          <div
-            onClick={() => setActiveMedia({ type: "image", src: gallery[2] })}
-            className="relative aspect-[4/5] bg-studio-accent overflow-hidden cursor-pointer group shadow-sm rounded-sm"
-          >
-            <Image
-              src={gallery[2]}
-              alt={`${client} Showcase 3`}
-              fill
-              className="object-cover hover:scale-103 transition-transform duration-700"
-              sizes="(max-width: 768px) 100vw, 33vw"
-            />
-            <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors duration-500" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {cleanGallery.map((imgSrc, idx) => (
+              <div
+                key={idx}
+                onClick={() => setActiveMedia({ type: "image", src: imgSrc })}
+                className="relative aspect-[4/5] bg-studio-accent overflow-hidden cursor-pointer group shadow-sm rounded-xl border border-primary/10"
+              >
+                <img
+                  src={imgSrc}
+                  alt={`${client} Gallery Photo ${idx + 1}`}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-500" />
+              </div>
+            ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Lightbox Overlay */}
       {activeMedia && (
