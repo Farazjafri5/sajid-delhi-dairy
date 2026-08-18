@@ -1,11 +1,25 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 export default function Footer() {
   const pathname = usePathname();
+  const [logoSrc, setLogoSrc] = useState("/images/logo.png");
+
+  useEffect(() => {
+    try {
+      const cached = localStorage.getItem("dd_site_content");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed?.branding?.logoUrl) {
+          setLogoSrc(parsed.branding.logoUrl);
+        }
+      }
+    } catch (e) {}
+  }, []);
 
   if (pathname?.startsWith("/admin") || pathname?.startsWith("/dashboard")) {
     return null;
@@ -22,7 +36,7 @@ export default function Footer() {
               className="inline-block bg-studio-bg p-2.5 rounded-lg border border-studio-accent/20 hover:scale-105 transition-transform duration-300"
             >
               <img
-                src="/images/logo.png"
+                src={logoSrc}
                 alt="Delhi Diaries Official Logo"
                 className="h-14 w-14 object-contain select-none"
               />

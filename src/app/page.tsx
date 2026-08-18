@@ -19,6 +19,13 @@ export default function Home() {
   const [projectsList, setProjectsList] = useState<Project[]>(projects);
   const [siteContent, setSiteContent] = useState<SiteContent>(defaultSiteContent);
 
+  // Dynamic SEO Title Sync
+  useEffect(() => {
+    if (siteContent?.seo?.metaTitle) {
+      document.title = siteContent.seo.metaTitle;
+    }
+  }, [siteContent?.seo?.metaTitle]);
+
   useEffect(() => {
     const loadDynamicData = async () => {
       let activeProjects: Project[] = [];
@@ -110,6 +117,48 @@ export default function Home() {
   const [reelIndex, setReelIndex] = useState(0);
   const [isPlayingReel, setIsPlayingReel] = useState(false);
   const [isReelMuted, setIsReelMuted] = useState(false);
+
+  // Touch swipe gesture handlers for Hero Reel mockup
+  const heroTouchStartX = useRef<number | null>(null);
+  const heroTouchEndX = useRef<number | null>(null);
+  const heroIsSwiping = useRef<boolean>(false);
+
+  const handleHeroTouchStart = (e: React.TouchEvent) => {
+    heroTouchStartX.current = e.touches[0].clientX;
+    heroTouchEndX.current = null;
+    heroIsSwiping.current = false;
+  };
+
+  const handleHeroTouchMove = (e: React.TouchEvent) => {
+    heroTouchEndX.current = e.touches[0].clientX;
+    if (heroTouchStartX.current && Math.abs(heroTouchStartX.current - e.touches[0].clientX) > 10) {
+      heroIsSwiping.current = true;
+    }
+  };
+
+  const handleHeroTouchEnd = () => {
+    if (heroTouchStartX.current !== null && heroTouchEndX.current !== null) {
+      const distance = heroTouchStartX.current - heroTouchEndX.current;
+      const minSwipeDistance = 40;
+
+      if (Math.abs(distance) > minSwipeDistance) {
+        if (distance > 0) {
+          // Swiped Left -> Next Reel
+          setReelIndex((prev) => (prev + 1) % mockReels.length);
+          setIsPlayingReel(false);
+        } else {
+          // Swiped Right -> Previous Reel
+          setReelIndex((prev) => (prev - 1 + mockReels.length) % mockReels.length);
+          setIsPlayingReel(false);
+        }
+      }
+    }
+    setTimeout(() => {
+      heroTouchStartX.current = null;
+      heroTouchEndX.current = null;
+      heroIsSwiping.current = false;
+    }, 50);
+  };
 
   // Timer for Instagram Reel mockup slideshow (every 4 seconds, pauses when video is playing)
   useEffect(() => {
@@ -289,10 +338,17 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Reel Content Layer */}
+                {/* Reel Content Layer with Touch Swipe */}
                 <div 
-                  onClick={() => setIsPlayingReel(!isPlayingReel)}
-                  className="relative flex-1 bg-[#1a1a1a] overflow-hidden rounded-2xl cursor-pointer group"
+                  onTouchStart={handleHeroTouchStart}
+                  onTouchMove={handleHeroTouchMove}
+                  onTouchEnd={handleHeroTouchEnd}
+                  onClick={() => {
+                    if (!heroIsSwiping.current) {
+                      setIsPlayingReel(!isPlayingReel);
+                    }
+                  }}
+                  className="relative flex-1 bg-[#1a1a1a] overflow-hidden rounded-2xl cursor-pointer group select-none touch-pan-y"
                 >
                   {/* Inline Video Player */}
                   {isPlayingReel ? (
@@ -350,34 +406,6 @@ export default function Home() {
                         <Play fill="currentColor" size={16} className="ml-1" />
                       </div>
                     </div>
-                  )}
-
-                  {/* Mobile Previous / Next Arrows for Hero Phone Mockup */}
-                  {mockReels.length > 1 && !isPlayingReel && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setReelIndex((prev) => (prev - 1 + mockReels.length) % mockReels.length);
-                        }}
-                        className="lg:hidden absolute left-2 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 active:scale-90 transition-transform cursor-pointer"
-                        aria-label="Previous Reel"
-                      >
-                        <ChevronLeft size={16} />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setReelIndex((prev) => (prev + 1) % mockReels.length);
-                        }}
-                        className="lg:hidden absolute right-2 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 active:scale-90 transition-transform cursor-pointer"
-                        aria-label="Next Reel"
-                      >
-                        <ChevronRight size={16} />
-                      </button>
-                    </>
                   )}
 
                   {/* Vertical Instagram Action Bar (Likes, Comments, Shares) */}

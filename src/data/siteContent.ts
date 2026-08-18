@@ -222,5 +222,16 @@ export const defaultSiteContent: SiteContent = {
       "image": "/images/d2c_2.png",
       "active": true
     }
-  ]
+  ],
+  "branding": {
+    "logoUrl": "/images/delhi_diaries_logo.png",
+    "logoText": "Delhi Diaries",
+    "tagline": "Social-First Creative Studio"
+  },
+  "seo": {
+    "metaTitle": "Delhi Diaries Official | Social-First Creative Studio New Delhi",
+    "metaDescription": "We craft viral reels, luxury photography, and social-first content strategies for premium restaurants, cafes, and lifestyle brands in New Delhi.",
+    "keywords": "Delhi creative agency, social media marketing Delhi, restaurant photography, reels production, luxury brand marketing",
+    "ogImage": "/images/project_restaurant.png"
+  }
 };

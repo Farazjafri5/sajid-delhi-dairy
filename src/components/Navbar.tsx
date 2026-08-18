@@ -21,6 +21,20 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const [logoSrc, setLogoSrc] = useState("/images/logo.png");
+
+  useEffect(() => {
+    try {
+      const cached = localStorage.getItem("dd_site_content");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed?.branding?.logoUrl) {
+          setLogoSrc(parsed.branding.logoUrl);
+        }
+      }
+    } catch (e) {}
+  }, []);
+
   if (pathname?.startsWith("/admin") || pathname?.startsWith("/dashboard")) {
     return null;
   }
@@ -48,7 +62,7 @@ export default function Navbar() {
             className="flex items-center"
           >
             <img
-              src="/images/logo.png"
+              src={logoSrc}
               alt="Delhi Diaries Official Logo"
               className="h-14 w-14 md:h-18 md:w-18 object-contain select-none"
             />

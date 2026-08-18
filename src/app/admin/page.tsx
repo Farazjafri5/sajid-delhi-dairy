@@ -308,15 +308,16 @@ export default function AdminPage() {
   useEffect(() => {
     setIsMounted(true);
 
-    // 1. Check persistent authentication & load saved passcode
+    // 1. Check session-only authentication & load saved passcode
     try {
       const savedPass = localStorage.getItem("dd_admin_passcode");
       if (savedPass) {
         setAdminPasscode(savedPass);
       }
-      const localAuth = localStorage.getItem("dd_admin_auth");
+      // Remove any lingering persistent auth to respect browser close
+      localStorage.removeItem("dd_admin_auth");
       const sessionAuth = sessionStorage.getItem("dd_admin_auth");
-      if (localAuth === "true" || sessionAuth === "true") {
+      if (sessionAuth === "true") {
         setIsAuthenticated(true);
       }
     } catch (e) {}
@@ -429,6 +430,28 @@ export * from "@/types/siteContent";
 
 export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
 `;
+        const newProjectsContent = `// Auto-generated from Delhi Diaries Admin Panel
+export interface Project {
+  slug: string;
+  client: string;
+  title: string;
+  subtitle: string;
+  industry: string;
+  services: string[];
+  description: string;
+  image: string;
+  video: string;
+  brief: string;
+  idea: string;
+  execution: string;
+  results: string[];
+  gallery: (string | { id?: string; src: string; caption?: string; type?: "image" | "video"; active?: boolean })[];
+  reels: (string | { id?: string; src: string; caption?: string; active?: boolean })[];
+  active?: boolean;
+}
+
+export const projects: Project[] = ${JSON.stringify(projects, null, 2)};
+`;
         const res = await fetch("/api/deploy", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -437,6 +460,7 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
             repo: ghRepo,
             branch: ghBranch,
             content: newFileContent,
+            projectsContent: newProjectsContent,
           }),
         });
 
@@ -472,18 +496,7 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
   // Project editor
   const [editingProjectSlug, setEditingProjectSlug] = useState<string | null>(null);
 
-  // Auto-clean oversized old base64 cache on mount to prevent browser memory crash
-  useEffect(() => {
-    try {
-      const siteContentStr = localStorage.getItem("dd_site_content");
-      if (siteContentStr && siteContentStr.length > 500000) {
-        // Contains giant base64 video string, clear it immediately
-        localStorage.removeItem("dd_site_content");
-      }
-    } catch (e) {}
-  }, []);
-
-  // Load data safely with corruption protection
+  // Load data safely
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -501,7 +514,6 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
         setProjects([...initialProjects]);
       }
     } catch (e) {
-      console.warn("Cleared corrupted projects cache");
       setProjects([...initialProjects]);
     }
 
@@ -519,20 +531,19 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
         setSiteContent(defaultSiteContent);
       }
     } catch (e) {
-      console.warn("Cleared corrupted site content cache");
       setSiteContent(defaultSiteContent);
     }
   }, [isAuthenticated]);
 
-  // Auth handlers
+  // Auth handlers (Session-based so closing browser automatically locks dashboard)
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const currentPasscode = typeof window !== "undefined" ? (localStorage.getItem("dd_admin_passcode") || adminPasscode || "sajid123") : "sajid123";
     const inputPass = password.trim();
     if (inputPass === currentPasscode || inputPass.toLowerCase() === "sajid123") {
       try {
-        localStorage.setItem("dd_admin_auth", "true");
         sessionStorage.setItem("dd_admin_auth", "true");
+        localStorage.removeItem("dd_admin_auth");
       } catch (e) {}
       setIsAuthenticated(true);
       setAuthError("");
@@ -543,8 +554,8 @@ export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, nul
 
   const handleLogout = () => {
     try {
-      localStorage.removeItem("dd_admin_auth");
       sessionStorage.removeItem("dd_admin_auth");
+      localStorage.removeItem("dd_admin_auth");
     } catch (e) {}
     setIsAuthenticated(false);
   };
@@ -2069,6 +2080,187 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                     {passcodeSuccess}
                   </div>
                 )}
+              </div>
+
+              {/* 🎨 WEBSITE LOGO & BRANDING */}
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 mb-6 shadow-sm overflow-hidden">
+                <div className="flex items-center gap-2 mb-2">
+                  <ImageIcon size={16} className="text-[#C5A880]" />
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]">Website Logo & Studio Branding</h3>
+                </div>
+                <p className="text-xs text-[#0A1628]/60 mb-6 leading-relaxed">
+                  Yahan se aap website ka main logo (Navbar & Footer), brand name aur tagline direct change kar sakte hain.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+                  {/* Logo Upload Box */}
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/50 block mb-2">
+                      Studio Logo Image
+                    </label>
+                    <MediaBox
+                      src={siteContent.branding?.logoUrl || "/images/logo.png"}
+                      label="Website Logo"
+                      onUpload={(url) => updateContent(prev => ({
+                        ...prev,
+                        branding: {
+                          ...prev.branding,
+                          logoUrl: url,
+                          logoText: prev.branding?.logoText || "Delhi Diaries"
+                        }
+                      }))}
+                    />
+                  </div>
+
+                  {/* Logo Text & Tagline */}
+                  <div className="md:col-span-2 space-y-4">
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/50 block mb-1.5">
+                        Brand / Logo Text
+                      </label>
+                      <input
+                        type="text"
+                        value={siteContent.branding?.logoText || "Delhi Diaries"}
+                        onChange={(e) => updateContent(prev => ({
+                          ...prev,
+                          branding: {
+                            ...prev.branding,
+                            logoUrl: prev.branding?.logoUrl || "/images/logo.png",
+                            logoText: e.target.value
+                          }
+                        }))}
+                        placeholder="e.g. Delhi Diaries"
+                        className="w-full border border-[#0A1628]/15 rounded-lg px-3 py-2.5 text-xs font-medium focus:outline-none focus:border-[#C5A880]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/50 block mb-1.5">
+                        Studio Tagline
+                      </label>
+                      <input
+                        type="text"
+                        value={siteContent.branding?.tagline || "Social-First Creative Studio"}
+                        onChange={(e) => updateContent(prev => ({
+                          ...prev,
+                          branding: {
+                            ...prev.branding,
+                            logoUrl: prev.branding?.logoUrl || "/images/logo.png",
+                            tagline: e.target.value
+                          }
+                        }))}
+                        placeholder="e.g. Social-First Creative Studio"
+                        className="w-full border border-[#0A1628]/15 rounded-lg px-3 py-2.5 text-xs font-medium focus:outline-none focus:border-[#C5A880]"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 🔍 SEO & GOOGLE SEARCH METADATA */}
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 mb-6 shadow-sm overflow-hidden">
+                <div className="flex items-center gap-2 mb-2">
+                  <Globe size={16} className="text-[#C5A880]" />
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]">SEO & Google Search Meta Tags</h3>
+                </div>
+                <p className="text-xs text-[#0A1628]/60 mb-6 leading-relaxed">
+                  Google search results, browser tab title, aur WhatsApp/Instagram link share preview ko yahan se customize karein.
+                </p>
+
+                <div className="space-y-4">
+                  {/* Meta Title */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/50">
+                        Google Search Meta Title (Browser Tab Title)
+                      </label>
+                      <span className="text-[10px] text-[#0A1628]/40 font-mono">
+                        {(siteContent.seo?.metaTitle || "").length} / 60 characters
+                      </span>
+                    </div>
+                    <input
+                      type="text"
+                      value={siteContent.seo?.metaTitle || ""}
+                      onChange={(e) => updateContent(prev => ({
+                        ...prev,
+                        seo: {
+                          ...prev.seo,
+                          metaTitle: e.target.value,
+                          metaDescription: prev.seo?.metaDescription || ""
+                        }
+                      }))}
+                      placeholder="e.g. Delhi Diaries Official | Social-First Creative Studio New Delhi"
+                      className="w-full border border-[#0A1628]/15 rounded-lg px-3 py-2.5 text-xs font-medium focus:outline-none focus:border-[#C5A880]"
+                    />
+                  </div>
+
+                  {/* Meta Description */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/50">
+                        Google Meta Description (Snippet Summary)
+                      </label>
+                      <span className="text-[10px] text-[#0A1628]/40 font-mono">
+                        {(siteContent.seo?.metaDescription || "").length} / 160 characters
+                      </span>
+                    </div>
+                    <textarea
+                      rows={3}
+                      value={siteContent.seo?.metaDescription || ""}
+                      onChange={(e) => updateContent(prev => ({
+                        ...prev,
+                        seo: {
+                          ...prev.seo,
+                          metaTitle: prev.seo?.metaTitle || "",
+                          metaDescription: e.target.value
+                        }
+                      }))}
+                      placeholder="e.g. We craft viral reels, luxury photography, and social-first content strategies for premium restaurants, cafes, and lifestyle brands."
+                      className="w-full border border-[#0A1628]/15 rounded-lg p-3 text-xs leading-relaxed focus:outline-none focus:border-[#C5A880]"
+                    />
+                  </div>
+
+                  {/* Keywords */}
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/50 block mb-1.5">
+                      Search Keywords (comma separated)
+                    </label>
+                    <input
+                      type="text"
+                      value={siteContent.seo?.keywords || ""}
+                      onChange={(e) => updateContent(prev => ({
+                        ...prev,
+                        seo: {
+                          ...prev.seo,
+                          metaTitle: prev.seo?.metaTitle || "",
+                          metaDescription: prev.seo?.metaDescription || "",
+                          keywords: e.target.value
+                        }
+                      }))}
+                      placeholder="e.g. Delhi creative agency, social media marketing Delhi, restaurant reels, luxury food shoot"
+                      className="w-full border border-[#0A1628]/15 rounded-lg px-3 py-2.5 text-xs font-medium focus:outline-none focus:border-[#C5A880]"
+                    />
+                  </div>
+
+                  {/* Live Google Search Preview Snippet */}
+                  <div className="mt-4 p-4 rounded-xl bg-[#F8F9FA] border border-[#0A1628]/10">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/40 mb-2">
+                      Live Google Search Snippet Preview
+                    </p>
+                    <div className="space-y-1">
+                      <p className="text-xs text-[#202124] flex items-center gap-1">
+                        <span className="font-semibold">delhidiariesofficial.com</span>
+                        <span className="text-gray-400">›</span>
+                      </p>
+                      <h4 className="text-sm font-medium text-[#1A0DAB] hover:underline cursor-pointer line-clamp-1">
+                        {siteContent.seo?.metaTitle || "Delhi Diaries Official | Social-First Creative Studio New Delhi"}
+                      </h4>
+                      <p className="text-xs text-[#4D5156] line-clamp-2 leading-relaxed">
+                        {siteContent.seo?.metaDescription || "We craft viral reels, luxury photography, and social-first content strategies for premium restaurants, cafes, and lifestyle brands."}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">

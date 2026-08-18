@@ -50,6 +50,19 @@ export interface InstagramTile {
   active?: boolean;
 }
 
+export interface BrandingSettings {
+  logoUrl?: string;
+  logoText?: string;
+  tagline?: string;
+}
+
+export interface SeoSettings {
+  metaTitle?: string;
+  metaDescription?: string;
+  keywords?: string;
+  ogImage?: string;
+}
+
 export interface SiteContent {
   hero: {
     heading: string;
@@ -67,4 +80,6 @@ export interface SiteContent {
   industries: IndustryItem[];
   testimonials: Testimonial[];
   instagramFeed: InstagramTile[];
+  branding?: BrandingSettings;
+  seo?: SeoSettings;
 }
