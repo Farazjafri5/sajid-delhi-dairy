@@ -56,7 +56,7 @@ export const defaultSiteContent: SiteContent = {
     ],
     "centerVideos": [
       {
-        "src": "https://assets.mixkit.co/videos/preview/mixkit-pouring-hot-coffee-into-a-cup-42207-large.mp4",
+        "src": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787072671/b9oufkqskzgtkmww3pvp.mp4",
         "poster": "/images/project_restaurant.png",
         "label": "Watch 2026 Showreel",
         "active": true
@@ -96,7 +96,7 @@ export const defaultSiteContent: SiteContent = {
     {
       "name": "Restaurants",
       "statement": "Make them hungry before they arrive.",
-      "image": "/images/project_restaurant.png",
+      "image": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787072685/tfrjxppuvblvl61anx47.png",
       "active": true
     },
     {
@@ -163,7 +163,7 @@ export const defaultSiteContent: SiteContent = {
       "type": "Reel",
       "client": "Dastan",
       "campaign": "Modern Indian Feast",
-      "image": "/images/restaurant_1.png",
+      "image": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787072703/eopdpxnrsj9fxinxtraj.png",
       "active": true
     },
     {
@@ -222,16 +222,5 @@ export const defaultSiteContent: SiteContent = {
       "image": "/images/d2c_2.png",
       "active": true
     }
-  ],
-  "branding": {
-    "logoUrl": "/images/delhi_diaries_logo.png",
-    "logoText": "Delhi Diaries",
-    "tagline": "Social-First Creative Studio"
-  },
-  "seo": {
-    "metaTitle": "Delhi Diaries Official | Social-First Creative Studio New Delhi",
-    "metaDescription": "We craft viral reels, luxury photography, and social-first content strategies for premium restaurants, cafes, and lifestyle brands in New Delhi.",
-    "keywords": "Delhi creative agency, social media marketing Delhi, restaurant photography, reels production, luxury brand marketing",
-    "ogImage": "/images/project_restaurant.png"
-  }
+  ]
 };

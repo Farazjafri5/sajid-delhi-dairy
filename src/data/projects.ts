@@ -1,6 +1,4 @@
 // Auto-generated from Delhi Diaries Admin Panel
-export type ProjectMedia = string | { id?: string; src: string; caption?: string; type?: "image" | "video"; active?: boolean };
-
 export interface Project {
   slug: string;
   client: string;
@@ -15,8 +13,8 @@ export interface Project {
   idea: string;
   execution: string;
   results: string[];
-  gallery: ProjectMedia[];
-  reels: ProjectMedia[];
+  gallery: (string | { id?: string; src: string; caption?: string; type?: "image" | "video"; active?: boolean })[];
+  reels: (string | { id?: string; src: string; caption?: string; active?: boolean })[];
   active?: boolean;
 }
 
@@ -236,5 +234,28 @@ export const projects: Project[] = [
       }
     ],
     "active": true
+  },
+  {
+    "slug": "project-1787072731999",
+    "client": "",
+    "title": "",
+    "subtitle": "",
+    "industry": "Restaurant & Hospitality",
+    "services": [],
+    "description": "",
+    "image": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787072746/qkpne9xdftdoizmvsxi5.png",
+    "video": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787072760/b4bb62kjvu3chmcidz9z.mp4",
+    "brief": "",
+    "idea": "",
+    "execution": "",
+    "results": [],
+    "gallery": [
+      "https://res.cloudinary.com/yan3h0ri/image/upload/v1787072783/rfs0eglqsizi9w6x0kgk.png",
+      "https://res.cloudinary.com/yan3h0ri/image/upload/v1787072809/wimbenzci83ufrgga66d.jpg"
+    ],
+    "reels": [
+      "https://res.cloudinary.com/yan3h0ri/video/upload/v1787072823/dyaqbr8m7objmysegas0.mp4",
+      "https://res.cloudinary.com/yan3h0ri/video/upload/v1787072834/ekfa5jtqj8kvwys70wik.mp4"
+    ]
   }
 ];
