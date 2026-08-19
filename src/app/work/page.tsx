@@ -8,41 +8,7 @@ import { isSupabaseConfigured, supabase } from "@/config/supabase";
 
 export default function WorkPage() {
   const [activeFilter, setActiveFilter] = useState("ALL");
-  const [projectsList, setProjectsList] = useState<Project[]>(projects);
-
-  useEffect(() => {
-    const loadDynamicData = async () => {
-      let activeProjects: Project[] = [];
-
-      // Check Supabase if configured
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data, error } = await supabase.from("projects").select("*");
-          if (data && data.length > 0 && !error) {
-            activeProjects = data as Project[];
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
-      // Check localStorage
-      const local = localStorage.getItem("dd_projects");
-      if (local) {
-        try {
-          activeProjects = JSON.parse(local);
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
-      if (activeProjects.length > 0) {
-        setProjectsList(activeProjects);
-      }
-    };
-
-    loadDynamicData();
-  }, []);
+  const projectsList: Project[] = projects;
 
   const filters = ["ALL", "RESTAURANT & HOSPITALITY", "CAFÉ & BAKERY", "FASHION & LIFESTYLE", "D2C BEAUTY"];
 

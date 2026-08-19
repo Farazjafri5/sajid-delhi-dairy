@@ -484,43 +484,11 @@ export const projects: Project[] = ${JSON.stringify(projects, null, 2)};
   // Project editor
   const [editingProjectSlug, setEditingProjectSlug] = useState<string | null>(null);
 
-  // Load data safely
+  // Load latest live server data safely on mount
   useEffect(() => {
     if (!isAuthenticated) return;
-
-    // Load projects safely
-    try {
-      const localProjects = localStorage.getItem("dd_projects");
-      if (localProjects) {
-        const parsed = JSON.parse(localProjects);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setProjects(parsed);
-        } else {
-          setProjects([...initialProjects]);
-        }
-      } else {
-        setProjects([...initialProjects]);
-      }
-    } catch (e) {
-      setProjects([...initialProjects]);
-    }
-
-    // Load site content safely
-    try {
-      const localContent = localStorage.getItem("dd_site_content");
-      if (localContent) {
-        const parsed = JSON.parse(localContent);
-        if (parsed && typeof parsed === "object" && parsed.hero) {
-          setSiteContent(parsed);
-        } else {
-          setSiteContent(defaultSiteContent);
-        }
-      } else {
-        setSiteContent(defaultSiteContent);
-      }
-    } catch (e) {
-      setSiteContent(defaultSiteContent);
-    }
+    setProjects([...initialProjects]);
+    setSiteContent(defaultSiteContent);
   }, [isAuthenticated]);
 
   // Auth handlers (Session-based so closing browser automatically locks dashboard)

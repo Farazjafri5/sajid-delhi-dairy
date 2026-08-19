@@ -27,46 +27,6 @@ export default function Home() {
     }
   }, [siteContent?.seo?.metaTitle]);
 
-  useEffect(() => {
-    const loadDynamicData = async () => {
-      let activeProjects: Project[] = [];
-
-      // Check Supabase if configured
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data, error } = await supabase.from("projects").select("*");
-          if (data && data.length > 0 && !error) {
-            activeProjects = data as Project[];
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
-      // Check localStorage
-      const local = localStorage.getItem("dd_projects");
-      if (local) {
-        try {
-          activeProjects = JSON.parse(local);
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
-      if (activeProjects.length > 0) {
-        setProjectsList(activeProjects);
-      }
-
-      // Load site content
-      const localContent = localStorage.getItem("dd_site_content");
-      if (localContent) {
-        try { setSiteContent(JSON.parse(localContent)); } catch {}
-      }
-    };
-
-    loadDynamicData();
-  }, []);
-
   // Contact Form State
   const [formState, setFormState] = useState({
     name: "",
