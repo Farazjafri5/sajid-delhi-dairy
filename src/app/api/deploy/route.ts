@@ -75,12 +75,19 @@ export async function POST(req: NextRequest) {
 
     // 2. Commit projects.ts if provided
     if (projectsContent) {
-      await commitFile("src/data/projects.ts", projectsContent);
+      const pRes = await commitFile("src/data/projects.ts", projectsContent);
+      if (!pRes.ok) {
+        const err = await pRes.json().catch(() => ({}));
+        return NextResponse.json(
+          { error: err.message || "Failed to commit projects.ts to GitHub." },
+          { status: pRes.status }
+        );
+      }
     }
 
     return NextResponse.json({
       success: true,
-      message: "Successfully committed to GitHub! Vercel is now deploying your live site.",
+      message: "Successfully committed both files to GitHub! Vercel is now building and deploying your live site.",
     });
   } catch (err: any) {
     return NextResponse.json(

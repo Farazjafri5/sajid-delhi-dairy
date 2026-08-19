@@ -400,42 +400,19 @@ export default function AdminPage() {
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  // 1-Click Direct Save & Deploy (Supports Zero-Token Local Git Push & Remote API)
+  // 1-Click Direct Save & Deploy to GitHub & Vercel Live for all devices worldwide
   const handleGitHubDeploy = async () => {
     setIsDeploying(true);
     setDeployStatus(null);
 
     try {
-      // 1. Save directly to codebase and push using local git credentials
-      const saveRes = await fetch("/api/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          siteContent,
-          projects,
-          shouldGitPush: true,
-        }),
-      });
-
-      const saveData = await saveRes.json().catch(() => ({}));
-
-      if (saveRes.ok && saveData.gitPush?.success) {
-        const msg = "🎉 Success! Changes saved to codebase & pushed to GitHub. Vercel is now deploying your live site (takes ~20 seconds)!";
-        setDeployStatus({ success: true, message: msg });
-        saveAll();
-        alert(msg);
-        return;
-      }
-
-      // 2. Fallback to GitHub API (if token provided)
-      if (ghToken) {
-        const newFileContent = `// Auto-generated from Delhi Diaries Admin Panel
+      const newFileContent = `// Auto-generated from Delhi Diaries Admin Panel
 import { SiteContent } from "@/types/siteContent";
 export * from "@/types/siteContent";
 
 export const defaultSiteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
 `;
-        const newProjectsContent = `// Auto-generated from Delhi Diaries Admin Panel
+      const newProjectsContent = `// Auto-generated from Delhi Diaries Admin Panel
 export interface Project {
   slug: string;
   client: string;
@@ -457,40 +434,46 @@ export interface Project {
 
 export const projects: Project[] = ${JSON.stringify(projects, null, 2)};
 `;
-        const res = await fetch("/api/deploy", {
+
+      // 1. Direct Commit & Deploy to GitHub via secure Cloud API
+      const deployRes = await fetch("/api/deploy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: ghToken || DEFAULT_GITHUB_PAT,
+          repo: ghRepo || DEFAULT_REPO,
+          branch: ghBranch || DEFAULT_BRANCH,
+          content: newFileContent,
+          projectsContent: newProjectsContent,
+        }),
+      });
+
+      const deployData = await deployRes.json().catch(() => ({}));
+
+      if (deployRes.ok && deployData.success) {
+        // Also update local cache & local disk
+        try {
+          localStorage.setItem("dd_projects", JSON.stringify(projects));
+          localStorage.setItem("dd_site_content", JSON.stringify(siteContent));
+        } catch (e) {}
+
+        fetch("/api/save", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            token: ghToken,
-            repo: ghRepo,
-            branch: ghBranch,
-            content: newFileContent,
-            projectsContent: newProjectsContent,
-          }),
-        });
+          body: JSON.stringify({ siteContent, projects }),
+        }).catch(() => {});
 
-        const data = await res.json().catch(() => ({}));
-
-        if (res.ok && data.success) {
-          const msg = "🎉 Success! Changes committed to GitHub. Vercel is now building and deploying your live site!";
-          setDeployStatus({ success: true, message: msg });
-          saveAll();
-          alert(msg);
-          return;
-        }
-      }
-
-      // If local save succeeded without git push
-      if (saveRes.ok) {
-        const msg = "✅ Changes saved to local files successfully!";
+        const msg = "🎉 Mubarak ho! Saara data live GitHub & Vercel par publish ho gaya hai! Agle 20-30 seconds mein duniya ke har phone par show hone lagega!";
         setDeployStatus({ success: true, message: msg });
-        saveAll();
+        setIsSaved(true);
+        setTimeout(() => setIsSaved(false), 3000);
         alert(msg);
+        return;
       } else {
-        throw new Error(saveData.error || "Could not complete save.");
+        throw new Error(deployData.error || "GitHub live deploy failed. Please check internet connection.");
       }
     } catch (err: any) {
-      const msg = `⚠️ Deploy Error: ${err.message || "Failed to save or deploy."}`;
+      const msg = `⚠️ Deploy Error: ${err.message || "Failed to publish."}`;
       setDeployStatus({ success: false, message: msg });
       alert(msg);
     } finally {
@@ -751,21 +734,21 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               type="button"
               disabled={isDeploying}
               onClick={handleGitHubDeploy}
-              className="flex items-center gap-1.5 bg-[#0A1628] text-[#C5A880] border border-[#C5A880]/30 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider hover:bg-[#111D30] transition-colors cursor-pointer disabled:opacity-50 shadow-sm whitespace-nowrap"
+              className="flex items-center gap-1.5 bg-[#0A1628] text-[#C5A880] border border-[#C5A880]/40 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider hover:bg-[#111D30] transition-all cursor-pointer disabled:opacity-50 shadow-md whitespace-nowrap"
               title="1-Click commit and auto-deploy to GitHub & Vercel live for all visitors"
             >
-              {isDeploying ? <RefreshCw size={12} className="animate-spin" /> : <Rocket size={12} />}
-              <span>{isDeploying ? "Deploying..." : "🚀 Deploy"}</span>
-              <span className="hidden sm:inline">to Live Site</span>
+              {isDeploying ? <RefreshCw size={12} className="animate-spin text-[#C5A880]" /> : <Rocket size={12} className="text-[#C5A880]" />}
+              <span>{isDeploying ? "Publishing..." : "🚀 Publish to Live Site"}</span>
             </button>
 
             <button
-              onClick={saveAll}
-              className="flex items-center gap-1.5 bg-[#C5A880] text-[#0A1628] px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider hover:bg-[#BCA078] transition-colors cursor-pointer shadow-sm whitespace-nowrap"
+              type="button"
+              disabled={isDeploying}
+              onClick={handleGitHubDeploy}
+              className="flex items-center gap-1.5 bg-[#C5A880] text-[#0A1628] px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider hover:bg-[#BCA078] transition-colors cursor-pointer shadow-sm whitespace-nowrap disabled:opacity-50"
             >
               {isSaved ? <Check size={12} /> : <Save size={12} />}
-              <span>{isSaved ? "Saved!" : "Save"}</span>
-              <span className="hidden sm:inline">{isSaved ? " to Site" : " Changes"}</span>
+              <span>{isSaved ? "Saved Live!" : "Save"}</span>
             </button>
           </div>
         </header>
