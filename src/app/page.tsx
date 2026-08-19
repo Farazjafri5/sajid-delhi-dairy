@@ -14,6 +14,7 @@ import { projects, Project } from "@/data/projects";
 import { WEB3FORMS_ACCESS_KEY } from "@/config/email";
 import { isSupabaseConfigured, supabase } from "@/config/supabase";
 import { defaultSiteContent, SiteContent } from "@/data/siteContent";
+import { getOptimizedVideoUrl } from "@/lib/media";
 
 export default function Home() {
   const [projectsList, setProjectsList] = useState<Project[]>(projects);
@@ -83,6 +84,7 @@ export default function Home() {
 
   // Showreel Modal State
   const [showreelOpen, setShowreelOpen] = useState(false);
+  const [selectedVideoForModal, setSelectedVideoForModal] = useState<string | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
   // 📸 SLIDER ARRAYS & DYNAMICS (filtered active only, fully guarded against null)
@@ -102,14 +104,14 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [leftImages.length]);
 
-  // Timer for center videos (every 3.5 seconds) - faster!
+  // Timer for center videos (pauses automatically while video is being played or modal is open)
   useEffect(() => {
-    if (centerVideos.length === 0) return;
+    if (centerVideos.length === 0 || showreelOpen) return;
     const timer = setInterval(() => {
       setVideoIndex((prev) => (prev + 1) % centerVideos.length);
-    }, 3500);
+    }, 4500);
     return () => clearInterval(timer);
-  }, [centerVideos.length]);
+  }, [centerVideos.length, showreelOpen]);
 
   // 📱 INSTAGRAM REEL MOCKUP DYNAMICS (filtered active only, safe fallback)
   const mockReels = (siteContent?.hero?.mockReels || []).filter(reel => reel && reel.active !== false);
@@ -353,11 +355,12 @@ export default function Home() {
                   {/* Inline Video Player */}
                   {isPlayingReel ? (
                     <video
-                      src={mockReels[reelIndex].videoUrl}
+                      src={getOptimizedVideoUrl(mockReels[reelIndex].videoUrl)}
                       autoPlay
                       loop
                       muted={isReelMuted}
                       playsInline
+                      preload="auto"
                       className="absolute inset-0 w-full h-full object-cover z-0"
                     />
                   ) : (
@@ -563,7 +566,10 @@ export default function Home() {
                   exit={{ x: "-100%" }}
                   transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                   className="absolute inset-0 w-full h-full flex items-center justify-center cursor-pointer"
-                  onClick={() => setShowreelOpen(true)}
+                  onClick={() => {
+                    setSelectedVideoForModal(centerVideos[videoIndex]?.src);
+                    setShowreelOpen(true);
+                  }}
                 >
                   <Image
                     src={centerVideos[videoIndex].poster}
@@ -578,6 +584,7 @@ export default function Home() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
+                      setSelectedVideoForModal(centerVideos[videoIndex]?.src);
                       setShowreelOpen(true);
                     }}
                     className="relative z-10 flex h-20 w-20 items-center justify-center rounded-full bg-studio-bg text-primary transition-all duration-300 scale-90 group-hover:scale-100 shadow-xl cursor-pointer"
@@ -1248,7 +1255,10 @@ export default function Home() {
       {showreelOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/95 p-4 md:p-6 backdrop-blur-md">
           <button
-            onClick={() => setShowreelOpen(false)}
+            onClick={() => {
+              setShowreelOpen(false);
+              setSelectedVideoForModal(null);
+            }}
             className="absolute top-6 right-6 text-studio-bg hover:text-studio-accent transition-colors p-2 z-55 cursor-pointer"
             aria-label="Close video"
           >
@@ -1256,11 +1266,12 @@ export default function Home() {
           </button>
           <div className="aspect-video w-full max-w-5xl bg-[#000000] relative flex items-center justify-center rounded-xl overflow-hidden shadow-2xl border border-studio-bg/10">
             <video
-              src={centerVideos[videoIndex]?.src || "https://assets.mixkit.co/videos/preview/mixkit-pouring-hot-coffee-into-a-cup-42207-large.mp4"}
+              src={getOptimizedVideoUrl(selectedVideoForModal || centerVideos[videoIndex]?.src || "https://assets.mixkit.co/videos/preview/mixkit-pouring-hot-coffee-into-a-cup-42207-large.mp4")}
               className="w-full h-full object-cover"
               controls
               autoPlay
               playsInline
+              preload="auto"
             />
           </div>
         </div>

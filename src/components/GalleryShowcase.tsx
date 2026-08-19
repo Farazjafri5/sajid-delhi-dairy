@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Play } from "lucide-react";
+import { getOptimizedVideoUrl } from "@/lib/media";
 
 interface GalleryShowcaseProps {
   gallery: string[];
@@ -32,15 +33,16 @@ export default function GalleryShowcase({ gallery = [], reels = [], client }: Ga
             {cleanReels.map((reelSrc, idx) => (
               <div
                 key={idx}
-                onClick={() => setActiveMedia({ type: "video", src: reelSrc })}
+                onClick={() => setActiveMedia({ type: "video", src: getOptimizedVideoUrl(reelSrc) })}
                 className="relative aspect-[9/16] bg-studio-accent overflow-hidden group cursor-pointer shadow-md rounded-2xl border border-primary/10"
               >
                 <video
-                  src={reelSrc}
+                  src={getOptimizedVideoUrl(reelSrc)}
                   muted
                   autoPlay
                   loop
                   playsInline
+                  preload="metadata"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 pointer-events-none"
                 />
                 {/* Play Button Overlay */}
@@ -118,10 +120,11 @@ export default function GalleryShowcase({ gallery = [], reels = [], client }: Ga
               /* Mobile/Reel Vertical Frame (9:16 layout) */
               <div className="relative max-w-sm w-full max-h-[85vh] aspect-[9/16] overflow-hidden rounded-xl bg-black shadow-2xl border border-white/5">
                 <video
-                  src={activeMedia.src}
+                  src={getOptimizedVideoUrl(activeMedia.src)}
                   controls
                   autoPlay
                   playsInline
+                  preload="auto"
                   className="w-full h-full object-cover"
                 />
               </div>

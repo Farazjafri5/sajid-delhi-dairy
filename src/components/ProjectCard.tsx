@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Project } from "@/data/projects";
+import { getOptimizedVideoUrl } from "@/lib/media";
 
 interface ProjectCardProps {
   project: Project;
@@ -57,11 +58,12 @@ export default function ProjectCard({ project, asymmetric = false }: ProjectCard
           {project.video && (
             <video
               ref={videoRef}
-              src={project.video}
+              src={getOptimizedVideoUrl(project.video)}
               poster={project.image}
               loop
               muted
               playsInline
+              preload="none"
               className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
                 isHovered ? "opacity-100" : "opacity-0"
               }`}
