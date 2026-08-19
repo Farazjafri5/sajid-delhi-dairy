@@ -84,8 +84,8 @@ export const defaultSiteContent: SiteContent = {
         "active": true
       },
       {
-        "src": "https://assets.mixkit.co/videos/preview/mixkit-chef-preparing-a-fresh-vegetable-salad-41604-large.mp4",
-        "poster": "/images/restaurant_2.png",
+        "src": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787145958/nhkqckzfe4rrvpan8cxh.mp4",
+        "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787145922/rfvb4nvbylf07xhxbg69.png",
         "label": "Watch Dining Story",
         "active": true
       }
