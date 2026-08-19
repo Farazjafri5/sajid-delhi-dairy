@@ -31,8 +31,8 @@ export const projects: Project[] = [
       "Content Strategy"
     ],
     "description": "How we turned an upscale modern Indian restaurant in New Delhi into an online sensation, driving a 140% increase in table bookings through viral reels.",
-    "image": "/images/project_restaurant.png",
-    "video": "/videos/restaurant.mp4",
+    "image": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787131018/flqdmglajq5s7g0vjowr.jpg",
+    "video": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787131034/chzhnlkme5j1myvkk0i2.mp4",
     "brief": "Dastan wanted to transition from a traditional fine-dining restaurant to a space that speaks to younger, design-forward food enthusiasts, without losing its luxury appeal.",
     "idea": "We crafted a visual style centered around 'culinary theatrics'—capturing the smoke, the colors, and the textures of their modern Indian dishes in high-speed, close-up vertical videos.",
     "execution": "Over three on-ground shoots, we filmed behind-the-scenes preparation, chef insights, and interactive table pourings. We combined these with clean, editorial typography.",
@@ -55,19 +55,19 @@ export const projects: Project[] = [
       },
       {
         "id": "gallery-2",
-        "src": "/images/restaurant_3.png",
+        "src": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787131025/nzcizsf9nj1n0lxu2mow.jpg",
         "active": true
       }
     ],
     "reels": [
       {
         "id": "reel-0",
-        "src": "/videos/reel_restaurant_1.mp4",
+        "src": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787002114/k2n7vd30s0g97ghwbrbg.mp4",
         "active": true
       },
       {
         "id": "reel-1",
-        "src": "/videos/reel_restaurant_2.mp4",
+        "src": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787002132/xslnbxe2pbo3or9srgoq.mp4",
         "active": true
       }
     ],
@@ -234,28 +234,5 @@ export const projects: Project[] = [
       }
     ],
     "active": true
-  },
-  {
-    "slug": "project-1787072731999",
-    "client": "",
-    "title": "",
-    "subtitle": "",
-    "industry": "Restaurant & Hospitality",
-    "services": [],
-    "description": "",
-    "image": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787072746/qkpne9xdftdoizmvsxi5.png",
-    "video": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787072760/b4bb62kjvu3chmcidz9z.mp4",
-    "brief": "",
-    "idea": "",
-    "execution": "",
-    "results": [],
-    "gallery": [
-      "https://res.cloudinary.com/yan3h0ri/image/upload/v1787072783/rfs0eglqsizi9w6x0kgk.png",
-      "https://res.cloudinary.com/yan3h0ri/image/upload/v1787072809/wimbenzci83ufrgga66d.jpg"
-    ],
-    "reels": [
-      "https://res.cloudinary.com/yan3h0ri/video/upload/v1787072823/dyaqbr8m7objmysegas0.mp4",
-      "https://res.cloudinary.com/yan3h0ri/video/upload/v1787072834/ekfa5jtqj8kvwys70wik.mp4"
-    ]
   }
 ];
