@@ -70,8 +70,8 @@ export const defaultSiteContent: SiteContent = {
         "active": true
       },
       {
-        "src": "https://assets.mixkit.co/videos/preview/mixkit-slow-motion-of-pouring-milk-into-a-cup-of-coffee-41875-large.mp4",
-        "poster": "/images/cafe_2.png",
+        "src": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787138512/dnq1pt9cqgcv9wpe6rog.mp4",
+        "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787138498/co6ncrqdpjqz07f9wjgv.jpg",
         "label": "Watch Cafe Showcase",
         "active": true
       },
