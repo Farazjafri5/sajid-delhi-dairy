@@ -39,6 +39,14 @@ export const defaultSiteContent: SiteContent = {
         "likes": "15.2k",
         "comments": "240",
         "active": true
+      },
+      {
+        "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787145399/dkbm3tjp75geilthrz8a.jpg",
+        "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787145330/zbyfyzpsobxyp9kx04m9.mp4",
+        "caption": "",
+        "likes": "0",
+        "comments": "0",
+        "active": true
       }
     ]
   },
