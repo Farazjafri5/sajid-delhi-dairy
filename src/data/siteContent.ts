@@ -17,8 +17,8 @@ export const defaultSiteContent: SiteContent = {
         "active": true
       },
       {
-        "poster": "/images/project_restaurant.png",
-        "videoUrl": "https://assets.mixkit.co/videos/preview/mixkit-pouring-hot-coffee-into-a-cup-42207-large.mp4",
+        "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787133344/dekbhqsjqgb0aunlq1pk.jpg",
+        "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787133350/k4hjoml5niogflpwzkz5.mp4",
         "caption": "Sizzling gourmet plates and cinematic restaurant showreels built to drive bookings. Delhi Diaries Official.",
         "likes": "18.5k",
         "comments": "521",
