@@ -9,8 +9,8 @@ export const defaultSiteContent: SiteContent = {
     "subtitle": "Reels, content, social media, and creative campaigns for brands people remember. Built for restaurants, cafes, luxury hospitality, and D2C brands.",
     "mockReels": [
       {
-        "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787000830/it3vjysjdbyjlu4slkfg.png",
-        "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787000839/ekodpgjwqjbli8dked8i.mp4",
+        "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787131701/qt5f1flbbwykb0hd0imr.png",
+        "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787131706/m0lpj7ywglyesbnbkygn.mp4",
         "caption": "We make reels, shoot content, and build digital spaces that people remember. Delhi's social creative partner.",
         "likes": "12.8k",
         "comments": "342",
@@ -30,6 +30,14 @@ export const defaultSiteContent: SiteContent = {
         "caption": "Editorial lifestyle campaigns and minimal aesthetics for modern D2C products. Stop the scroll.",
         "likes": "9.2k",
         "comments": "198",
+        "active": true
+      },
+      {
+        "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787002294/icngyoeoufdix7tgb1uo.png",
+        "videoUrl": "https://assets.mixkit.co/videos/preview/mixkit-pouring-hot-coffee-into-a-cup-42207-large.mp4",
+        "caption": "New viral reel content by Delhi Diaries",
+        "likes": "15.2k",
+        "comments": "240",
         "active": true
       }
     ]
@@ -56,8 +64,8 @@ export const defaultSiteContent: SiteContent = {
     ],
     "centerVideos": [
       {
-        "src": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787072671/b9oufkqskzgtkmww3pvp.mp4",
-        "poster": "/images/project_restaurant.png",
+        "src": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787130977/s65jma6pqrhwmu6k7f37.mp4",
+        "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787130978/vjcpbetdunff0vnxbovb.jpg",
         "label": "Watch 2026 Showreel",
         "active": true
       },
@@ -96,7 +104,7 @@ export const defaultSiteContent: SiteContent = {
     {
       "name": "Restaurants",
       "statement": "Make them hungry before they arrive.",
-      "image": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787072685/tfrjxppuvblvl61anx47.png",
+      "image": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787131054/zkubhr9brumsl1nipdme.jpg",
       "active": true
     },
     {
@@ -163,7 +171,7 @@ export const defaultSiteContent: SiteContent = {
       "type": "Reel",
       "client": "Dastan",
       "campaign": "Modern Indian Feast",
-      "image": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787072703/eopdpxnrsj9fxinxtraj.png",
+      "image": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787131009/wysvuslb0zqfkull6nno.jpg",
       "active": true
     },
     {
