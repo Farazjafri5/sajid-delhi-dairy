@@ -10,9 +10,9 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { token, repo, branch, content, projectsContent } = body;
 
-    const ghToken = token || process.env.NEXT_PUBLIC_GITHUB_PAT || DEFAULT_GITHUB_PAT;
-    const ghRepo = repo || process.env.NEXT_PUBLIC_GITHUB_REPO || DEFAULT_REPO;
-    const ghBranch = branch || process.env.NEXT_PUBLIC_GITHUB_BRANCH || DEFAULT_BRANCH;
+    const ghToken = token || process.env.GITHUB_PAT || process.env.NEXT_PUBLIC_GITHUB_PAT || DEFAULT_GITHUB_PAT;
+    const ghRepo = repo || process.env.GITHUB_REPO || process.env.NEXT_PUBLIC_GITHUB_REPO || DEFAULT_REPO;
+    const ghBranch = branch || process.env.GITHUB_BRANCH || process.env.NEXT_PUBLIC_GITHUB_BRANCH || DEFAULT_BRANCH;
 
     if (!ghToken) {
       return NextResponse.json(
