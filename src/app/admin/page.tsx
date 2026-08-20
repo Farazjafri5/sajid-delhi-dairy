@@ -1348,12 +1348,12 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                     const newSlug = `project-${Date.now()}`;
                     const newProj: Project = {
                       slug: newSlug,
-                      client: "",
-                      title: "",
-                      subtitle: "",
+                      client: "New Project",
+                      title: "New Project Title",
+                      subtitle: "Creative campaign & video production",
                       industry: "Restaurant & Hospitality",
-                      services: [],
-                      description: "",
+                      services: ["Social Media Management", "Reels Production"],
+                      description: "Add a brief overview of this project...",
                       image: "",
                       video: "",
                       brief: "",
@@ -1361,7 +1361,8 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                       execution: "",
                       results: [],
                       gallery: [],
-                      reels: []
+                      reels: [],
+                      active: true,
                     };
                     setProjects(prev => [...prev, newProj]);
                     setEditingProjectSlug(newSlug);
@@ -1375,7 +1376,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               {/* Mobile Card List (Visible only on mobile screens) */}
               <div className="block md:hidden space-y-3">
                 {projects.map((proj) => {
-                  const isActive = !proj.slug.startsWith("inactive:");
+                  const isActive = proj.active !== false && !proj.slug.startsWith("inactive:");
                   return (
                     <div
                       key={proj.slug}
@@ -1383,23 +1384,29 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                     >
                       <div className="flex items-center gap-3">
                         <div className="h-14 w-16 rounded-lg overflow-hidden bg-[#0A1628]/5 shrink-0">
-                          <img src={proj.image} alt={proj.client} className="h-full w-full object-cover" />
+                          {proj.image ? (
+                            <img src={proj.image} alt={proj.client} className="h-full w-full object-cover" />
+                          ) : (
+                            <div className="h-full w-full flex items-center justify-center text-[9px] text-[#0A1628]/30 font-bold">No Image</div>
+                          )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-2">
-                            <h4 className="text-sm font-bold text-[#0A1628] truncate">{proj.client}</h4>
+                            <h4 className="text-sm font-bold text-[#0A1628] truncate">{proj.client || "Untitled Project"}</h4>
                             <button
                               type="button"
                               onClick={() => {
-                                const newSlug = isActive ? `inactive:${proj.slug}` : proj.slug.replace("inactive:", "");
-                                setProjects(prev => prev.map(p => p.slug === proj.slug ? { ...p, slug: newSlug } : p));
+                                const nextActive = !isActive;
+                                const cleanSlug = proj.slug.replace(/^inactive:/, "");
+                                const nextSlug = nextActive ? cleanSlug : `inactive:${cleanSlug}`;
+                                setProjects(prev => prev.map(p => p.slug === proj.slug ? { ...p, slug: nextSlug, active: nextActive } : p));
                               }}
                               className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full cursor-pointer shrink-0 ${isActive ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}
                             >
                               {isActive ? "● Active" : "○ Inactive"}
                             </button>
                           </div>
-                          <p className="text-[11px] text-[#0A1628]/60 truncate mt-0.5">{proj.title}</p>
+                          <p className="text-[11px] text-[#0A1628]/60 truncate mt-0.5">{proj.title || "No Title"}</p>
                           <p className="text-[10px] text-[#C5A880] font-semibold tracking-wide mt-1 uppercase">{proj.industry}</p>
                         </div>
                       </div>
@@ -1415,7 +1422,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                         <button
                           type="button"
                           onClick={() => {
-                            if (confirm(`Delete project "${proj.client}"?`)) {
+                            if (confirm(`Delete project "${proj.client || "Untitled"}"?`)) {
                               setProjects(prev => prev.filter(p => p.slug !== proj.slug));
                             }
                           }}
@@ -1445,25 +1452,31 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                     </thead>
                     <tbody>
                       {projects.map((proj) => {
-                        const isActive = !proj.slug.startsWith("inactive:");
+                        const isActive = proj.active !== false && !proj.slug.startsWith("inactive:");
                         return (
                           <tr key={proj.slug} className="border-b border-[#0A1628]/5 last:border-0 hover:bg-[#0A1628]/[0.01]">
                             <td className="px-6 py-3">
                               <div className="h-12 w-16 rounded-lg overflow-hidden bg-[#0A1628]/5">
-                                <img src={proj.image} alt={proj.client} className="h-full w-full object-cover" />
+                                {proj.image ? (
+                                  <img src={proj.image} alt={proj.client} className="h-full w-full object-cover" />
+                                ) : (
+                                  <div className="h-full w-full flex items-center justify-center text-[9px] text-[#0A1628]/30 font-bold">No Image</div>
+                                )}
                               </div>
                             </td>
                             <td className="px-6 py-3">
-                              <p className="text-sm font-bold text-[#0A1628]">{proj.client}</p>
-                              <p className="text-[10px] text-[#0A1628]/40">{proj.title}</p>
+                              <p className="text-sm font-bold text-[#0A1628]">{proj.client || "Untitled Project"}</p>
+                              <p className="text-[10px] text-[#0A1628]/40">{proj.title || "No Title"}</p>
                             </td>
                             <td className="px-6 py-3 text-xs text-[#0A1628]/60">{proj.industry}</td>
                             <td className="px-6 py-3">
                               <button
                                 type="button"
                                 onClick={() => {
-                                  const newSlug = isActive ? `inactive:${proj.slug}` : proj.slug.replace("inactive:", "");
-                                  setProjects(prev => prev.map(p => p.slug === proj.slug ? { ...p, slug: newSlug } : p));
+                                  const nextActive = !isActive;
+                                  const cleanSlug = proj.slug.replace(/^inactive:/, "");
+                                  const nextSlug = nextActive ? cleanSlug : `inactive:${cleanSlug}`;
+                                  setProjects(prev => prev.map(p => p.slug === proj.slug ? { ...p, slug: nextSlug, active: nextActive } : p));
                                 }}
                                 className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full cursor-pointer ${isActive ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}
                               >
@@ -1479,7 +1492,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                               </button>
                               <button
                                 onClick={() => {
-                                  if (confirm(`Delete project "${proj.client}"?`)) {
+                                  if (confirm(`Delete project "${proj.client || "Untitled"}"?`)) {
                                     setProjects(prev => prev.filter(p => p.slug !== proj.slug));
                                   }
                                 }}
@@ -1510,14 +1523,16 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                   <button
                     type="button"
                     onClick={() => {
-                      const isActive = !editingProject.slug.startsWith("inactive:");
-                      const newSlug = isActive ? `inactive:${editingProject.slug}` : editingProject.slug.replace("inactive:", "");
-                      updateProject(editingProject.slug, p => ({ ...p, slug: newSlug }));
-                      setEditingProjectSlug(newSlug);
+                      const isActive = editingProject.active !== false && !editingProject.slug.startsWith("inactive:");
+                      const nextActive = !isActive;
+                      const cleanSlug = editingProject.slug.replace(/^inactive:/, "");
+                      const nextSlug = nextActive ? cleanSlug : `inactive:${cleanSlug}`;
+                      updateProject(editingProject.slug, p => ({ ...p, slug: nextSlug, active: nextActive }));
+                      setEditingProjectSlug(nextSlug);
                     }}
-                    className={`text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg cursor-pointer ${!editingProject.slug.startsWith("inactive:") ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}
+                    className={`text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg cursor-pointer ${editingProject.active !== false && !editingProject.slug.startsWith("inactive:") ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}
                   >
-                    {!editingProject.slug.startsWith("inactive:") ? "● Active on Website" : "○ Inactive (Hidden)"}
+                    {editingProject.active !== false && !editingProject.slug.startsWith("inactive:") ? "● Active on Website" : "○ Inactive (Hidden)"}
                   </button>
                 </div>
               </div>

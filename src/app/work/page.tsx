@@ -8,11 +8,13 @@ import { isSupabaseConfigured, supabase } from "@/config/supabase";
 
 export default function WorkPage() {
   const [activeFilter, setActiveFilter] = useState("ALL");
-  const projectsList: Project[] = projects;
+  const activeProjects: Project[] = (projects || []).filter(
+    (p) => p && p.active !== false && !p.slug.startsWith("inactive:")
+  );
 
   const filters = ["ALL", "RESTAURANT & HOSPITALITY", "CAFÉ & BAKERY", "FASHION & LIFESTYLE", "D2C BEAUTY"];
 
-  const filteredProjects = projectsList.filter((project) => {
+  const filteredProjects = activeProjects.filter((project) => {
     if (activeFilter === "ALL") return true;
     return (project.industry || "").toUpperCase() === activeFilter;
   });

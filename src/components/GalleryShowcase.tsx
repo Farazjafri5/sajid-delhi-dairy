@@ -16,8 +16,21 @@ export default function GalleryShowcase({ gallery = [], reels = [], client }: Ga
 
   const handleClose = () => setActiveMedia(null);
 
-  const cleanReels = (reels || []).filter(Boolean);
-  const cleanGallery = (gallery || []).filter(Boolean);
+  const cleanReels: string[] = (reels || [])
+    .filter((r: any) => {
+      if (!r) return false;
+      if (typeof r === "object") return r.active !== false && !!r.src;
+      return typeof r === "string" && r.trim().length > 0;
+    })
+    .map((r: any) => (typeof r === "object" ? r.src : r));
+
+  const cleanGallery: string[] = (gallery || [])
+    .filter((g: any) => {
+      if (!g) return false;
+      if (typeof g === "object") return g.active !== false && !!g.src;
+      return typeof g === "string" && g.trim().length > 0;
+    })
+    .map((g: any) => (typeof g === "object" ? g.src : g));
 
   return (
     <div className="space-y-12">

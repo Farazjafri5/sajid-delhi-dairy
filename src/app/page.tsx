@@ -241,6 +241,9 @@ export default function Home() {
   // Instagram Feed Data (filtered active only, safe fallback)
   const instagramFeed = (siteContent?.instagramFeed || []).filter(feed => feed && feed.active !== false);
 
+  // Active Projects Data (filtered active only, safe fallback)
+  const activeProjects = (projectsList || []).filter(p => p && p.active !== false && !p.slug.startsWith("inactive:"));
+
 
   return (
     <main className="flex-1 bg-studio-bg overflow-hidden">
@@ -707,26 +710,26 @@ export default function Home() {
             <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-studio-bg to-transparent z-10 pointer-events-none hidden md:block" />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-start h-full">
-              {/* Column 1 (Projects 1 & 3) - Slides Up Slow */}
+              {/* Column 1 (Even-indexed Projects: 0, 2, 4...) - Slides Up Slow */}
               <div className="flex flex-col gap-12 lg:gap-24 md:animate-vertical-loop-slow md:pause-on-hover">
                 {/* Original set */}
-                {projectsList.slice(0, 4).filter((_, idx) => idx % 2 === 0).map((project) => (
+                {activeProjects.filter((_, idx) => idx % 2 === 0).map((project) => (
                   <ProjectCard key={`${project.slug}-col1`} project={project} asymmetric={false} />
                 ))}
                 {/* Duplicate set for infinite loop */}
-                {projectsList.slice(0, 4).filter((_, idx) => idx % 2 === 0).map((project) => (
+                {activeProjects.filter((_, idx) => idx % 2 === 0).map((project) => (
                   <ProjectCard key={`${project.slug}-col1-dup`} project={project} asymmetric={false} />
                 ))}
               </div>
 
-              {/* Column 2 (Projects 2 & 4) - Slides Down (Reverse loop) */}
+              {/* Column 2 (Odd-indexed Projects: 1, 3, 5...) - Slides Down (Reverse loop) */}
               <div className="flex flex-col gap-12 lg:gap-24 md:animate-vertical-loop-reverse md:pause-on-hover md:mt-24">
                 {/* Original set */}
-                {projectsList.slice(0, 4).filter((_, idx) => idx % 2 !== 0).map((project) => (
+                {activeProjects.filter((_, idx) => idx % 2 !== 0).map((project) => (
                   <ProjectCard key={`${project.slug}-col2`} project={project} asymmetric={false} />
                 ))}
                 {/* Duplicate set for infinite loop */}
-                {projectsList.slice(0, 4).filter((_, idx) => idx % 2 !== 0).map((project) => (
+                {activeProjects.filter((_, idx) => idx % 2 !== 0).map((project) => (
                   <ProjectCard key={`${project.slug}-col2-dup`} project={project} asymmetric={false} />
                 ))}
               </div>
