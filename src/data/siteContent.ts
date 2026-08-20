@@ -39,6 +39,12 @@ export const defaultSiteContent: SiteContent = {
         "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787145922/rfvb4nvbylf07xhxbg69.png",
         "label": "Watch Dining Story",
         "active": true
+      },
+      {
+        "src": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787205315/uyga9eanruxygs5iguri.mp4",
+        "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787205304/bhsgiz1l1piqoyc7y3am.png",
+        "label": "",
+        "active": true
       }
     ],
     "rightImages": [
