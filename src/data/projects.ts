@@ -44,16 +44,6 @@ export const projects: Project[] = [
     ],
     "gallery": [
       {
-        "id": "gallery-0",
-        "src": "/images/restaurant_1.png",
-        "active": true
-      },
-      {
-        "id": "gallery-1",
-        "src": "/images/restaurant_2.png",
-        "active": true
-      },
-      {
         "id": "gallery-2",
         "src": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787131025/nzcizsf9nj1n0lxu2mow.jpg",
         "active": true
@@ -64,17 +54,12 @@ export const projects: Project[] = [
         "id": "reel-0",
         "src": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787002114/k2n7vd30s0g97ghwbrbg.mp4",
         "active": true
-      },
-      {
-        "id": "reel-1",
-        "src": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787002132/xslnbxe2pbo3or9srgoq.mp4",
-        "active": true
       }
     ],
     "active": true
   },
   {
-    "slug": "roast-and-co",
+    "slug": "inactive:roast-and-co",
     "client": "Roast & Co.",
     "title": "Roast & Co: Turn a Location into a Destination",
     "subtitle": "Creating Delhi's next photogenic coffee spot.",
@@ -128,7 +113,7 @@ export const projects: Project[] = [
     "active": true
   },
   {
-    "slug": "mitti-lifestyle",
+    "slug": "inactive:mitti-lifestyle",
     "client": "Mitti",
     "title": "Mitti: Earthy Aesthetics for the Modern Home",
     "subtitle": "Giving an eco-conscious brand a premium visual language.",
@@ -182,7 +167,7 @@ export const projects: Project[] = [
     "active": true
   },
   {
-    "slug": "soma-skincare",
+    "slug": "inactive:soma-skincare",
     "client": "Soma Skincare",
     "title": "Soma Skincare: Bare-faced and Beautiful",
     "subtitle": "Making clean skincare feel transparent and luxury.",
