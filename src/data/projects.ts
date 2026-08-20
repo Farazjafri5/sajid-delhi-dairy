@@ -74,7 +74,7 @@ export const projects: Project[] = [
     "active": true
   },
   {
-    "slug": "roast-and-co",
+    "slug": "inactive:roast-and-co",
     "client": "Roast & Co.",
     "title": "Roast & Co: Turn a Location into a Destination",
     "subtitle": "Creating Delhi's next photogenic coffee spot.",
@@ -125,10 +125,10 @@ export const projects: Project[] = [
         "active": true
       }
     ],
-    "active": true
+    "active": false
   },
   {
-    "slug": "mitti-lifestyle",
+    "slug": "inactive:mitti-lifestyle",
     "client": "Mitti",
     "title": "Mitti: Earthy Aesthetics for the Modern Home",
     "subtitle": "Giving an eco-conscious brand a premium visual language.",
@@ -179,10 +179,10 @@ export const projects: Project[] = [
         "active": true
       }
     ],
-    "active": true
+    "active": false
   },
   {
-    "slug": "soma-skincare",
+    "slug": "inactive:soma-skincare",
     "client": "Soma Skincare",
     "title": "Soma Skincare: Bare-faced and Beautiful",
     "subtitle": "Making clean skincare feel transparent and luxury.",
@@ -233,7 +233,7 @@ export const projects: Project[] = [
         "active": true
       }
     ],
-    "active": true
+    "active": false
   },
   {
     "slug": "project-1787204212686",
@@ -243,7 +243,7 @@ export const projects: Project[] = [
     "industry": "Restaurant & Hospitality",
     "services": [],
     "description": "",
-    "image": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787204223/d3hicstzv6b3prws7ufk.png",
+    "image": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787205324/oil14bmlz7qzlbcvhrju.webp",
     "video": "",
     "brief": "",
     "idea": "",
