@@ -74,7 +74,7 @@ export const projects: Project[] = [
     "active": true
   },
   {
-    "slug": "inactive:roast-and-co",
+    "slug": "roast-and-co",
     "client": "Roast & Co.",
     "title": "Roast & Co: Turn a Location into a Destination",
     "subtitle": "Creating Delhi's next photogenic coffee spot.",
@@ -125,10 +125,10 @@ export const projects: Project[] = [
         "active": true
       }
     ],
-    "active": false
+    "active": true
   },
   {
-    "slug": "inactive:mitti-lifestyle",
+    "slug": "mitti-lifestyle",
     "client": "Mitti",
     "title": "Mitti: Earthy Aesthetics for the Modern Home",
     "subtitle": "Giving an eco-conscious brand a premium visual language.",
@@ -179,10 +179,10 @@ export const projects: Project[] = [
         "active": true
       }
     ],
-    "active": false
+    "active": true
   },
   {
-    "slug": "inactive:soma-skincare",
+    "slug": "soma-skincare",
     "client": "Soma Skincare",
     "title": "Soma Skincare: Bare-faced and Beautiful",
     "subtitle": "Making clean skincare feel transparent and luxury.",
@@ -233,7 +233,7 @@ export const projects: Project[] = [
         "active": true
       }
     ],
-    "active": false
+    "active": true
   },
   {
     "slug": "project-1787204212686",
