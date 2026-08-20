@@ -9,38 +9,6 @@ export const defaultSiteContent: SiteContent = {
     "subtitle": "Reels, content, social media, and creative campaigns for brands people remember. Built for restaurants, cafes, luxury hospitality, and D2C brands.",
     "mockReels": [
       {
-        "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787131701/qt5f1flbbwykb0hd0imr.png",
-        "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787131706/m0lpj7ywglyesbnbkygn.mp4",
-        "caption": "We make reels, shoot content, and build digital spaces that people remember. Delhi's social creative partner.",
-        "likes": "12.8k",
-        "comments": "342",
-        "active": true
-      },
-      {
-        "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787133344/dekbhqsjqgb0aunlq1pk.jpg",
-        "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787133350/k4hjoml5niogflpwzkz5.mp4",
-        "caption": "Sizzling gourmet plates and cinematic restaurant showreels built to drive bookings. Delhi Diaries Official.",
-        "likes": "18.5k",
-        "comments": "521",
-        "active": true
-      },
-      {
-        "poster": "/images/project_lifestyle.png",
-        "videoUrl": "https://assets.mixkit.co/videos/preview/mixkit-chef-preparing-a-fresh-vegetable-salad-41604-large.mp4",
-        "caption": "Editorial lifestyle campaigns and minimal aesthetics for modern D2C products. Stop the scroll.",
-        "likes": "9.2k",
-        "comments": "198",
-        "active": true
-      },
-      {
-        "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787002294/icngyoeoufdix7tgb1uo.png",
-        "videoUrl": "https://assets.mixkit.co/videos/preview/mixkit-pouring-hot-coffee-into-a-cup-42207-large.mp4",
-        "caption": "New viral reel content by Delhi Diaries",
-        "likes": "15.2k",
-        "comments": "240",
-        "active": true
-      },
-      {
         "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787145399/dkbm3tjp75geilthrz8a.jpg",
         "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787145330/zbyfyzpsobxyp9kx04m9.mp4",
         "caption": "",
@@ -55,34 +23,12 @@ export const defaultSiteContent: SiteContent = {
     "description": "We shoot short-form videos designed to convert casual scrollers into loyal customers. No stock templates, no boring structures.",
     "leftImages": [
       {
-        "src": "/images/project_cafe.png",
-        "label": "Cafe Reels",
-        "active": true
-      },
-      {
-        "src": "/images/restaurant_1.png",
-        "label": "Gourmet Plating",
-        "active": true
-      },
-      {
-        "src": "/images/cafe_1.png",
-        "label": "Coffee Pouring",
+        "src": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787203982/glysmjoqvpu8est23kyg.jpg",
+        "label": "",
         "active": true
       }
     ],
     "centerVideos": [
-      {
-        "src": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787130977/s65jma6pqrhwmu6k7f37.mp4",
-        "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787130978/vjcpbetdunff0vnxbovb.jpg",
-        "label": "Watch 2026 Showreel",
-        "active": true
-      },
-      {
-        "src": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787138512/dnq1pt9cqgcv9wpe6rog.mp4",
-        "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787138498/co6ncrqdpjqz07f9wjgv.jpg",
-        "label": "Watch Cafe Showcase",
-        "active": true
-      },
       {
         "src": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787145958/nhkqckzfe4rrvpan8cxh.mp4",
         "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787145922/rfvb4nvbylf07xhxbg69.png",
@@ -92,17 +38,7 @@ export const defaultSiteContent: SiteContent = {
     ],
     "rightImages": [
       {
-        "src": "/images/project_lifestyle.png",
-        "label": "Lifestyle Content",
-        "active": true
-      },
-      {
-        "src": "/images/lifestyle_1.png",
-        "label": "Minimalist Ceramics",
-        "active": true
-      },
-      {
-        "src": "/images/d2c_1.png",
+        "src": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787204003/ukvzrawt3pcxpmikybgh.png",
         "label": "Pure ASMR",
         "active": true
       }
