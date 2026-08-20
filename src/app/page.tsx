@@ -51,18 +51,29 @@ export default function Home() {
   const leftImages = (siteContent?.showreel?.leftImages || []).filter(img => img && img.active !== false);
   const rightImages = (siteContent?.showreel?.rightImages || []).filter(img => img && img.active !== false);
   const centerVideos = (siteContent?.showreel?.centerVideos || []).filter(vid => vid && vid.active !== false);
+  const allSideImages = [...leftImages, ...rightImages];
 
-  const [imageIndex, setImageIndex] = useState(0);
+  const [leftImageIndex, setLeftImageIndex] = useState(0);
+  const [rightImageIndex, setRightImageIndex] = useState(0);
   const [videoIndex, setVideoIndex] = useState(0);
 
-  // Timer for left/right images (every 6 seconds)
+  // Timer for left images (every 5 seconds)
   useEffect(() => {
     if (leftImages.length === 0) return;
     const timer = setInterval(() => {
-      setImageIndex((prev) => (prev + 1) % leftImages.length);
-    }, 6000);
+      setLeftImageIndex((prev) => (prev + 1) % leftImages.length);
+    }, 5000);
     return () => clearInterval(timer);
   }, [leftImages.length]);
+
+  // Timer for right images (every 6 seconds)
+  useEffect(() => {
+    if (rightImages.length === 0) return;
+    const timer = setInterval(() => {
+      setRightImageIndex((prev) => (prev + 1) % rightImages.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [rightImages.length]);
 
   // Timer for center videos (pauses automatically while video is being played or modal is open)
   useEffect(() => {
@@ -452,145 +463,385 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Reel Display Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-center">
+          {/* 🖥️ DESKTOP REEL DISPLAY (4-Column Layout for Desktop) */}
+          <div className="hidden lg:grid lg:grid-cols-4 gap-8 items-center">
             {/* Left vertical image */}
             <div 
-              onClick={() => setLightboxImage(leftImages[imageIndex].src)}
-              className="relative aspect-[9/16] overflow-hidden bg-studio-muted/20 order-2 lg:order-1 group cursor-pointer hidden lg:block"
+              onClick={() => leftImages[leftImageIndex]?.src && setLightboxImage(leftImages[leftImageIndex].src)}
+              className="relative aspect-[9/16] overflow-hidden rounded-2xl bg-studio-muted/20 order-2 lg:order-1 group cursor-pointer border border-white/10 shadow-lg"
             >
-              <AnimatePresence mode="popLayout">
-                <motion.div
-                  key={imageIndex}
-                  initial={{ y: "100%" }}
-                  animate={{ y: 0 }}
-                  exit={{ y: "-100%" }}
-                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute inset-0 w-full h-full"
-                >
-                  <Image
-                    src={leftImages[imageIndex].src}
-                    alt={leftImages[imageIndex].label}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="25vw"
-                  />
-                  <div className="absolute inset-0 bg-primary/20" />
-                  <div className="absolute bottom-6 left-6 text-xs uppercase tracking-widest text-studio-bg z-10">
-                    {leftImages[imageIndex].label}
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+              {leftImages.length > 0 && (
+                <AnimatePresence mode="popLayout">
+                  <motion.div
+                    key={leftImageIndex}
+                    initial={{ y: "100%" }}
+                    animate={{ y: 0 }}
+                    exit={{ y: "-100%" }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className="absolute inset-0 w-full h-full"
+                  >
+                    <Image
+                      src={leftImages[leftImageIndex].src}
+                      alt={leftImages[leftImageIndex].label || "Studio photo"}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="25vw"
+                    />
+                    <div className="absolute inset-0 bg-primary/20" />
+                    <div className="absolute bottom-6 left-6 text-xs uppercase tracking-widest text-studio-bg z-10 font-bold bg-black/40 px-2.5 py-1 rounded-full backdrop-blur-sm">
+                      {leftImages[leftImageIndex].label || "Featured"}
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              )}
             </div>
 
-            {/* Center Main Showreel player (Reel layout on mobile, Cinema layout on desktop) */}
-            <div className="lg:col-span-2 relative aspect-[9/16] md:aspect-video bg-studio-muted/10 order-1 lg:order-2 overflow-hidden flex items-center justify-center group">
-              {/* Mobile Previous / Next Arrows (Visible only on mobile/tablet screens) */}
-              {centerVideos.length > 1 && (
-                <>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setVideoIndex((prev) => (prev - 1 + centerVideos.length) % centerVideos.length);
-                    }}
-                    className="lg:hidden absolute left-3 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 shadow-xl active:scale-90 transition-transform cursor-pointer"
-                    aria-label="Previous Video"
-                  >
-                    <ChevronLeft size={22} />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setVideoIndex((prev) => (prev + 1) % centerVideos.length);
-                    }}
-                    className="lg:hidden absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 shadow-xl active:scale-90 transition-transform cursor-pointer"
-                    aria-label="Next Video"
-                  >
-                    <ChevronRight size={22} />
-                  </button>
-
-                  {/* Video Counter Indicator for Mobile */}
-                  <div className="lg:hidden absolute top-4 right-4 z-20 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-full text-[10px] font-bold text-white tracking-widest uppercase">
-                    <span>{videoIndex + 1}</span>
-                    <span className="text-white/40">/</span>
-                    <span className="text-white/60">{centerVideos.length}</span>
-                  </div>
-                </>
-              )}
-
-              <AnimatePresence mode="popLayout">
-                <motion.div
-                  key={videoIndex}
-                  initial={{ x: "100%" }}
-                  animate={{ x: 0 }}
-                  exit={{ x: "-100%" }}
-                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute inset-0 w-full h-full flex items-center justify-center cursor-pointer"
-                  onClick={() => {
-                    setSelectedVideoForModal(centerVideos[videoIndex]?.src);
-                    setShowreelOpen(true);
-                  }}
-                >
-                  <Image
-                    src={centerVideos[videoIndex].poster}
-                    alt={centerVideos[videoIndex].label}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-103"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                  <div className="absolute inset-0 bg-primary/30 group-hover:bg-primary/45 transition-colors duration-500" />
-                  
-                  {/* Play Button Overlay */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
+            {/* Center Main Showreel player (Cinema layout on desktop) */}
+            <div className="lg:col-span-2 relative aspect-video bg-studio-muted/10 order-1 lg:order-2 overflow-hidden flex items-center justify-center group rounded-2xl border border-white/10 shadow-2xl">
+              {centerVideos.length > 0 && (
+                <AnimatePresence mode="popLayout">
+                  <motion.div
+                    key={videoIndex}
+                    initial={{ x: "100%" }}
+                    animate={{ x: 0 }}
+                    exit={{ x: "-100%" }}
+                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                    className="absolute inset-0 w-full h-full flex items-center justify-center cursor-pointer"
+                    onClick={() => {
                       setSelectedVideoForModal(centerVideos[videoIndex]?.src);
                       setShowreelOpen(true);
                     }}
-                    className="relative z-10 flex h-20 w-20 items-center justify-center rounded-full bg-studio-bg text-primary transition-all duration-300 scale-90 group-hover:scale-100 shadow-xl cursor-pointer"
-                    data-cursor="play"
                   >
-                    <Play fill="currentColor" size={20} className="ml-0.5" />
-                  </button>
+                    <Image
+                      src={centerVideos[videoIndex].poster || "/images/restaurant_1.png"}
+                      alt={centerVideos[videoIndex].label || "Video Reel"}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-103"
+                      sizes="50vw"
+                    />
+                    <div className="absolute inset-0 bg-primary/30 group-hover:bg-primary/45 transition-colors duration-500" />
+                    
+                    {/* Play Button Overlay */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedVideoForModal(centerVideos[videoIndex]?.src);
+                        setShowreelOpen(true);
+                      }}
+                      className="relative z-10 flex h-20 w-20 items-center justify-center rounded-full bg-studio-bg text-primary transition-all duration-300 scale-90 group-hover:scale-100 shadow-xl cursor-pointer"
+                      data-cursor="play"
+                    >
+                      <Play fill="currentColor" size={20} className="ml-0.5" />
+                    </button>
 
-                  <div className="absolute bottom-6 left-6 text-[10px] md:text-xs uppercase tracking-widest text-studio-bg z-10">
-                    Click to {centerVideos[videoIndex].label}
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+                    <div className="absolute bottom-6 left-6 text-xs uppercase tracking-widest text-studio-bg z-10 font-bold bg-black/40 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                      Click to {centerVideos[videoIndex].label || "Watch Reel"}
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              )}
             </div>
 
             {/* Right vertical image */}
             <div 
-              onClick={() => setLightboxImage(rightImages[imageIndex].src)}
-              className="relative aspect-[9/16] overflow-hidden bg-studio-muted/20 order-3 group cursor-pointer hidden lg:block"
+              onClick={() => rightImages[rightImageIndex]?.src && setLightboxImage(rightImages[rightImageIndex].src)}
+              className="relative aspect-[9/16] overflow-hidden rounded-2xl bg-studio-muted/20 order-3 group cursor-pointer border border-white/10 shadow-lg"
             >
-              <AnimatePresence mode="popLayout">
-                <motion.div
-                  key={imageIndex}
-                  initial={{ y: "-100%" }}
-                  animate={{ y: 0 }}
-                  exit={{ y: "100%" }}
-                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute inset-0 w-full h-full"
-                >
-                  <Image
-                    src={rightImages[imageIndex].src}
-                    alt={rightImages[imageIndex].label}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="25vw"
-                  />
-                  <div className="absolute inset-0 bg-primary/20" />
-                  <div className="absolute bottom-6 left-6 text-xs uppercase tracking-widest text-studio-bg z-10">
-                    {rightImages[imageIndex].label}
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+              {rightImages.length > 0 && (
+                <AnimatePresence mode="popLayout">
+                  <motion.div
+                    key={rightImageIndex}
+                    initial={{ y: "-100%" }}
+                    animate={{ y: 0 }}
+                    exit={{ y: "100%" }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className="absolute inset-0 w-full h-full"
+                  >
+                    <Image
+                      src={rightImages[rightImageIndex].src}
+                      alt={rightImages[rightImageIndex].label || "Studio photo"}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="25vw"
+                    />
+                    <div className="absolute inset-0 bg-primary/20" />
+                    <div className="absolute bottom-6 left-6 text-xs uppercase tracking-widest text-studio-bg z-10 font-bold bg-black/40 px-2.5 py-1 rounded-full backdrop-blur-sm">
+                      {rightImages[rightImageIndex].label || "Featured"}
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              )}
             </div>
+          </div>
+
+          {/* 📱 MOBILE REEL DISPLAY (Top: Left Photos Slider • Middle: Video Slider UP • Bottom: Right Photos Slider) */}
+          <div className="block lg:hidden space-y-8">
+            {/* 1. TOP SLIDER (Left Photos - Slides Left/Right) */}
+            {leftImages.length > 0 && (
+              <div className="space-y-2 text-left">
+                <div className="flex items-center justify-between px-1">
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-studio-accent/70">
+                    📸 Left Showcase Photos
+                  </span>
+                  <span className="text-[9px] text-[#C5A880] uppercase tracking-wider font-semibold">
+                    Tap to Expand
+                  </span>
+                </div>
+
+                <div 
+                  onClick={() => leftImages[leftImageIndex]?.src && setLightboxImage(leftImages[leftImageIndex].src)}
+                  className="relative w-full aspect-[16/9] sm:aspect-[21/9] bg-studio-muted/15 rounded-2xl overflow-hidden cursor-pointer border border-white/10 shadow-xl group"
+                >
+                  {/* Previous / Next Arrows */}
+                  {leftImages.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setLeftImageIndex((prev) => (prev - 1 + leftImages.length) % leftImages.length);
+                        }}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 shadow-lg active:scale-90 transition-transform cursor-pointer"
+                        aria-label="Previous Left Photo"
+                      >
+                        <ChevronLeft size={16} />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setLeftImageIndex((prev) => (prev + 1) % leftImages.length);
+                        }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 shadow-lg active:scale-90 transition-transform cursor-pointer"
+                        aria-label="Next Left Photo"
+                      >
+                        <ChevronRight size={16} />
+                      </button>
+                    </>
+                  )}
+
+                  <AnimatePresence mode="popLayout">
+                    <motion.div
+                      key={leftImageIndex}
+                      initial={{ x: "100%", opacity: 0.8 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      exit={{ x: "-100%", opacity: 0.8 }}
+                      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                      className="absolute inset-0 w-full h-full"
+                    >
+                      <Image
+                        src={leftImages[leftImageIndex].src}
+                        alt={leftImages[leftImageIndex].label || "Studio photo"}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-transparent to-transparent" />
+                      
+                      <div className="absolute bottom-3 left-4 z-10">
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-studio-bg bg-black/50 px-2.5 py-1 rounded-full backdrop-blur-sm border border-white/10">
+                          {leftImages[leftImageIndex].label || "Featured"}
+                        </span>
+                      </div>
+
+                      {/* Photo Dots Indicator */}
+                      <div className="absolute bottom-3 right-4 z-10 flex items-center gap-1.5">
+                        {leftImages.map((_, i) => (
+                          <div
+                            key={i}
+                            className={`h-1.5 rounded-full transition-all duration-300 ${
+                              leftImageIndex === i ? "w-4 bg-[#C5A880]" : "w-1.5 bg-white/40"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </div>
+            )}
+
+            {/* 2. MIDDLE VIDEO PLAYER (Slides vertically UP) */}
+            <div className="space-y-2 text-left">
+              <div className="flex items-center justify-between px-1">
+                <span className="text-[10px] font-bold tracking-widest uppercase text-studio-accent/70">
+                  🎬 Main Studio Video
+                </span>
+                <span className="text-[9px] text-[#C5A880] uppercase tracking-wider font-semibold">
+                  Tap to Play Reel
+                </span>
+              </div>
+
+              <div className="relative w-full aspect-[16/10] sm:aspect-video bg-studio-muted/10 rounded-2xl overflow-hidden flex items-center justify-center border border-white/10 shadow-2xl">
+                {/* Previous / Next Arrows */}
+                {centerVideos.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setVideoIndex((prev) => (prev - 1 + centerVideos.length) % centerVideos.length);
+                      }}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/70 backdrop-blur-md text-white border border-white/20 shadow-xl active:scale-90 transition-transform cursor-pointer"
+                      aria-label="Previous Video"
+                    >
+                      <ChevronLeft size={20} />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setVideoIndex((prev) => (prev + 1) % centerVideos.length);
+                      }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/70 backdrop-blur-md text-white border border-white/20 shadow-xl active:scale-90 transition-transform cursor-pointer"
+                      aria-label="Next Video"
+                    >
+                      <ChevronRight size={20} />
+                    </button>
+
+                    {/* Video Counter Badge */}
+                    <div className="absolute top-3 right-3 z-20 flex items-center gap-1 bg-black/60 backdrop-blur-sm px-2.5 py-0.5 rounded-full text-[10px] font-bold text-white tracking-widest uppercase border border-white/15">
+                      <span>{videoIndex + 1}</span>
+                      <span className="text-white/40">/</span>
+                      <span className="text-white/70">{centerVideos.length}</span>
+                    </div>
+                  </>
+                )}
+
+                {centerVideos.length > 0 && (
+                  <AnimatePresence mode="popLayout">
+                    <motion.div
+                      key={videoIndex}
+                      initial={{ y: "100%", opacity: 0.8 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: "-100%", opacity: 0.8 }}
+                      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                      className="absolute inset-0 w-full h-full flex items-center justify-center cursor-pointer"
+                      onClick={() => {
+                        setSelectedVideoForModal(centerVideos[videoIndex]?.src);
+                        setShowreelOpen(true);
+                      }}
+                    >
+                      <Image
+                        src={centerVideos[videoIndex].poster || "/images/restaurant_1.png"}
+                        alt={centerVideos[videoIndex].label || "Video Reel"}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
+                      
+                      {/* Play Button Overlay */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedVideoForModal(centerVideos[videoIndex]?.src);
+                          setShowreelOpen(true);
+                        }}
+                        className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-studio-bg text-primary shadow-2xl active:scale-95 transition-transform cursor-pointer"
+                        data-cursor="play"
+                      >
+                        <Play fill="currentColor" size={18} className="ml-0.5" />
+                      </button>
+
+                      <div className="absolute bottom-4 left-4 right-14 text-left z-10">
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-studio-bg bg-black/50 px-2.5 py-1 rounded-full backdrop-blur-sm border border-white/10">
+                          🎬 {centerVideos[videoIndex].label || "Watch Reel"}
+                        </span>
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
+                )}
+              </div>
+            </div>
+
+            {/* 3. BOTTOM SLIDER (Right Photos - Slides Left/Right) */}
+            {rightImages.length > 0 && (
+              <div className="space-y-2 text-left">
+                <div className="flex items-center justify-between px-1">
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-studio-accent/70">
+                    ✨ Right Showcase Photos
+                  </span>
+                  <span className="text-[9px] text-[#C5A880] uppercase tracking-wider font-semibold">
+                    Tap to Expand
+                  </span>
+                </div>
+
+                <div 
+                  onClick={() => rightImages[rightImageIndex]?.src && setLightboxImage(rightImages[rightImageIndex].src)}
+                  className="relative w-full aspect-[16/9] sm:aspect-[21/9] bg-studio-muted/15 rounded-2xl overflow-hidden cursor-pointer border border-white/10 shadow-xl group"
+                >
+                  {/* Previous / Next Arrows */}
+                  {rightImages.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRightImageIndex((prev) => (prev - 1 + rightImages.length) % rightImages.length);
+                        }}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 shadow-lg active:scale-90 transition-transform cursor-pointer"
+                        aria-label="Previous Right Photo"
+                      >
+                        <ChevronLeft size={16} />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRightImageIndex((prev) => (prev + 1) % rightImages.length);
+                        }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 shadow-lg active:scale-90 transition-transform cursor-pointer"
+                        aria-label="Next Right Photo"
+                      >
+                        <ChevronRight size={16} />
+                      </button>
+                    </>
+                  )}
+
+                  <AnimatePresence mode="popLayout">
+                    <motion.div
+                      key={rightImageIndex}
+                      initial={{ x: "-100%", opacity: 0.8 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      exit={{ x: "100%", opacity: 0.8 }}
+                      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                      className="absolute inset-0 w-full h-full"
+                    >
+                      <Image
+                        src={rightImages[rightImageIndex].src}
+                        alt={rightImages[rightImageIndex].label || "Studio photo"}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-transparent to-transparent" />
+                      
+                      <div className="absolute bottom-3 left-4 z-10">
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-studio-bg bg-black/50 px-2.5 py-1 rounded-full backdrop-blur-sm border border-white/10">
+                          {rightImages[rightImageIndex].label || "Featured"}
+                        </span>
+                      </div>
+
+                      {/* Photo Dots Indicator */}
+                      <div className="absolute bottom-3 right-4 z-10 flex items-center gap-1.5">
+                        {rightImages.map((_, i) => (
+                          <div
+                            key={i}
+                            className={`h-1.5 rounded-full transition-all duration-300 ${
+                              rightImageIndex === i ? "w-4 bg-[#C5A880]" : "w-1.5 bg-white/40"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -703,38 +954,63 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Asymmetric Portfolio Grid with Infinite Vertical Scroll Loop */}
-          <div className="relative md:h-[750px] lg:h-[850px] overflow-hidden">
-            {/* Fade overlays for the premium editorial look */}
-            <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-studio-bg to-transparent z-10 pointer-events-none hidden md:block" />
-            <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-studio-bg to-transparent z-10 pointer-events-none hidden md:block" />
+          {/* Asymmetric Portfolio Grid with Smart Dynamic Loop */}
+          {(() => {
+            const col1 = activeProjects.filter((_, idx) => idx % 2 === 0);
+            const col2 = activeProjects.filter((_, idx) => idx % 2 !== 0);
+            const shouldAnimateCol1 = col1.length > 1;
+            const shouldAnimateCol2 = col2.length > 1;
+            const hasLoop = shouldAnimateCol1 || shouldAnimateCol2;
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-start h-full">
-              {/* Column 1 (Even-indexed Projects: 0, 2, 4...) - Slides Up Slow */}
-              <div className="flex flex-col gap-12 lg:gap-24 md:animate-vertical-loop-slow md:pause-on-hover">
-                {/* Original set */}
-                {activeProjects.filter((_, idx) => idx % 2 === 0).map((project) => (
-                  <ProjectCard key={`${project.slug}-col1`} project={project} asymmetric={false} />
-                ))}
-                {/* Duplicate set for infinite loop */}
-                {activeProjects.filter((_, idx) => idx % 2 === 0).map((project) => (
-                  <ProjectCard key={`${project.slug}-col1-dup`} project={project} asymmetric={false} />
-                ))}
-              </div>
+            if (!hasLoop) {
+              // Static display when 1 or fewer projects per column (Ruka rahega, no duplicate)
+              return (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-start">
+                  <div className="flex flex-col gap-8 md:gap-12 lg:gap-16">
+                    {col1.map((project) => (
+                      <ProjectCard key={`${project.slug}-col1`} project={project} asymmetric={false} />
+                    ))}
+                  </div>
+                  <div className="flex flex-col gap-8 md:gap-12 lg:gap-16 md:mt-16">
+                    {col2.map((project) => (
+                      <ProjectCard key={`${project.slug}-col2`} project={project} asymmetric={false} />
+                    ))}
+                  </div>
+                </div>
+              );
+            }
 
-              {/* Column 2 (Odd-indexed Projects: 1, 3, 5...) - Slides Down (Reverse loop) */}
-              <div className="flex flex-col gap-12 lg:gap-24 md:animate-vertical-loop-reverse md:pause-on-hover md:mt-24">
-                {/* Original set */}
-                {activeProjects.filter((_, idx) => idx % 2 !== 0).map((project) => (
-                  <ProjectCard key={`${project.slug}-col2`} project={project} asymmetric={false} />
-                ))}
-                {/* Duplicate set for infinite loop */}
-                {activeProjects.filter((_, idx) => idx % 2 !== 0).map((project) => (
-                  <ProjectCard key={`${project.slug}-col2-dup`} project={project} asymmetric={false} />
-                ))}
+            // Animated vertical loop when multiple projects exist (Chalta rahega)
+            return (
+              <div className="relative md:h-[750px] lg:h-[850px] overflow-hidden">
+                {/* Fade overlays for the premium editorial look */}
+                <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-studio-bg to-transparent z-10 pointer-events-none hidden md:block" />
+                <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-studio-bg to-transparent z-10 pointer-events-none hidden md:block" />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-start h-full">
+                  {/* Column 1 - Slides Up Slow if > 1 project, else static */}
+                  <div className={`flex flex-col gap-12 lg:gap-24 ${shouldAnimateCol1 ? "md:animate-vertical-loop-slow md:pause-on-hover" : ""}`}>
+                    {col1.map((project) => (
+                      <ProjectCard key={`${project.slug}-col1`} project={project} asymmetric={false} />
+                    ))}
+                    {shouldAnimateCol1 && col1.map((project) => (
+                      <ProjectCard key={`${project.slug}-col1-dup`} project={project} asymmetric={false} />
+                    ))}
+                  </div>
+
+                  {/* Column 2 - Slides Down (Reverse loop) if > 1 project, else static */}
+                  <div className={`flex flex-col gap-12 lg:gap-24 ${shouldAnimateCol2 ? "md:animate-vertical-loop-reverse md:pause-on-hover md:mt-24" : "md:mt-16"}`}>
+                    {col2.map((project) => (
+                      <ProjectCard key={`${project.slug}-col2`} project={project} asymmetric={false} />
+                    ))}
+                    {shouldAnimateCol2 && col2.map((project) => (
+                      <ProjectCard key={`${project.slug}-col2-dup`} project={project} asymmetric={false} />
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            );
+          })()}
         </div>
       </section>
 

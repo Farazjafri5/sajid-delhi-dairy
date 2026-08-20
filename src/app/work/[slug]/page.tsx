@@ -9,9 +9,11 @@ interface CaseStudyPageProps {
 }
 
 export async function generateStaticParams() {
-  return projects.map((project) => ({
-    slug: project.slug,
-  }));
+  return (projects || [])
+    .filter((p) => p && p.active !== false)
+    .map((project) => ({
+      slug: project.slug,
+    }));
 }
 
 export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
