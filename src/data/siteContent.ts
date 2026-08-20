@@ -26,6 +26,11 @@ export const defaultSiteContent: SiteContent = {
         "src": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787203982/glysmjoqvpu8est23kyg.jpg",
         "label": "",
         "active": true
+      },
+      {
+        "src": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787205156/ezfjknmgxq0erhpidfjs.webp",
+        "label": "",
+        "active": true
       }
     ],
     "centerVideos": [
@@ -40,6 +45,11 @@ export const defaultSiteContent: SiteContent = {
       {
         "src": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787204003/ukvzrawt3pcxpmikybgh.png",
         "label": "Pure ASMR",
+        "active": true
+      },
+      {
+        "src": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787205166/jsegagbpnubdmwgkr6d9.png",
+        "label": "",
         "active": true
       }
     ]
