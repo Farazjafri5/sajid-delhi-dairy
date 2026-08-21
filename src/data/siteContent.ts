@@ -4,7 +4,7 @@ export * from "@/types/siteContent";
 
 export const defaultSiteContent: SiteContent = {
   "hero": {
-    "heading": "We make brands in our",
+    "heading": "We make brands",
     "headingItalic": "worth stopping",
     "subtitle": "Reels, content, social media, and creative campaigns for brands people remember. Built for restaurants, cafes, luxury hospitality, and D2C brands.",
     "mockReels": [
@@ -64,7 +64,7 @@ export const defaultSiteContent: SiteContent = {
     {
       "name": "Restaurants",
       "statement": "Make them hungry before they arrive.",
-      "image": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787131054/zkubhr9brumsl1nipdme.jpg",
+      "image": "/images/restaurant_1.png",
       "active": true
     },
     {
@@ -76,7 +76,7 @@ export const defaultSiteContent: SiteContent = {
     {
       "name": "Hospitality",
       "statement": "Design a journey worth sharing.",
-      "image": "/images/project_restaurant.png",
+      "image": "/images/restaurant_2.png",
       "active": true
     },
     {
@@ -94,19 +94,19 @@ export const defaultSiteContent: SiteContent = {
     {
       "name": "D2C Brands",
       "statement": "Stop scrolling, start buying.",
-      "image": "/images/project_d2c.png",
+      "image": "/images/project_lifestyle.png",
       "active": true
     },
     {
       "name": "Events",
       "statement": "Moments captured, memories branded.",
-      "image": "/images/project_cafe.png",
+      "image": "/images/restaurant_1.png",
       "active": true
     },
     {
       "name": "Local Businesses",
       "statement": "Bring local value to the digital map.",
-      "image": "/images/project_lifestyle.png",
+      "image": "/images/project_cafe.png",
       "active": true
     }
   ],
@@ -128,67 +128,185 @@ export const defaultSiteContent: SiteContent = {
   ],
   "instagramFeed": [
     {
+      "id": "insta-1",
       "type": "Reel",
       "client": "Dastan",
       "campaign": "Modern Indian Feast",
-      "image": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787131009/wysvuslb0zqfkull6nno.jpg",
+      "caption": "The theatrics of modern Indian flavors. Smoky, aromatic, and made for the camera.",
+      "image": "/images/restaurant_1.png",
+      "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787002114/k2n7vd30s0g97ghwbrbg.mp4",
+      "permalink": "https://instagram.com/delhidiariesofficial",
+      "likes": "18.4k",
+      "comments": "412",
       "active": true
     },
     {
+      "id": "insta-2",
       "type": "Photo",
       "client": "Roast & Co.",
-      "campaign": "Golden Pastries",
+      "campaign": "Golden Morning Pastries",
+      "caption": "Crispy layers and morning roasts. The aesthetic breakfast setup in Champa Gali.",
       "image": "/images/cafe_1.png",
+      "permalink": "https://instagram.com/delhidiariesofficial",
+      "likes": "9.2k",
+      "comments": "188",
       "active": true
     },
     {
-      "type": "Campaign",
-      "client": "Mitti",
-      "campaign": "Daylight Shadow",
+      "id": "insta-3",
+      "type": "Reel",
+      "client": "Delhi Diaries Studio",
+      "campaign": "Cinematic Heritage Reels",
+      "caption": "Capturing Delhi from angles you've never experienced before.",
+      "image": "/images/restaurant_3.png",
+      "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787131034/chzhnlkme5j1myvkk0i2.mp4",
+      "permalink": "https://instagram.com/delhidiariesofficial",
+      "likes": "24.6k",
+      "comments": "630",
+      "active": true
+    },
+    {
+      "id": "insta-4",
+      "type": "Photo",
+      "client": "Mitti Lifestyle",
+      "campaign": "Daylight Ceramic Shadow",
+      "caption": "Earthy textures meet contemporary living. Natural sunlit photography.",
       "image": "/images/lifestyle_1.png",
+      "permalink": "https://instagram.com/delhidiariesofficial",
+      "likes": "7.8k",
+      "comments": "120",
       "active": true
     },
     {
-      "type": "BTS",
-      "client": "Delhi Diaries Official Studio",
-      "campaign": "Behind the Lens",
-      "image": "/images/project_restaurant.png",
-      "active": true
-    },
-    {
-      "type": "Food Content",
-      "client": "Dastan",
-      "campaign": "Gourmet Plating",
-      "image": "/images/restaurant_2.png",
-      "active": true
-    },
-    {
-      "type": "Lifestyle",
-      "client": "Mitti",
-      "campaign": "Morning Ceramic Setup",
-      "image": "/images/lifestyle_2.png",
-      "active": true
-    },
-    {
+      "id": "insta-5",
       "type": "Reel",
       "client": "Soma Skincare",
-      "campaign": "ASMR Hydration",
+      "campaign": "Pure ASMR Glow Routine",
+      "caption": "Drip, glide, and glow. Visual satisfaction that converts viewers into skincare customers.",
       "image": "/images/d2c_1.png",
+      "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787002132/xslnbxe2pbo3or9srgoq.mp4",
+      "permalink": "https://instagram.com/delhidiariesofficial",
+      "likes": "14.9k",
+      "comments": "295",
       "active": true
     },
     {
+      "id": "insta-6",
       "type": "Photo",
-      "client": "Roast & Co.",
-      "campaign": "Aroma Pour",
-      "image": "/images/cafe_2.png",
+      "client": "Delhi Diaries Studio",
+      "campaign": "Behind the Lens at Saket",
+      "caption": "Lighting setup for luxury beverage shoot. Gear, passion, and precision.",
+      "image": "/images/project_restaurant.png",
+      "permalink": "https://instagram.com/delhidiariesofficial",
+      "likes": "11.1k",
+      "comments": "210",
       "active": true
     },
     {
-      "type": "Campaign",
+      "id": "insta-7",
+      "type": "Reel",
+      "client": "Roast & Co.",
+      "campaign": "The Art of Slow Drip",
+      "caption": "Single origin roast brewing in slow motion. Smells like passion.",
+      "image": "/images/cafe_2.png",
+      "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787002114/k2n7vd30s0g97ghwbrbg.mp4",
+      "permalink": "https://instagram.com/delhidiariesofficial",
+      "likes": "16.3k",
+      "comments": "380",
+      "active": true
+    },
+    {
+      "id": "insta-8",
+      "type": "Photo",
+      "client": "Dastan",
+      "campaign": "Gourmet Plating & Smoke",
+      "caption": "Culinary arts redefined. Visual identity designed for high-end dining.",
+      "image": "/images/restaurant_2.png",
+      "permalink": "https://instagram.com/delhidiariesofficial",
+      "likes": "13.5k",
+      "comments": "240",
+      "active": true
+    },
+    {
+      "id": "insta-9",
+      "type": "Photo",
+      "client": "Mitti",
+      "campaign": "Morning Handcrafted Pottery",
+      "caption": "Craftsmanship rooted in timeless tradition. Hand-molded ceramics.",
+      "image": "/images/lifestyle_2.png",
+      "permalink": "https://instagram.com/delhidiariesofficial",
+      "likes": "8.4k",
+      "comments": "145",
+      "active": true
+    },
+    {
+      "id": "insta-10",
+      "type": "Reel",
       "client": "Soma Skincare",
-      "campaign": "Pure Serum Droplet",
+      "campaign": "Pure Serum Droplet Velocity",
+      "caption": "High-speed macro capture of organic botanicals.",
       "image": "/images/d2c_2.png",
+      "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787002132/xslnbxe2pbo3or9srgoq.mp4",
+      "permalink": "https://instagram.com/delhidiariesofficial",
+      "likes": "21.0k",
+      "comments": "512",
+      "active": true
+    },
+    {
+      "id": "insta-11",
+      "type": "Photo",
+      "client": "Delhi Diaries",
+      "campaign": "Vintage Monolith Architecture",
+      "caption": "Where ancient sandstone meets the future of creative production.",
+      "image": "/images/restaurant_3.png",
+      "permalink": "https://instagram.com/delhidiariesofficial",
+      "likes": "19.7k",
+      "comments": "480",
+      "active": true
+    },
+    {
+      "id": "insta-12",
+      "type": "Reel",
+      "client": "Dastan Dining",
+      "campaign": "Night Dining Aura",
+      "caption": "When the lights dim and the music rises. Delhi nightlife documented.",
+      "image": "/images/restaurant_1.png",
+      "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787131034/chzhnlkme5j1myvkk0i2.mp4",
+      "permalink": "https://instagram.com/delhidiariesofficial",
+      "likes": "28.3k",
+      "comments": "790",
       "active": true
     }
-  ]
+  ],
+  "instagramSettings": {
+    "beholdFeedId": "q88GcAmOqigPmc14PJ3O",
+    "handle": "delhidiariesofficial",
+    "profileUrl": "https://www.instagram.com/delhidiariesofficial_?igsh=amUyZml1ejVmY2M1",
+    "autoSync": true
+  },
+  "contactSettings": {
+    "email": "kunwarsajid2@gmail.com12",
+    "phone": "+91 76684 78678",
+    "whatsapp": "+91 76684 78678",
+    "instagramHandle": "@delhidiariesofficial",
+    "instagramUrl": "https://www.instagram.com/delhidiariesofficial_?igsh=amUyZml1ejVmY2M1",
+    "businessTypes": [
+      "Restaurant",
+      "Cafe",
+      "Hotel / Hospitality",
+      "Fashion / Lifestyle",
+      "Beauty / Skincare",
+      "D2C Brand",
+      "Events",
+      "Other"
+    ],
+    "serviceOptions": [
+      "Social Media Management",
+      "Reels & Short-form Content",
+      "Full Brand Campaign",
+      "Product Photography",
+      "Influencer Strategy",
+      "Content Strategy & Consulting"
+    ]
+  }
 };
