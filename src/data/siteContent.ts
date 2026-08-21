@@ -135,11 +135,7 @@ export const defaultSiteContent: SiteContent = {
       "caption": "The theatrics of modern Indian flavors. Smoky, aromatic, and made for the camera.",
       "image": "/images/restaurant_1.png",
       "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787002114/k2n7vd30s0g97ghwbrbg.mp4",
-<<<<<<< HEAD
-      "permalink": "https://instagram.com/delhidiariesofficial",
-=======
       "permalink": "https://instagram.com/socialdiariesagency.co",
->>>>>>> 3ecc427 (feat: rebrand to Social Diaries (@socialdiariesagency.co), dynamic feed pagination & sitemap)
       "likes": "18.4k",
       "comments": "412",
       "active": true
@@ -151,11 +147,7 @@ export const defaultSiteContent: SiteContent = {
       "campaign": "Golden Morning Pastries",
       "caption": "Crispy layers and morning roasts. The aesthetic breakfast setup in Champa Gali.",
       "image": "/images/cafe_1.png",
-<<<<<<< HEAD
-      "permalink": "https://instagram.com/delhidiariesofficial",
-=======
       "permalink": "https://instagram.com/socialdiariesagency.co",
->>>>>>> 3ecc427 (feat: rebrand to Social Diaries (@socialdiariesagency.co), dynamic feed pagination & sitemap)
       "likes": "9.2k",
       "comments": "188",
       "active": true
@@ -163,20 +155,12 @@ export const defaultSiteContent: SiteContent = {
     {
       "id": "insta-3",
       "type": "Reel",
-<<<<<<< HEAD
-      "client": "Delhi Diaries Studio",
-=======
       "client": "Social Diaries Studio",
->>>>>>> 3ecc427 (feat: rebrand to Social Diaries (@socialdiariesagency.co), dynamic feed pagination & sitemap)
       "campaign": "Cinematic Heritage Reels",
       "caption": "Capturing Delhi from angles you've never experienced before.",
       "image": "/images/restaurant_3.png",
       "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787131034/chzhnlkme5j1myvkk0i2.mp4",
-<<<<<<< HEAD
-      "permalink": "https://instagram.com/delhidiariesofficial",
-=======
       "permalink": "https://instagram.com/socialdiariesagency.co",
->>>>>>> 3ecc427 (feat: rebrand to Social Diaries (@socialdiariesagency.co), dynamic feed pagination & sitemap)
       "likes": "24.6k",
       "comments": "630",
       "active": true
@@ -188,11 +172,7 @@ export const defaultSiteContent: SiteContent = {
       "campaign": "Daylight Ceramic Shadow",
       "caption": "Earthy textures meet contemporary living. Natural sunlit photography.",
       "image": "/images/lifestyle_1.png",
-<<<<<<< HEAD
-      "permalink": "https://instagram.com/delhidiariesofficial",
-=======
       "permalink": "https://instagram.com/socialdiariesagency.co",
->>>>>>> 3ecc427 (feat: rebrand to Social Diaries (@socialdiariesagency.co), dynamic feed pagination & sitemap)
       "likes": "7.8k",
       "comments": "120",
       "active": true
@@ -205,11 +185,7 @@ export const defaultSiteContent: SiteContent = {
       "caption": "Drip, glide, and glow. Visual satisfaction that converts viewers into skincare customers.",
       "image": "/images/d2c_1.png",
       "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787002132/xslnbxe2pbo3or9srgoq.mp4",
-<<<<<<< HEAD
-      "permalink": "https://instagram.com/delhidiariesofficial",
-=======
       "permalink": "https://instagram.com/socialdiariesagency.co",
->>>>>>> 3ecc427 (feat: rebrand to Social Diaries (@socialdiariesagency.co), dynamic feed pagination & sitemap)
       "likes": "14.9k",
       "comments": "295",
       "active": true
@@ -217,19 +193,11 @@ export const defaultSiteContent: SiteContent = {
     {
       "id": "insta-6",
       "type": "Photo",
-<<<<<<< HEAD
-      "client": "Delhi Diaries Studio",
-      "campaign": "Behind the Lens at Saket",
-      "caption": "Lighting setup for luxury beverage shoot. Gear, passion, and precision.",
-      "image": "/images/project_restaurant.png",
-      "permalink": "https://instagram.com/delhidiariesofficial",
-=======
       "client": "Social Diaries Studio",
       "campaign": "Behind the Lens at Saket",
       "caption": "Lighting setup for luxury beverage shoot. Gear, passion, and precision.",
       "image": "/images/project_restaurant.png",
       "permalink": "https://instagram.com/socialdiariesagency.co",
->>>>>>> 3ecc427 (feat: rebrand to Social Diaries (@socialdiariesagency.co), dynamic feed pagination & sitemap)
       "likes": "11.1k",
       "comments": "210",
       "active": true
