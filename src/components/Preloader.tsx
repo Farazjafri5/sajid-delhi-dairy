@@ -61,7 +61,7 @@ export default function Preloader() {
               }}
               className="font-serif text-3xl sm:text-4xl md:text-6xl font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] leading-none text-gradient-gold"
             >
-              Delhi Diaries
+              Social Diaries
             </motion.h1>
             
             <motion.div

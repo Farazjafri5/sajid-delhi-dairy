@@ -43,10 +43,15 @@ export interface Testimonial {
 
 export interface InstagramTile {
   id?: string;
-  type: string;
-  client: string;
-  campaign: string;
+  type: string; // "Reel" | "Photo" | "Campaign" etc.
+  client?: string;
+  campaign?: string;
+  caption?: string;
   image: string;
+  videoUrl?: string;
+  permalink?: string;
+  likes?: string;
+  comments?: string;
   active?: boolean;
 }
 
@@ -61,6 +66,16 @@ export interface SeoSettings {
   metaDescription?: string;
   keywords?: string;
   ogImage?: string;
+}
+
+export interface ContactSettings {
+  email?: string;
+  phone?: string;
+  whatsapp?: string;
+  instagramHandle?: string;
+  instagramUrl?: string;
+  businessTypes?: string[];
+  serviceOptions?: string[];
 }
 
 export interface SiteContent {
@@ -80,6 +95,14 @@ export interface SiteContent {
   industries: IndustryItem[];
   testimonials: Testimonial[];
   instagramFeed: InstagramTile[];
+  instagramSettings?: {
+    beholdFeedId?: string;
+    handle?: string;
+    profileUrl?: string;
+    autoSync?: boolean;
+  };
+  contactSettings?: ContactSettings;
   branding?: BrandingSettings;
   seo?: SeoSettings;
 }
+

@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 
@@ -15,12 +16,29 @@ const WhatsAppIcon = () => (
 
 export default function WhatsAppWidget() {
   const pathname = usePathname();
+  const [whatsappNumber, setWhatsappNumber] = useState("917668487182");
+
+  useEffect(() => {
+    try {
+      const cached = localStorage.getItem("dd_site_content");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed?.contactSettings?.whatsapp) {
+          const digits = parsed.contactSettings.whatsapp.replace(/\D/g, "");
+          if (digits.length >= 10) {
+            setWhatsappNumber(digits.length === 10 ? `91${digits}` : digits);
+          }
+        }
+      }
+    } catch (e) {}
+  }, []);
+
   if (pathname?.startsWith("/admin") || pathname?.startsWith("/dashboard")) {
     return null;
   }
   return (
     <motion.a
-      href="https://wa.me/917668487182"
+      href={`https://wa.me/${whatsappNumber}`}
       target="_blank"
       rel="noopener noreferrer"
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
@@ -33,3 +51,4 @@ export default function WhatsAppWidget() {
     </motion.a>
   );
 }
+

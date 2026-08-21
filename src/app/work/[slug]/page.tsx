@@ -31,7 +31,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
   const nextProject = projects[nextProjectIndex];
 
   return (
-    <main className="flex-1 bg-studio-bg pt-32 pb-24 md:pt-40 md:pb-32">
+    <main className="flex-1 bg-gradient-to-b from-[#FAF8F5] via-[#FFFFFF] to-[#FAF8F5] pt-32 pb-24 md:pt-40 md:pb-32 relative overflow-hidden">
       <CaseStudyClient
         initialProject={project}
         initialNextProject={nextProject}

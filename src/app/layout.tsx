@@ -21,9 +21,9 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "DELHI DIARIES OFFICIAL | Social-First Creative Studio",
+  title: "SOCIAL DIARIES OFFICIAL | Social-First Creative Studio",
   description: "We make brands worth stopping for. Reels, content, social media and creative campaigns built for restaurants, cafes, luxury hospitality, and D2C brands.",
-  keywords: ["creative agency delhi", "social media marketing delhi", "instagram reels shoot delhi", "restaurant branding", "cafe marketing", "content creation", "delhi diaries official"],
+  keywords: ["creative agency delhi", "social media marketing delhi", "instagram reels shoot delhi", "restaurant branding", "cafe marketing", "content creation", "social diaries agency", "social diaries official"],
 };
 
 export default function RootLayout({

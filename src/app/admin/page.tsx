@@ -8,7 +8,7 @@ import {
   Globe, MessageSquare, Phone, Settings, LogOut,
   Upload, Trash2, Plus, ChevronRight, Image as ImageIcon,
   Video, Menu, X, Check, Eye as EyeIcon, EyeOff as EyeOffIcon,
-  Copy, Download, Code, Play, Rocket, RefreshCw, CheckCircle2, AlertCircle, Edit3
+  Copy, Download, Code, Play, Rocket, RefreshCw, CheckCircle2, AlertCircle, Edit3, Radio
 } from "lucide-react";
 import { projects as initialProjects, Project } from "@/data/projects";
 import { defaultSiteContent, SiteContent } from "@/data/siteContent";
@@ -19,6 +19,7 @@ import { isSupabaseConfigured } from "@/config/supabase";
 type SidebarPage =
   | "dashboard"
   | "hero"
+  | "livesocial"
   | "showreel"
   | "industries"
   | "projects"
@@ -31,10 +32,11 @@ type SidebarPage =
 const sidebarItems: { id: SidebarPage; label: string; icon: React.ReactNode }[] = [
   { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard size={18} /> },
   { id: "hero", label: "Hero Section", icon: <Sparkles size={18} /> },
+  { id: "livesocial", label: "Live Instagram (Auto)", icon: <Radio size={18} /> },
   { id: "showreel", label: "Studio Reel", icon: <Film size={18} /> },
   { id: "industries", label: "Industries", icon: <Grid3X3 size={18} /> },
   { id: "projects", label: "Projects", icon: <Briefcase size={18} /> },
-  { id: "instagram", label: "Instagram Feed", icon: <Globe size={18} /> },
+  { id: "instagram", label: "Instagram 3x3 Gallery", icon: <Globe size={18} /> },
   { id: "testimonials", label: "Testimonials", icon: <MessageSquare size={18} /> },
   { id: "contact", label: "Contact", icon: <Phone size={18} /> },
   { id: "export", label: "1-Click GitHub Deploy", icon: <Rocket size={18} /> },
@@ -632,7 +634,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
         {/* Logo */}
         <div className="px-6 py-6 border-b border-white/5 flex items-center justify-between">
           <div>
-            <h1 className="text-sm font-bold tracking-widest uppercase text-[#C5A880]">Delhi Diaries</h1>
+            <h1 className="text-sm font-bold tracking-widest uppercase text-[#C5A880]">Social Diaries</h1>
             <p className="text-[9px] text-white/30 tracking-wider uppercase mt-0.5">Admin Management</p>
           </div>
           <button onClick={() => setMobileSidebarOpen(false)} className="lg:hidden text-white/40 cursor-pointer">
@@ -729,7 +731,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
             <div>
               <SectionHeader title="Control Center" subtitle="Directly upload videos & images, toggle Active/Inactive, and Add new items across all sections" />
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-                <StatCard icon={<LayoutDashboard size={20} className="text-blue-600" />} label="Total Sections" value={9} color="bg-blue-50" />
+                <StatCard icon={<LayoutDashboard size={20} className="text-blue-600" />} label="Total Sections" value={10} color="bg-blue-50" />
                 <StatCard icon={<ImageIcon size={20} className="text-emerald-600" />} label="Media Photos" value={totalImages} color="bg-emerald-50" />
                 <StatCard icon={<Video size={20} className="text-purple-600" />} label="Video Reels" value={totalVideos} color="bg-purple-50" />
                 <StatCard icon={<Briefcase size={20} className="text-amber-600" />} label="Projects" value={activeProjects} color="bg-amber-50" />
@@ -1543,12 +1545,33 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40 mb-4">Project Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {(["client", "title", "subtitle", "industry"] as const).map((field) => (
-                    <div key={field}>
-                      <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/40 mb-1 block">{field}</label>
-                      <input value={editingProject[field]} onChange={(e) => updateProject(editingProject.slug, p => ({ ...p, [field]: e.target.value }))} className="w-full border border-[#0A1628]/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#C5A880]" />
-                    </div>
-                  ))}
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/40 mb-1 block">Client Brand Name</label>
+                    <input value={editingProject.client} onChange={(e) => updateProject(editingProject.slug, p => ({ ...p, client: e.target.value }))} className="w-full border border-[#0A1628]/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#C5A880]" placeholder="e.g. Dastan Dining" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/40 mb-1 block">Project Title / Headline</label>
+                    <input value={editingProject.title} onChange={(e) => updateProject(editingProject.slug, p => ({ ...p, title: e.target.value }))} className="w-full border border-[#0A1628]/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#C5A880]" placeholder="e.g. Modern Indian Gastronomy" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/40 mb-1 block">Subtitle / Campaign Type</label>
+                    <input value={editingProject.subtitle} onChange={(e) => updateProject(editingProject.slug, p => ({ ...p, subtitle: e.target.value }))} className="w-full border border-[#0A1628]/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#C5A880]" placeholder="e.g. Visual Storytelling & Reels Production" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/40 mb-1 block">Category / Industry (Tabs on Work Page)</label>
+                    <select
+                      value={editingProject.industry}
+                      onChange={(e) => updateProject(editingProject.slug, p => ({ ...p, industry: e.target.value }))}
+                      className="w-full border border-[#0A1628]/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#C5A880] bg-white cursor-pointer font-medium text-[#0A1628]"
+                    >
+                      <option value="Restaurant & Hospitality">🍽️ Restaurant & Hospitality (Shows under RESTAURANT tab)</option>
+                      <option value="Café & Bakery">☕ Café & Bakery (Shows under CAFÉ tab)</option>
+                      <option value="Fashion & Lifestyle">✨ Fashion & Lifestyle (Shows under LIFESTYLE tab)</option>
+                      <option value="D2C Beauty">💄 D2C Beauty (Shows under BEAUTY tab)</option>
+                      <option value="Luxury Hospitality">🏨 Luxury Hospitality</option>
+                      <option value="Event & Studio Production">🎬 Event & Studio Production</option>
+                    </select>
+                  </div>
                 </div>
                 <div className="mt-4">
                   <label className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/40 mb-1 block">Description</label>
@@ -1773,7 +1796,100 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
             </div>
           )}
 
-          {/* ═══ INSTAGRAM FEED EDITOR ═══ */}
+          {/* ═══ LIVE INSTAGRAM (AUTO-SYNC) EDITOR ═══ */}
+          {activePage === "livesocial" && (
+            <div>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-[#0A1628]">Live Instagram Social Stream</h2>
+                  <p className="text-sm text-[#0A1628]/50 mt-1">Configure your real-time Instagram auto-sync stream directly under the Hero section</p>
+                </div>
+              </div>
+
+              {/* ⚡ Live Instagram Auto-Sync Control Card */}
+              <div className="bg-gradient-to-r from-[#0A1628] to-[#111D30] text-white p-6 sm:p-8 rounded-2xl shadow-lg border border-white/10 mb-8">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-white/10">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white shadow-md">
+                      <Sparkles size={24} />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                        Live Social Stream Settings
+                        <span className="bg-green-500/20 text-green-400 border border-green-500/30 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                          Active & Connected
+                        </span>
+                      </h3>
+                      <p className="text-xs text-white/70 mt-0.5">
+                        Any post or reel uploaded on Instagram automatically appears in the Hero Live Journal.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                  <div>
+                    <label className="block text-xs font-bold text-white/80 uppercase tracking-wider mb-2">
+                      Behold Feed ID
+                    </label>
+                    <input
+                      value={siteContent.instagramSettings?.beholdFeedId || "q88GcAmOqigPmc14PJ3O"}
+                      onChange={(e) => updateContent(c => ({
+                        ...c,
+                        instagramSettings: {
+                          ...c.instagramSettings,
+                          beholdFeedId: e.target.value
+                        }
+                      }))}
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#C5A880]"
+                      placeholder="e.g. q88GcAmOqigPmc14PJ3O"
+                    />
+                    <span className="text-[10px] text-white/40 mt-1 block">Your Behold.so connected Feed ID</span>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-white/80 uppercase tracking-wider mb-2">
+                      Official Brand Handle
+                    </label>
+                    <input
+                      value={siteContent.instagramSettings?.handle || "socialdiariesagency.co"}
+                      onChange={(e) => updateContent(c => ({
+                        ...c,
+                        instagramSettings: {
+                          ...c.instagramSettings,
+                          handle: e.target.value
+                        }
+                      }))}
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#C5A880]"
+                      placeholder="e.g. socialdiariesagency.co"
+                    />
+                    <span className="text-[10px] text-white/40 mt-1 block">Displayed on website badge</span>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-white/80 uppercase tracking-wider mb-2">
+                      Official Profile Link
+                    </label>
+                    <input
+                      value={siteContent.instagramSettings?.profileUrl || "https://www.instagram.com/socialdiariesagency.co/"}
+                      onChange={(e) => updateContent(c => ({
+                        ...c,
+                        instagramSettings: {
+                          ...c.instagramSettings,
+                          profileUrl: e.target.value
+                        }
+                      }))}
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#C5A880]"
+                      placeholder="https://www.instagram.com/socialdiariesagency.co/"
+                    />
+                    <span className="text-[10px] text-white/40 mt-1 block">Opens on "Explore All" button</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ═══ ORIGINAL INSTAGRAM 3x3 GALLERY EDITOR ═══ */}
           {activePage === "instagram" && (
             <div>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -1828,18 +1944,61 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                           }))}
                         />
                         <div className="mt-3 space-y-2">
-                          <input value={tile.type} onChange={(e) => updateContent(c => {
-                            const feed = [...c.instagramFeed]; feed[idx] = { ...feed[idx], type: e.target.value };
-                            return { ...c, instagramFeed: feed };
-                          })} className="w-full border border-[#0A1628]/10 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-[#C5A880]" placeholder="Type (Reel, Photo, BTS, etc)" />
-                          <input value={tile.client} onChange={(e) => updateContent(c => {
-                            const feed = [...c.instagramFeed]; feed[idx] = { ...feed[idx], client: e.target.value };
-                            return { ...c, instagramFeed: feed };
-                          })} className="w-full border border-[#0A1628]/10 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-[#C5A880]" placeholder="Client name" />
-                          <input value={tile.campaign} onChange={(e) => updateContent(c => {
-                            const feed = [...c.instagramFeed]; feed[idx] = { ...feed[idx], campaign: e.target.value };
-                            return { ...c, instagramFeed: feed };
-                          })} className="w-full border border-[#0A1628]/10 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-[#C5A880]" placeholder="Campaign name" />
+                          <div className="grid grid-cols-2 gap-2">
+                            <select
+                              value={tile.type || "Reel"}
+                              onChange={(e) => updateContent(c => {
+                                const feed = [...c.instagramFeed]; feed[idx] = { ...feed[idx], type: e.target.value };
+                                return { ...c, instagramFeed: feed };
+                              })}
+                              className="w-full border border-[#0A1628]/10 rounded-lg px-2.5 py-1.5 text-xs bg-white focus:outline-none focus:border-[#C5A880]"
+                            >
+                              <option value="Reel">🎬 Reel / Video</option>
+                              <option value="Photo">📸 Photo Post</option>
+                              <option value="Campaign">✨ Campaign</option>
+                              <option value="BTS">🎥 BTS</option>
+                            </select>
+
+                            <input
+                              value={tile.likes || ""}
+                              onChange={(e) => updateContent(c => {
+                                const feed = [...c.instagramFeed]; feed[idx] = { ...feed[idx], likes: e.target.value };
+                                return { ...c, instagramFeed: feed };
+                              })}
+                              className="w-full border border-[#0A1628]/10 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#C5A880]"
+                              placeholder="Likes (e.g. 18.4k)"
+                            />
+                          </div>
+
+                          <input
+                            value={tile.client || ""}
+                            onChange={(e) => updateContent(c => {
+                              const feed = [...c.instagramFeed]; feed[idx] = { ...feed[idx], client: e.target.value };
+                              return { ...c, instagramFeed: feed };
+                            })}
+                            className="w-full border border-[#0A1628]/10 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-[#C5A880]"
+                            placeholder="Client or Brand Name"
+                          />
+
+                          <input
+                            value={tile.caption || ""}
+                            onChange={(e) => updateContent(c => {
+                              const feed = [...c.instagramFeed]; feed[idx] = { ...feed[idx], caption: e.target.value };
+                              return { ...c, instagramFeed: feed };
+                            })}
+                            className="w-full border border-[#0A1628]/10 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-[#C5A880]"
+                            placeholder="Post Caption / Description"
+                          />
+
+                          <input
+                            value={tile.videoUrl || ""}
+                            onChange={(e) => updateContent(c => {
+                              const feed = [...c.instagramFeed]; feed[idx] = { ...feed[idx], videoUrl: e.target.value };
+                              return { ...c, instagramFeed: feed };
+                            })}
+                            className="w-full border border-[#0A1628]/10 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-[#C5A880]"
+                            placeholder="Video / Reel URL (Optional for Reels)"
+                          />
                         </div>
                       </div>
                     </div>
@@ -1938,34 +2097,239 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
           {/* ═══ CONTACT SETTINGS ═══ */}
           {activePage === "contact" && (
             <div>
-              <SectionHeader title="Contact Form Reference" subtitle="Lead form options and direct contact channel details" />
+              <SectionHeader title="Global Contact & Channel Settings" subtitle="Edit official contact details — changing them here instantly updates the whole website (Footer, Contact page, Collaboration form & WhatsApp widget)" />
               <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 shadow-sm space-y-6">
                 <div>
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40 mb-3">Direct Contact Channels</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                    <div className="p-4 bg-[#0A1628]/5 rounded-lg">
-                      <p className="text-[10px] font-bold uppercase text-[#0A1628]/40">Official Email</p>
-                      <p className="font-bold text-[#0A1628] mt-1">kunwarsajid2@gmail.com</p>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40">Live Contact Channels (Editable)</h3>
+                    <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                      ● Active Across Entire Website
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Email Input */}
+                    <div className="p-4 bg-[#0A1628]/5 rounded-xl space-y-1.5">
+                      <label className="text-[10px] font-bold uppercase text-[#0A1628]/50 block">Official Email Address</label>
+                      <input
+                        type="email"
+                        value={siteContent.contactSettings?.email || "kunwarsajid2@gmail.com"}
+                        onChange={(e) => updateContent(prev => ({
+                          ...prev,
+                          contactSettings: {
+                            ...prev.contactSettings,
+                            email: e.target.value
+                          }
+                        }))}
+                        placeholder="e.g. kunwarsajid2@gmail.com"
+                        className="w-full bg-white border border-[#0A1628]/15 rounded-lg px-3 py-2 text-xs font-bold text-[#0A1628] focus:outline-none focus:border-[#C5A880]"
+                      />
+                      <p className="text-[10px] text-[#0A1628]/40">Shown on Contact page, Homepage form, and Footer.</p>
                     </div>
-                    <div className="p-4 bg-[#0A1628]/5 rounded-lg">
-                      <p className="text-[10px] font-bold uppercase text-[#0A1628]/40">WhatsApp Number</p>
-                      <p className="font-bold text-[#0A1628] mt-1">+91 76684 87182</p>
+
+                    {/* WhatsApp Input */}
+                    <div className="p-4 bg-[#0A1628]/5 rounded-xl space-y-1.5">
+                      <label className="text-[10px] font-bold uppercase text-[#0A1628]/50 block">Official WhatsApp Number</label>
+                      <input
+                        type="text"
+                        value={siteContent.contactSettings?.whatsapp || "+91 76684 87182"}
+                        onChange={(e) => updateContent(prev => ({
+                          ...prev,
+                          contactSettings: {
+                            ...prev.contactSettings,
+                            whatsapp: e.target.value,
+                            phone: e.target.value
+                          }
+                        }))}
+                        placeholder="e.g. +91 76684 87182"
+                        className="w-full bg-white border border-[#0A1628]/15 rounded-lg px-3 py-2 text-xs font-bold text-[#0A1628] focus:outline-none focus:border-[#C5A880]"
+                      />
+                      <p className="text-[10px] text-[#0A1628]/40">Connected to direct WhatsApp Chat buttons & contact links.</p>
+                    </div>
+
+                    {/* Instagram Handle Input */}
+                    <div className="p-4 bg-[#0A1628]/5 rounded-xl space-y-1.5">
+                      <label className="text-[10px] font-bold uppercase text-[#0A1628]/50 block">Official Instagram Handle</label>
+                      <input
+                        type="text"
+                        value={siteContent.contactSettings?.instagramHandle || "@socialdiariesagency.co"}
+                        onChange={(e) => updateContent(prev => ({
+                          ...prev,
+                          contactSettings: {
+                            ...prev.contactSettings,
+                            instagramHandle: e.target.value
+                          }
+                        }))}
+                        placeholder="e.g. @socialdiariesagency.co"
+                        className="w-full bg-white border border-[#0A1628]/15 rounded-lg px-3 py-2 text-xs font-bold text-[#0A1628] focus:outline-none focus:border-[#C5A880]"
+                      />
+                      <p className="text-[10px] text-[#0A1628]/40">Display text for Instagram buttons across the site.</p>
+                    </div>
+
+                    {/* Instagram Profile URL Input */}
+                    <div className="p-4 bg-[#0A1628]/5 rounded-xl space-y-1.5">
+                      <label className="text-[10px] font-bold uppercase text-[#0A1628]/50 block">Official Instagram Profile Link</label>
+                      <input
+                        type="url"
+                        value={siteContent.contactSettings?.instagramUrl || "https://www.instagram.com/socialdiariesagency.co/"}
+                        onChange={(e) => updateContent(prev => ({
+                          ...prev,
+                          contactSettings: {
+                            ...prev.contactSettings,
+                            instagramUrl: e.target.value
+                          }
+                        }))}
+                        placeholder="https://www.instagram.com/socialdiariesagency.co/"
+                        className="w-full bg-white border border-[#0A1628]/15 rounded-lg px-3 py-2 text-xs font-bold text-[#0A1628] focus:outline-none focus:border-[#C5A880]"
+                      />
+                      <p className="text-[10px] text-[#0A1628]/40">Direct link opened when visitors click Instagram icons.</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#0A1628]/5">
-                  <div>
-                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/40 mb-3">Business Types Dropdown</h4>
-                    {["Restaurant", "Cafe", "Hotel / Hospitality", "Fashion / Lifestyle", "Beauty / Skincare", "D2C Brand", "Events", "Other"].map(t => (
-                      <div key={t} className="text-sm py-1.5 px-3 border-b border-[#0A1628]/5 last:border-0">{t}</div>
-                    ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-[#0A1628]/10">
+                  {/* Business Types Manager */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/60">
+                        🏢 Business Types Options ({siteContent.contactSettings?.businessTypes?.length || 8})
+                      </h4>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newType = prompt("Enter new business type (e.g. Real Estate):");
+                          if (newType && newType.trim()) {
+                            updateContent(prev => ({
+                              ...prev,
+                              contactSettings: {
+                                ...prev.contactSettings,
+                                businessTypes: [...(prev.contactSettings?.businessTypes || ["Restaurant", "Cafe", "Hotel / Hospitality", "Fashion / Lifestyle", "Beauty / Skincare", "D2C Brand", "Events", "Other"]), newType.trim()]
+                              }
+                            }));
+                          }
+                        }}
+                        className="text-[11px] bg-[#0A1628] text-[#C5A880] px-3 py-1 rounded-full font-bold uppercase tracking-wider hover:bg-[#111D30] transition-colors cursor-pointer shadow-sm"
+                      >
+                        + Add Type
+                      </button>
+                    </div>
+
+                    <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                      {(siteContent.contactSettings?.businessTypes || ["Restaurant", "Cafe", "Hotel / Hospitality", "Fashion / Lifestyle", "Beauty / Skincare", "D2C Brand", "Events", "Other"]).map((item, idx) => (
+                        <div key={idx} className="flex items-center gap-2 bg-[#0A1628]/5 p-1.5 rounded-lg border border-[#0A1628]/5">
+                          <input
+                            type="text"
+                            value={item}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              updateContent(prev => {
+                                const list = [...(prev.contactSettings?.businessTypes || ["Restaurant", "Cafe", "Hotel / Hospitality", "Fashion / Lifestyle", "Beauty / Skincare", "D2C Brand", "Events", "Other"])];
+                                list[idx] = val;
+                                return {
+                                  ...prev,
+                                  contactSettings: {
+                                    ...prev.contactSettings,
+                                    businessTypes: list
+                                  }
+                                };
+                              });
+                            }}
+                            className="flex-1 bg-white border border-[#0A1628]/15 rounded-md px-2.5 py-1.5 text-xs font-medium text-[#0A1628] focus:outline-none focus:border-[#C5A880]"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              updateContent(prev => {
+                                const list = (prev.contactSettings?.businessTypes || ["Restaurant", "Cafe", "Hotel / Hospitality", "Fashion / Lifestyle", "Beauty / Skincare", "D2C Brand", "Events", "Other"]).filter((_, i) => i !== idx);
+                                return {
+                                  ...prev,
+                                  contactSettings: {
+                                    ...prev.contactSettings,
+                                    businessTypes: list
+                                  }
+                                };
+                              });
+                            }}
+                            className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition-colors cursor-pointer"
+                            title="Remove"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/40 mb-3">Service Options Dropdown</h4>
-                    {["Social Media Management", "Reels & Short-form Content", "Full Brand Campaign", "Product Photography", "Influencer Strategy", "Content Strategy & Consulting"].map(s => (
-                      <div key={s} className="text-sm py-1.5 px-3 border-b border-[#0A1628]/5 last:border-0">{s}</div>
-                    ))}
+
+                  {/* Service Options Manager */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/60">
+                        ⚡ Service Options Dropdown ({siteContent.contactSettings?.serviceOptions?.length || 6})
+                      </h4>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newService = prompt("Enter new service option (e.g. Drone Video Production):");
+                          if (newService && newService.trim()) {
+                            updateContent(prev => ({
+                              ...prev,
+                              contactSettings: {
+                                ...prev.contactSettings,
+                                serviceOptions: [...(prev.contactSettings?.serviceOptions || ["Social Media Management", "Reels & Short-form Content", "Full Brand Campaign", "Product Photography", "Influencer Strategy", "Content Strategy & Consulting"]), newService.trim()]
+                              }
+                            }));
+                          }
+                        }}
+                        className="text-[11px] bg-[#0A1628] text-[#C5A880] px-3 py-1 rounded-full font-bold uppercase tracking-wider hover:bg-[#111D30] transition-colors cursor-pointer shadow-sm"
+                      >
+                        + Add Service
+                      </button>
+                    </div>
+
+                    <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                      {(siteContent.contactSettings?.serviceOptions || ["Social Media Management", "Reels & Short-form Content", "Full Brand Campaign", "Product Photography", "Influencer Strategy", "Content Strategy & Consulting"]).map((item, idx) => (
+                        <div key={idx} className="flex items-center gap-2 bg-[#0A1628]/5 p-1.5 rounded-lg border border-[#0A1628]/5">
+                          <input
+                            type="text"
+                            value={item}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              updateContent(prev => {
+                                const list = [...(prev.contactSettings?.serviceOptions || ["Social Media Management", "Reels & Short-form Content", "Full Brand Campaign", "Product Photography", "Influencer Strategy", "Content Strategy & Consulting"])];
+                                list[idx] = val;
+                                return {
+                                  ...prev,
+                                  contactSettings: {
+                                    ...prev.contactSettings,
+                                    serviceOptions: list
+                                  }
+                                };
+                              });
+                            }}
+                            className="flex-1 bg-white border border-[#0A1628]/15 rounded-md px-2.5 py-1.5 text-xs font-medium text-[#0A1628] focus:outline-none focus:border-[#C5A880]"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              updateContent(prev => {
+                                const list = (prev.contactSettings?.serviceOptions || ["Social Media Management", "Reels & Short-form Content", "Full Brand Campaign", "Product Photography", "Influencer Strategy", "Content Strategy & Consulting"]).filter((_, i) => i !== idx);
+                                return {
+                                  ...prev,
+                                  contactSettings: {
+                                    ...prev.contactSettings,
+                                    serviceOptions: list
+                                  }
+                                };
+                              });
+                            }}
+                            className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition-colors cursor-pointer"
+                            title="Remove"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2177,7 +2541,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                         branding: {
                           ...prev.branding,
                           logoUrl: url,
-                          logoText: prev.branding?.logoText || "Delhi Diaries"
+                          logoText: prev.branding?.logoText || "Social Diaries"
                         }
                       }))}
                     />
@@ -2191,7 +2555,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                       </label>
                       <input
                         type="text"
-                        value={siteContent.branding?.logoText || "Delhi Diaries"}
+                        value={siteContent.branding?.logoText || "Social Diaries"}
                         onChange={(e) => updateContent(prev => ({
                           ...prev,
                           branding: {
@@ -2200,7 +2564,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                             logoText: e.target.value
                           }
                         }))}
-                        placeholder="e.g. Delhi Diaries"
+                        placeholder="e.g. Social Diaries"
                         className="w-full border border-[#0A1628]/15 rounded-lg px-3 py-2.5 text-xs font-medium focus:outline-none focus:border-[#C5A880]"
                       />
                     </div>
@@ -2260,7 +2624,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                           metaDescription: prev.seo?.metaDescription || ""
                         }
                       }))}
-                      placeholder="e.g. Delhi Diaries Official | Social-First Creative Studio New Delhi"
+                      placeholder="e.g. Social Diaries Official | Social-First Creative Studio New Delhi"
                       className="w-full border border-[#0A1628]/15 rounded-lg px-3 py-2.5 text-xs font-medium focus:outline-none focus:border-[#C5A880]"
                     />
                   </div>
@@ -2320,11 +2684,11 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                     </p>
                     <div className="space-y-1">
                       <p className="text-xs text-[#202124] flex items-center gap-1">
-                        <span className="font-semibold">delhidiariesofficial.com</span>
+                        <span className="font-semibold">socialdiariesagency.co</span>
                         <span className="text-gray-400">›</span>
                       </p>
                       <h4 className="text-sm font-medium text-[#1A0DAB] hover:underline cursor-pointer line-clamp-1">
-                        {siteContent.seo?.metaTitle || "Delhi Diaries Official | Social-First Creative Studio New Delhi"}
+                        {siteContent.seo?.metaTitle || "Social Diaries Official | Social-First Creative Studio New Delhi"}
                       </h4>
                       <p className="text-xs text-[#4D5156] line-clamp-2 leading-relaxed">
                         {siteContent.seo?.metaDescription || "We craft viral reels, luxury photography, and social-first content strategies for premium restaurants, cafes, and lifestyle brands."}

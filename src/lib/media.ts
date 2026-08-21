@@ -1,5 +1,5 @@
 /**
- * Delhi Diaries Media Optimization Engine
+ * Social Diaries Media Optimization Engine
  * Transforms Cloudinary URLs to use dynamic codec compression (q_auto, f_auto)
  * to ensure 100% stutter-free and ultra-smooth video buffering on mobile 4G/5G.
  */

@@ -13,7 +13,8 @@ export default function CustomCursor() {
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
 
-  const springConfig = { damping: 25, stiffness: 1000, mass: 0.1 };
+  // Buttery-smooth spring physics tuned for zero lag and fluid trailing
+  const springConfig = { damping: 32, stiffness: 450, mass: 0.08 };
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 
@@ -60,8 +61,8 @@ export default function CustomCursor() {
     const handleMouseLeaveWindow = () => setIsVisible(false);
     const handleMouseEnterWindow = () => setIsVisible(true);
 
-    window.addEventListener("mousemove", moveCursor);
-    window.addEventListener("mouseover", handleMouseOver);
+    window.addEventListener("mousemove", moveCursor, { passive: true });
+    window.addEventListener("mouseover", handleMouseOver, { passive: true });
     document.addEventListener("mouseleave", handleMouseLeaveWindow);
     document.addEventListener("mouseenter", handleMouseEnterWindow);
 
@@ -76,51 +77,49 @@ export default function CustomCursor() {
 
   if (isAdmin || !isVisible) return null;
 
+  // GPU-accelerated scale transforms for 144Hz butter-smooth rendering
   const variants = {
     default: {
-      width: 12,
-      height: 12,
-      backgroundColor: "#1A1715",
-      border: "0px solid transparent",
+      scale: 1,
+      opacity: 1,
+      backgroundColor: "#FFFFFF",
     },
     hover: {
-      width: 48,
-      height: 48,
-      backgroundColor: "transparent",
-      border: "1px solid #1A1715",
+      scale: 3.2,
+      opacity: 0.95,
+      backgroundColor: "#FFFFFF",
     },
     view: {
-      width: 80,
-      height: 80,
-      backgroundColor: "#1A1715",
-      border: "0px solid transparent",
-      color: "#F5F3EF",
+      scale: 5.6,
+      opacity: 1,
+      backgroundColor: "#FFFFFF",
     },
     play: {
-      width: 80,
-      height: 80,
-      backgroundColor: "#1A1715",
-      border: "0px solid transparent",
-      color: "#F5F3EF",
+      scale: 5.6,
+      opacity: 1,
+      backgroundColor: "#FFFFFF",
     }
   };
 
   return (
     <motion.div
-      className="pointer-events-none fixed top-0 left-0 z-[9999] hidden -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-[10px] font-medium tracking-widest lg:flex"
+      className="pointer-events-none fixed top-0 left-0 z-[99999] hidden -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-[10px] font-bold tracking-widest lg:flex mix-blend-difference w-4 h-4"
       style={{
         x: cursorXSpring,
         y: cursorYSpring,
+        willChange: "transform",
+        backfaceVisibility: "hidden",
       }}
       animate={cursorType}
       variants={variants}
-      transition={{ type: "spring", stiffness: 500, damping: 28 }}
+      transition={{ type: "spring", stiffness: 350, damping: 24, mass: 0.1 }}
     >
       {cursorText && (
         <motion.span
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-studio-bg"
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 0.2 }}
+          exit={{ opacity: 0, scale: 0.5 }}
+          className="text-black font-black tracking-widest text-[36px] select-none uppercase pointer-events-none"
         >
           {cursorText}
         </motion.span>

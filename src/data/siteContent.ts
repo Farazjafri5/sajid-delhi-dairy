@@ -112,7 +112,7 @@ export const defaultSiteContent: SiteContent = {
   ],
   "testimonials": [
     {
-      "quote": "Delhi Diaries Official didn't just give us reels. They gave our restaurant a soul online. Our table reservations booked out 2 weeks in advance within 60 days of partnering.",
+      "quote": "Social Diaries Official didn't just give us reels. They gave our restaurant a soul online. Our table reservations booked out 2 weeks in advance within 60 days of partnering.",
       "author": "Aditya Malhotra",
       "company": "Dastan Dining",
       "industry": "Hospitality Group",
@@ -135,7 +135,11 @@ export const defaultSiteContent: SiteContent = {
       "caption": "The theatrics of modern Indian flavors. Smoky, aromatic, and made for the camera.",
       "image": "/images/restaurant_1.png",
       "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787002114/k2n7vd30s0g97ghwbrbg.mp4",
+<<<<<<< HEAD
       "permalink": "https://instagram.com/delhidiariesofficial",
+=======
+      "permalink": "https://instagram.com/socialdiariesagency.co",
+>>>>>>> 3ecc427 (feat: rebrand to Social Diaries (@socialdiariesagency.co), dynamic feed pagination & sitemap)
       "likes": "18.4k",
       "comments": "412",
       "active": true
@@ -147,7 +151,11 @@ export const defaultSiteContent: SiteContent = {
       "campaign": "Golden Morning Pastries",
       "caption": "Crispy layers and morning roasts. The aesthetic breakfast setup in Champa Gali.",
       "image": "/images/cafe_1.png",
+<<<<<<< HEAD
       "permalink": "https://instagram.com/delhidiariesofficial",
+=======
+      "permalink": "https://instagram.com/socialdiariesagency.co",
+>>>>>>> 3ecc427 (feat: rebrand to Social Diaries (@socialdiariesagency.co), dynamic feed pagination & sitemap)
       "likes": "9.2k",
       "comments": "188",
       "active": true
@@ -155,12 +163,20 @@ export const defaultSiteContent: SiteContent = {
     {
       "id": "insta-3",
       "type": "Reel",
+<<<<<<< HEAD
       "client": "Delhi Diaries Studio",
+=======
+      "client": "Social Diaries Studio",
+>>>>>>> 3ecc427 (feat: rebrand to Social Diaries (@socialdiariesagency.co), dynamic feed pagination & sitemap)
       "campaign": "Cinematic Heritage Reels",
       "caption": "Capturing Delhi from angles you've never experienced before.",
       "image": "/images/restaurant_3.png",
       "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787131034/chzhnlkme5j1myvkk0i2.mp4",
+<<<<<<< HEAD
       "permalink": "https://instagram.com/delhidiariesofficial",
+=======
+      "permalink": "https://instagram.com/socialdiariesagency.co",
+>>>>>>> 3ecc427 (feat: rebrand to Social Diaries (@socialdiariesagency.co), dynamic feed pagination & sitemap)
       "likes": "24.6k",
       "comments": "630",
       "active": true
@@ -172,7 +188,11 @@ export const defaultSiteContent: SiteContent = {
       "campaign": "Daylight Ceramic Shadow",
       "caption": "Earthy textures meet contemporary living. Natural sunlit photography.",
       "image": "/images/lifestyle_1.png",
+<<<<<<< HEAD
       "permalink": "https://instagram.com/delhidiariesofficial",
+=======
+      "permalink": "https://instagram.com/socialdiariesagency.co",
+>>>>>>> 3ecc427 (feat: rebrand to Social Diaries (@socialdiariesagency.co), dynamic feed pagination & sitemap)
       "likes": "7.8k",
       "comments": "120",
       "active": true
@@ -185,7 +205,11 @@ export const defaultSiteContent: SiteContent = {
       "caption": "Drip, glide, and glow. Visual satisfaction that converts viewers into skincare customers.",
       "image": "/images/d2c_1.png",
       "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787002132/xslnbxe2pbo3or9srgoq.mp4",
+<<<<<<< HEAD
       "permalink": "https://instagram.com/delhidiariesofficial",
+=======
+      "permalink": "https://instagram.com/socialdiariesagency.co",
+>>>>>>> 3ecc427 (feat: rebrand to Social Diaries (@socialdiariesagency.co), dynamic feed pagination & sitemap)
       "likes": "14.9k",
       "comments": "295",
       "active": true
@@ -193,11 +217,19 @@ export const defaultSiteContent: SiteContent = {
     {
       "id": "insta-6",
       "type": "Photo",
+<<<<<<< HEAD
       "client": "Delhi Diaries Studio",
       "campaign": "Behind the Lens at Saket",
       "caption": "Lighting setup for luxury beverage shoot. Gear, passion, and precision.",
       "image": "/images/project_restaurant.png",
       "permalink": "https://instagram.com/delhidiariesofficial",
+=======
+      "client": "Social Diaries Studio",
+      "campaign": "Behind the Lens at Saket",
+      "caption": "Lighting setup for luxury beverage shoot. Gear, passion, and precision.",
+      "image": "/images/project_restaurant.png",
+      "permalink": "https://instagram.com/socialdiariesagency.co",
+>>>>>>> 3ecc427 (feat: rebrand to Social Diaries (@socialdiariesagency.co), dynamic feed pagination & sitemap)
       "likes": "11.1k",
       "comments": "210",
       "active": true
@@ -205,49 +237,50 @@ export const defaultSiteContent: SiteContent = {
     {
       "id": "insta-7",
       "type": "Reel",
-      "client": "Roast & Co.",
-      "campaign": "The Art of Slow Drip",
-      "caption": "Single origin roast brewing in slow motion. Smells like passion.",
-      "image": "/images/cafe_2.png",
-      "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787002114/k2n7vd30s0g97ghwbrbg.mp4",
-      "permalink": "https://instagram.com/delhidiariesofficial",
-      "likes": "16.3k",
-      "comments": "380",
+      "client": "The Artisan Bakery",
+      "campaign": "Sourdough Crumb Rise",
+      "caption": "Macro steam shots. Crisp crust crunches. Pure sensory engagement for pastry lovers.",
+      "image": "/images/project_cafe.png",
+      "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787131034/chzhnlkme5j1myvkk0i2.mp4",
+      "permalink": "https://instagram.com/socialdiariesagency.co",
+      "likes": "31.4k",
+      "comments": "890",
       "active": true
     },
     {
       "id": "insta-8",
       "type": "Photo",
-      "client": "Dastan",
-      "campaign": "Gourmet Plating & Smoke",
-      "caption": "Culinary arts redefined. Visual identity designed for high-end dining.",
-      "image": "/images/restaurant_2.png",
-      "permalink": "https://instagram.com/delhidiariesofficial",
-      "likes": "13.5k",
-      "comments": "240",
+      "client": "Aura Jewelry",
+      "campaign": "24k Pure Gold Texture",
+      "caption": "Macro photography highlighting handcrafted Indian fine jewelry details.",
+      "image": "/images/project_d2c.png",
+      "permalink": "https://instagram.com/socialdiariesagency.co",
+      "likes": "16.3k",
+      "comments": "340",
       "active": true
     },
     {
       "id": "insta-9",
-      "type": "Photo",
-      "client": "Mitti",
-      "campaign": "Morning Handcrafted Pottery",
-      "caption": "Craftsmanship rooted in timeless tradition. Hand-molded ceramics.",
-      "image": "/images/lifestyle_2.png",
-      "permalink": "https://instagram.com/delhidiariesofficial",
-      "likes": "8.4k",
-      "comments": "145",
+      "type": "Reel",
+      "client": "Velvet Lounge",
+      "campaign": "Midnight Mixology Pour",
+      "caption": "Smoked rosemary infusion in super slow motion. Cocktails redefined.",
+      "image": "/images/project_restaurant.png",
+      "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787002132/xslnbxe2pbo3or9srgoq.mp4",
+      "permalink": "https://instagram.com/socialdiariesagency.co",
+      "likes": "18.7k",
+      "comments": "420",
       "active": true
     },
     {
       "id": "insta-10",
       "type": "Reel",
-      "client": "Soma Skincare",
-      "campaign": "Pure Serum Droplet Velocity",
-      "caption": "High-speed macro capture of organic botanicals.",
-      "image": "/images/d2c_2.png",
+      "client": "Roast & Co.",
+      "campaign": "Morning Espresso Alchemy",
+      "caption": "The rich golden crema pulling at 9 bars of pressure. Sound on for the hiss.",
+      "image": "/images/cafe_1.png",
       "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787002132/xslnbxe2pbo3or9srgoq.mp4",
-      "permalink": "https://instagram.com/delhidiariesofficial",
+      "permalink": "https://instagram.com/socialdiariesagency.co",
       "likes": "21.0k",
       "comments": "512",
       "active": true
@@ -255,11 +288,11 @@ export const defaultSiteContent: SiteContent = {
     {
       "id": "insta-11",
       "type": "Photo",
-      "client": "Delhi Diaries",
+      "client": "Social Diaries",
       "campaign": "Vintage Monolith Architecture",
       "caption": "Where ancient sandstone meets the future of creative production.",
       "image": "/images/restaurant_3.png",
-      "permalink": "https://instagram.com/delhidiariesofficial",
+      "permalink": "https://instagram.com/socialdiariesagency.co",
       "likes": "19.7k",
       "comments": "480",
       "active": true
@@ -272,14 +305,14 @@ export const defaultSiteContent: SiteContent = {
       "caption": "When the lights dim and the music rises. Delhi nightlife documented.",
       "image": "/images/restaurant_1.png",
       "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787131034/chzhnlkme5j1myvkk0i2.mp4",
-      "permalink": "https://instagram.com/delhidiariesofficial",
+      "permalink": "https://instagram.com/socialdiariesagency.co",
       "likes": "28.3k",
       "comments": "790",
       "active": true
     }
   ],
   "instagramSettings": {
-    "beholdFeedId": "vQRCVA3zC7Ec897iHe4Y",
+    "beholdFeedId": "BD1mmhBkq9v3NmoD6OdJ",
     "handle": "socialdiariesagency.co",
     "profileUrl": "https://www.instagram.com/socialdiariesagency.co/",
     "autoSync": true
@@ -288,8 +321,8 @@ export const defaultSiteContent: SiteContent = {
     "email": "kunwarsajid2@gmail.com",
     "phone": "+91 76684 87182",
     "whatsapp": "+91 76684 87182",
-    "instagramHandle": "@delhidiariesofficial",
-    "instagramUrl": "https://www.instagram.com/delhidiariesofficial_?igsh=amUyZml1ejVmY2M1",
+    "instagramHandle": "@socialdiariesagency.co",
+    "instagramUrl": "https://www.instagram.com/socialdiariesagency.co/",
     "businessTypes": [
       "Restaurant",
       "Cafe",

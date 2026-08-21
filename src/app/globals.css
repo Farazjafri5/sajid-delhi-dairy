@@ -104,7 +104,7 @@ body {
 }
 
 .footer-gold-glow {
-  background: #1A1715; /* Clean base color */
+  background: #070F1B; /* Same Deep Midnight Obsidian as Section 11 for 100% seamless continuity */
   position: relative;
   overflow: hidden;
 }
@@ -117,7 +117,7 @@ body {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at 75% 30%, rgba(212, 175, 55, 0.16) 0%, transparent 45%);
+  background: radial-gradient(circle at 75% 30%, rgba(197, 168, 128, 0.14) 0%, transparent 45%);
   pointer-events: none;
   z-index: 0;
   animation: footer-wave-motion-1 37s linear infinite;
@@ -131,7 +131,7 @@ body {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at 25% 70%, rgba(245, 229, 201, 0.12) 0%, transparent 40%);
+  background: radial-gradient(circle at 25% 70%, rgba(197, 168, 128, 0.08) 0%, transparent 40%);
   pointer-events: none;
   z-index: 0;
   animation: footer-wave-motion-2 23s linear infinite;
@@ -183,16 +183,20 @@ body::before {
 /* Fluid Typographic Clamps for Responsive Headers */
 .heading-serif-hero {
   font-family: var(--font-playfair), serif;
-  font-size: clamp(2.4rem, 6.5vw, 6.2rem);
-  line-height: 1.05;
-  letter-spacing: -0.03em;
+  font-size: clamp(2rem, 5vw, 4.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .heading-serif-section {
   font-family: var(--font-playfair), serif;
-  font-size: clamp(1.8rem, 4.5vw, 4.2rem);
-  line-height: 1.1;
+  font-size: clamp(1.45rem, 3vw, 2.75rem);
+  line-height: 1.18;
   letter-spacing: -0.02em;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 /* Premium Champagne Gold to Dark Metallic text gradient */
