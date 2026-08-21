@@ -285,9 +285,9 @@ export const defaultSiteContent: SiteContent = {
     "autoSync": true
   },
   "contactSettings": {
-    "email": "kunwarsajid2@gmail.com12",
-    "phone": "+91 76684 78678",
-    "whatsapp": "+91 76684 78678",
+    "email": "kunwarsajid2@gmail.com",
+    "phone": "+91 76684 87182",
+    "whatsapp": "+91 76684 87182",
     "instagramHandle": "@delhidiariesofficial",
     "instagramUrl": "https://www.instagram.com/delhidiariesofficial_?igsh=amUyZml1ejVmY2M1",
     "businessTypes": [
