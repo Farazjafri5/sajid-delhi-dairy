@@ -281,7 +281,7 @@ export const defaultSiteContent: SiteContent = {
   "instagramSettings": {
     "beholdFeedId": "vQRCVA3zC7Ec897iHe4Y",
     "handle": "socialdiariesagency.co",
-    "profileUrl": "https://www.instagram.com/delhidiariesofficial_?igsh=amUyZml1ejVmY2M1",
+    "profileUrl": "https://www.instagram.com/socialdiariesagency.co/",
     "autoSync": true
   },
   "contactSettings": {
