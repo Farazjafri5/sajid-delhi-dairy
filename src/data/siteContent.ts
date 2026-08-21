@@ -279,7 +279,7 @@ export const defaultSiteContent: SiteContent = {
     }
   ],
   "instagramSettings": {
-    "beholdFeedId": "q88GcAmOqigPmc14PJ3O",
+    "beholdFeedId": "vQRCVA3zC7Ec897iHe4Y",
     "handle": "delhidiariesofficial",
     "profileUrl": "https://www.instagram.com/delhidiariesofficial_?igsh=amUyZml1ejVmY2M1",
     "autoSync": true
