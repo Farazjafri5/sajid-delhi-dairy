@@ -31,7 +31,7 @@ export const projects: Project[] = [
       "Content Strategy"
     ],
     "description": "How we turned an upscale modern Indian restaurant in New Delhi into an online sensation, driving a 140% increase in table bookings through viral reels.",
-    "image": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787131018/flqdmglajq5s7g0vjowr.jpg",
+    "image": "/images/restaurant_1.png",
     "video": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787131034/chzhnlkme5j1myvkk0i2.mp4",
     "brief": "Dastan wanted to transition from a traditional fine-dining restaurant to a space that speaks to younger, design-forward food enthusiasts, without losing its luxury appeal.",
     "idea": "We crafted a visual style centered around 'culinary theatrics'—capturing the smoke, the colors, and the textures of their modern Indian dishes in high-speed, close-up vertical videos.",
