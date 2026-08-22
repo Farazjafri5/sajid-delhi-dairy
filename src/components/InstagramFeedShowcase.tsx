@@ -61,7 +61,7 @@ export default function InstagramFeedShowcase({
   const defaultLimit = isMobile ? 6 : 9;
   const stepCount = isMobile ? 6 : 9;
 
-  const activeBeholdId = beholdFeedId || process.env.NEXT_PUBLIC_BEHOLD_FEED_ID || "BD1mmhBkq9v3NmoD6OdJ";
+  const activeBeholdId = beholdFeedId || process.env.NEXT_PUBLIC_BEHOLD_FEED_ID || "jMYKX8SAVZtq7lMpJFRx";
 
   // Live Auto-fetch from Behold Feed API
   React.useEffect(() => {
@@ -78,13 +78,13 @@ export default function InstagramFeedShowcase({
         const postsArray = Array.isArray(data) ? data : (data?.posts || []);
         if (postsArray.length > 0) {
           const livePosts: InstagramTile[] = postsArray.map((item: any, i: number) => {
-            const isVideo = item.mediaType === "VIDEO" || item.mediaType === "REEL" || !!item.videoUrl;
-            const imgSrc = item.sizes?.large?.mediaUrl || item.sizes?.medium?.mediaUrl || item.mediaUrl || item.thumbnailUrl || "";
+            const isVideo = item.mediaType === "VIDEO" || item.mediaType === "REEL" || !!item.videoUrl || (item.mediaUrl && typeof item.mediaUrl === "string" && item.mediaUrl.includes(".mp4"));
+            const imgSrc = item.sizes?.large?.mediaUrl || item.sizes?.medium?.mediaUrl || item.thumbnailUrl || item.mediaUrl || "";
             return {
               id: item.id || `live-${i}`,
               type: isVideo ? "Reel" : "Photo",
               client: "Social Diaries",
-              campaign: item.caption ? (item.caption.slice(0, 35) + "...") : "Instagram Post",
+              campaign: item.caption ? (item.caption.slice(0, 35) + "...") : (isVideo ? "Instagram Reel" : "Instagram Photo"),
               caption: item.caption || "Live from Instagram @socialdiariesagency.co",
               image: imgSrc,
               videoUrl: isVideo ? (item.mediaUrl || item.videoUrl) : undefined,
@@ -102,7 +102,7 @@ export default function InstagramFeedShowcase({
       .catch((err) => {
         console.warn("Behold feed fetch note:", err);
       });
-  }, [beholdFeedId, accountUrl, initialTiles]);
+  }, [activeBeholdId, beholdFeedId, accountUrl, initialTiles]);
 
   // Modals
   const [activeReel, setActiveReel] = useState<InstagramTile | null>(null);

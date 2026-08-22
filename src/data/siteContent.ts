@@ -280,7 +280,7 @@ export const defaultSiteContent: SiteContent = {
     }
   ],
   "instagramSettings": {
-    "beholdFeedId": "BD1mmhBkq9v3NmoD6OdJ",
+    "beholdFeedId": "jMYKX8SAVZtq7lMpJFRx",
     "handle": "socialdiariesagency.co",
     "profileUrl": "https://www.instagram.com/socialdiariesagency.co/",
     "autoSync": true

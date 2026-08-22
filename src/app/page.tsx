@@ -476,7 +476,7 @@ export default function Home() {
         initialTiles={siteContent?.instagramFeed || []}
         accountHandle={siteContent?.instagramSettings?.handle || "socialdiariesagency.co"}
         accountUrl={siteContent?.instagramSettings?.profileUrl || "https://www.instagram.com/socialdiariesagency.co/"}
-        beholdFeedId={siteContent?.instagramSettings?.beholdFeedId || process.env.NEXT_PUBLIC_BEHOLD_FEED_ID || "BD1mmhBkq9v3NmoD6OdJ"}
+        beholdFeedId={siteContent?.instagramSettings?.beholdFeedId || process.env.NEXT_PUBLIC_BEHOLD_FEED_ID || "jMYKX8SAVZtq7lMpJFRx"}
       />
 
       {/* 3. SHOWREEL SECTION (Ultra-Luxury Cinematic Cinema & Studio Reel) */}
