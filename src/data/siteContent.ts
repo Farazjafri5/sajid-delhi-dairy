@@ -124,6 +124,13 @@ export const defaultSiteContent: SiteContent = {
       "company": "Roast & Co.",
       "industry": "Cafe Founder",
       "active": true
+    },
+    {
+      "quote": "They gave our restaurant a soul online. Our table reservations booked out 2 weeks in advance within 60 days of partnering.",
+      "author": "Sen",
+      "company": " Co.",
+      "industry": "Founder",
+      "active": true
     }
   ],
   "instagramFeed": [
