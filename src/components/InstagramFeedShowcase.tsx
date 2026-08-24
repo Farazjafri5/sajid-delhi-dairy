@@ -200,12 +200,27 @@ export default function InstagramFeedShowcase({
   const [isReelMuted, setIsReelMuted] = useState<boolean>(false);
   const [activePhoto, setActivePhoto] = useState<InstagramTile | null>(null);
 
-  // Filter active and non-hidden items
+  // Helper to extract Instagram shortcode (e.g. Dca8QVTE9eN)
+  const extractCode = (url?: string) => {
+    if (!url) return "";
+    const m = url.match(/\/(?:p|reel|tv)\/([a-zA-Z0-9_-]+)/);
+    return m ? m[1] : "";
+  };
+
+  // Filter active and non-hidden items (100% reliable matching)
   const activeItems = useMemo(() => {
     return (feedList || []).filter((item) => {
       if (!item || item.active === false) return false;
-      if (item.id && hiddenIds.includes(item.id)) return false;
-      if (item.permalink && hiddenLinks.some(link => link && (item.permalink?.includes(link) || link.includes(item.permalink || "")))) return false;
+      const itemId = String(item.id || "");
+      if (itemId && hiddenIds.some(hId => String(hId) === itemId)) return false;
+
+      const itemPermalink = item.permalink || (item as any).url || "";
+      const itemCode = extractCode(itemPermalink);
+
+      if (itemCode && hiddenLinks.some(link => extractCode(link) === itemCode)) return false;
+      if (itemPermalink && hiddenLinks.some(link => link && (itemPermalink.includes(link) || link.includes(itemPermalink)))) return false;
+      if (itemCode && hiddenIds.includes(itemCode)) return false;
+
       return true;
     });
   }, [feedList, hiddenIds, hiddenLinks]);
