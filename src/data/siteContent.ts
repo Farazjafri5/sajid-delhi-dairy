@@ -315,7 +315,7 @@ export const defaultSiteContent: SiteContent = {
     ]
   },
   "branding": {
-    "logoUrl": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787557942/eo9etlhtfw7xu7xgijhi.png",
+    "logoUrl": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787558016/pozsev1d5del4rxveexz.png",
     "logoText": "Social Diaries"
   }
 };
