@@ -19,7 +19,7 @@ export const defaultSiteContent: SiteContent = {
     ]
   },
   "showreel": {
-    "heading": "This is what we do. ",
+    "heading": "This is what we do. 34233",
     "description": "We shoot short-form videos designed to convert casual scrollers into loyal customers. No stock templates, no boring structures.",
     "leftImages": [
       {
