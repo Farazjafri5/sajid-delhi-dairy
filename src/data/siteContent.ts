@@ -55,7 +55,7 @@ export const defaultSiteContent: SiteContent = {
       },
       {
         "src": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787205166/jsegagbpnubdmwgkr6d9.png",
-        "label": "",
+        "label": "dd",
         "active": true
       }
     ]
