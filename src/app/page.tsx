@@ -1400,6 +1400,7 @@ export default function Home() {
               <div className="flex gap-3">
                 <button
                   type="button"
+                  suppressHydrationWarning
                   onClick={() =>
                     setTestimonialIndex(
                       (prev) => (prev - 1 + testimonials.length) % testimonials.length
@@ -1412,6 +1413,7 @@ export default function Home() {
                 </button>
                 <button
                   type="button"
+                  suppressHydrationWarning
                   onClick={() =>
                     setTestimonialIndex((prev) => (prev + 1) % testimonials.length)
                   }
@@ -1428,6 +1430,7 @@ export default function Home() {
                   <button
                     key={idx}
                     type="button"
+                    suppressHydrationWarning
                     onClick={() => setTestimonialIndex(idx)}
                     className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                       testimonialIndex === idx ? "w-8 bg-[#C5A880]" : "w-2 bg-[#0A1628]/20 hover:bg-[#0A1628]/40"
@@ -1534,6 +1537,7 @@ export default function Home() {
                         name="name"
                         id="name"
                         required
+                        suppressHydrationWarning
                         value={formState.name}
                         onChange={handleChange}
                         className="border border-[#0A1628]/10 rounded-xl px-4 py-3 text-sm bg-white/80 outline-none focus:border-[#C5A880] focus:ring-1 focus:ring-[#C5A880] transition-all text-[#0A1628] font-medium shadow-sm"
@@ -1551,6 +1555,7 @@ export default function Home() {
                         name="brandName"
                         id="brandName"
                         required
+                        suppressHydrationWarning
                         value={formState.brandName}
                         onChange={handleChange}
                         className="border border-[#0A1628]/10 rounded-xl px-4 py-3 text-sm bg-white/80 outline-none focus:border-[#C5A880] focus:ring-1 focus:ring-[#C5A880] transition-all text-[#0A1628] font-medium shadow-sm"
@@ -1570,6 +1575,7 @@ export default function Home() {
                         name="email"
                         id="email"
                         required
+                        suppressHydrationWarning
                         value={formState.email}
                         onChange={handleChange}
                         className="border border-[#0A1628]/10 rounded-xl px-4 py-3 text-sm bg-white/80 outline-none focus:border-[#C5A880] focus:ring-1 focus:ring-[#C5A880] transition-all text-[#0A1628] font-medium shadow-sm"
@@ -1587,6 +1593,7 @@ export default function Home() {
                         name="phone"
                         id="phone"
                         required
+                        suppressHydrationWarning
                         value={formState.phone}
                         onChange={handleChange}
                         className="border border-[#0A1628]/10 rounded-xl px-4 py-3 text-sm bg-white/80 outline-none focus:border-[#C5A880] focus:ring-1 focus:ring-[#C5A880] transition-all text-[#0A1628] font-medium shadow-sm"
@@ -1611,6 +1618,7 @@ export default function Home() {
                         name="instagramHandle"
                         id="instagramHandle"
                         required
+                        suppressHydrationWarning
                         value={formState.instagramHandle}
                         onChange={handleChange}
                         className="border border-[#0A1628]/10 rounded-xl px-4 py-3 text-sm bg-white/80 outline-none focus:border-[#C5A880] focus:ring-1 focus:ring-[#C5A880] transition-all text-[#0A1628] font-medium shadow-sm"
@@ -1626,6 +1634,7 @@ export default function Home() {
                       <select
                         name="businessType"
                         id="businessType"
+                        suppressHydrationWarning
                         value={formState.businessType}
                         onChange={handleChange}
                         className="border border-[#0A1628]/10 rounded-xl px-4 py-3 text-sm bg-white/80 outline-none focus:border-[#C5A880] focus:ring-1 focus:ring-[#C5A880] transition-all text-[#0A1628] font-medium cursor-pointer shadow-sm"
@@ -1656,6 +1665,7 @@ export default function Home() {
                     <select
                       name="serviceNeeded"
                       id="serviceNeeded"
+                      suppressHydrationWarning
                       value={formState.serviceNeeded}
                       onChange={handleChange}
                       className="border border-[#0A1628]/10 rounded-xl px-4 py-3 text-sm bg-white/80 outline-none focus:border-[#C5A880] focus:ring-1 focus:ring-[#C5A880] transition-all text-[#0A1628] font-medium cursor-pointer shadow-sm"
@@ -1679,6 +1689,7 @@ export default function Home() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
+                      suppressHydrationWarning
                       className="w-full group flex items-center justify-center gap-3 rounded-full bg-[#0A1628] text-[#C5A880] hover:bg-[#C5A880] hover:text-[#0A1628] py-4 text-xs font-bold tracking-widest uppercase shadow-[0_10px_25px_rgba(10,22,40,0.2)] transition-all duration-300 cursor-pointer disabled:opacity-50"
                     >
                       <span>{isSubmitting ? "Sending Audit Request..." : "Submit Project Inquiry"}</span>

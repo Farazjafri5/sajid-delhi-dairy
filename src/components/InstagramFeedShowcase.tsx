@@ -54,10 +54,15 @@ export default function InstagramFeedShowcase({
 }: InstagramFeedShowcaseProps) {
   const [activeTab, setActiveTab] = useState<"all" | "reels" | "photos">("all");
   const [isMobile, setIsMobile] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [userLimit, setUserLimit] = useState<number | null>(null);
   const [feedList, setFeedList] = useState<InstagramTile[]>(initialTiles || []);
   const [hiddenIds, setHiddenIds] = useState<string[]>(hiddenPostIds || []);
   const [hiddenLinks, setHiddenLinks] = useState<string[]>(hiddenPermalinks || []);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     const syncHiddenFromStorage = () => {
@@ -316,6 +321,7 @@ export default function InstagramFeedShowcase({
         <div className="grid grid-cols-3 gap-2 sm:flex sm:items-center sm:justify-start sm:gap-2.5 mb-8 w-full max-w-full">
           <button
             type="button"
+            suppressHydrationWarning
             onClick={() => {
               setActiveTab("all");
               setUserLimit(null);
@@ -328,13 +334,14 @@ export default function InstagramFeedShowcase({
           >
             <Grid size={13} className="shrink-0" />
             <span>All</span>
-            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${activeTab === "all" ? "bg-[#0A1628]/20 text-[#0A1628]" : "bg-white/10 text-white/70"}`}>
+            <span suppressHydrationWarning className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${activeTab === "all" ? "bg-[#0A1628]/20 text-[#0A1628]" : "bg-white/10 text-white/70"}`}>
               {activeItems.length}
             </span>
           </button>
 
           <button
             type="button"
+            suppressHydrationWarning
             onClick={() => {
               setActiveTab("reels");
               setUserLimit(null);
@@ -347,13 +354,14 @@ export default function InstagramFeedShowcase({
           >
             <Film size={13} className="shrink-0" />
             <span>Reels</span>
-            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${activeTab === "reels" ? "bg-[#0A1628]/20 text-[#0A1628]" : "bg-white/10 text-white/70"}`}>
+            <span suppressHydrationWarning className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${activeTab === "reels" ? "bg-[#0A1628]/20 text-[#0A1628]" : "bg-white/10 text-white/70"}`}>
               {reelsCount}
             </span>
           </button>
 
           <button
             type="button"
+            suppressHydrationWarning
             onClick={() => {
               setActiveTab("photos");
               setUserLimit(null);
@@ -366,7 +374,7 @@ export default function InstagramFeedShowcase({
           >
             <ImageIcon size={13} className="shrink-0" />
             <span>Photos</span>
-            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${activeTab === "photos" ? "bg-[#0A1628]/20 text-[#0A1628]" : "bg-white/10 text-white/70"}`}>
+            <span suppressHydrationWarning className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${activeTab === "photos" ? "bg-[#0A1628]/20 text-[#0A1628]" : "bg-white/10 text-white/70"}`}>
               {photosCount}
             </span>
           </button>
@@ -468,20 +476,20 @@ export default function InstagramFeedShowcase({
           {hasMore && (
             <button
               type="button"
+              suppressHydrationWarning
               onClick={handleLoadMore}
               className="flex items-center gap-2 bg-[#C5A880] text-[#0A1628] hover:bg-[#D4BC98] px-5 sm:px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-xl cursor-pointer active:scale-95"
             >
-              <span>View More ({filteredItems.length - activeLimit} Remaining)</span>
+              <span suppressHydrationWarning>View More ({filteredItems.length - activeLimit} Remaining)</span>
               <ChevronDown size={15} />
             </button>
           )}
-
-
 
           {/* View Less Button */}
           {isExpanded && (
             <button
               type="button"
+              suppressHydrationWarning
               onClick={handleViewLess}
               className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-5 sm:px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-xl cursor-pointer active:scale-95"
             >
