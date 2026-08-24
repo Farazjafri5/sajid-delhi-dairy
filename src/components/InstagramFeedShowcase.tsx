@@ -281,7 +281,7 @@ export default function InstagramFeedShowcase({
   };
 
   return (
-    <section className="relative py-15 bg-[#0D0D0D] text-studio-bg overflow-hidden border-b border-white/10">
+    <section className="relative py-15 footer-gold-glow text-studio-bg overflow-hidden">
       {/* Subtle Background Glow Elements */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#C5A880]/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#833AB4]/5 rounded-full blur-3xl pointer-events-none" />
@@ -317,7 +317,7 @@ export default function InstagramFeedShowcase({
           >
             {/* Instagram Gradient Ring Avatar */}
             <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] p-[1.5px]">
-              <div className="flex h-full w-full items-center justify-center rounded-full bg-[#0D0D0D]">
+              <div className="flex h-full w-full items-center justify-center rounded-full bg-[#0A1628]">
                 <Instagram size={16} className="text-white" />
               </div>
             </div>

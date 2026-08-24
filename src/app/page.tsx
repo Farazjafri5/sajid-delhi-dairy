@@ -483,13 +483,83 @@ export default function Home() {
         hiddenPermalinks={siteContent?.instagramSettings?.hiddenPermalinks || []}
       />
 
-      {/* 3. SHOWREEL SECTION (Ultra-Luxury Cinematic Cinema & Studio Reel) */}
-      <section className="bg-gradient-to-b from-[#070F1B] via-[#0A1628] to-[#070F1B] text-studio-bg py-15 relative overflow-hidden border-b border-[#C5A880]/20">
+      {/* 3. SHOWREEL & MARQUEE CINEMA SECTION (Ultra-Luxury Unified Continuous Section) */}
+      <section className="footer-gold-glow text-studio-bg relative overflow-hidden border-b border-[#C5A880]/20">
         {/* Ambient Golden Cinema Spotlights */}
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#C5A880]/10 rounded-full blur-[130px] pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-[#DD2A7B]/8 rounded-full blur-[130px] pointer-events-none" />
 
-        <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
+        {/* ═══ Integrated Marquee Ribbon ═══ */}
+        <div className="border-t border-[#C5A880]/25 py-6 sm:py-7 select-none relative overflow-hidden">
+          <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 overflow-hidden">
+            <div className="flex whitespace-nowrap">
+              <div className="flex animate-marquee items-center gap-12 sm:gap-16 pr-12 sm:pr-16 text-2xl sm:text-4xl md:text-5xl font-serif font-extrabold tracking-wider uppercase">
+                <span className="bg-gradient-to-r from-[#C5A880] via-[#F5E6D3] to-[#C5A880] bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(197,168,128,0.25)]">
+                  Reels & Stories
+                </span>
+                <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
+                <span className="text-white drop-shadow-sm font-normal italic font-serif">
+                  Content Strategy
+                </span>
+                <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
+                <span className="bg-gradient-to-r from-[#F58529] via-[#DD2A7B] to-[#C5A880] bg-clip-text text-transparent font-bold">
+                  Viral Campaigns
+                </span>
+                <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
+                <span className="text-[#F0E6D8] font-serif font-medium">
+                  Luxury Brands
+                </span>
+                <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
+                <span className="bg-gradient-to-r from-[#C5A880] to-[#E8D7C1] bg-clip-text text-transparent italic font-normal">
+                  Cinematic Production
+                </span>
+                <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
+                <span className="text-white font-bold">
+                  Brand Storytelling
+                </span>
+                <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
+                <span className="bg-gradient-to-r from-[#DD2A7B] via-[#8134AF] to-[#F58529] bg-clip-text text-transparent font-bold">
+                  Social Growth
+                </span>
+                <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
+              </div>
+              {/* Duplicate for seamless infinite loop scroll */}
+              <div className="flex animate-marquee items-center gap-12 sm:gap-16 pr-12 sm:pr-16 text-2xl sm:text-4xl md:text-5xl font-serif font-extrabold tracking-wider uppercase" aria-hidden="true">
+                <span className="bg-gradient-to-r from-[#C5A880] via-[#F5E6D3] to-[#C5A880] bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(197,168,128,0.25)]">
+                  Reels & Stories
+                </span>
+                <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
+                <span className="text-white drop-shadow-sm font-normal italic font-serif">
+                  Content Strategy
+                </span>
+                <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
+                <span className="bg-gradient-to-r from-[#F58529] via-[#DD2A7B] to-[#C5A880] bg-clip-text text-transparent font-bold">
+                  Viral Campaigns
+                </span>
+                <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
+                <span className="text-[#F0E6D8] font-serif font-medium">
+                  Luxury Brands
+                </span>
+                <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
+                <span className="bg-gradient-to-r from-[#C5A880] to-[#E8D7C1] bg-clip-text text-transparent italic font-normal">
+                  Cinematic Production
+                </span>
+                <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
+                <span className="text-white font-bold">
+                  Brand Storytelling
+                </span>
+                <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
+                <span className="bg-gradient-to-r from-[#DD2A7B] via-[#8134AF] to-[#F58529] bg-clip-text text-transparent font-bold">
+                  Social Growth
+                </span>
+                <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══ Studio Reel Content ═══ */}
+        <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 pt-12 sm:pt-16 pb-16 relative z-10">
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
             <div className="text-left">
@@ -892,79 +962,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. MARQUEE SECTION (Ultra-Luxury Metallic & Midnight Ribbon) */}
-      <section className="bg-gradient-to-r from-[#070F1B] via-[#0A1628] to-[#070F1B] border-y border-[#C5A880]/30 py-6 sm:py-7 select-none relative overflow-hidden shadow-2xl">
-        {/* Subtle Ambient Gold Glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(197,168,128,0.08),transparent_70%)] pointer-events-none" />
-
-        <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 overflow-hidden">
-          <div className="flex whitespace-nowrap">
-            <div className="flex animate-marquee items-center gap-12 sm:gap-16 pr-12 sm:pr-16 text-2xl sm:text-4xl md:text-5xl font-serif font-extrabold tracking-wider uppercase">
-              <span className="bg-gradient-to-r from-[#C5A880] via-[#F5E6D3] to-[#C5A880] bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(197,168,128,0.25)]">
-                Reels & Stories
-              </span>
-              <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
-              <span className="text-white drop-shadow-sm font-normal italic font-serif">
-                Content Strategy
-              </span>
-              <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
-              <span className="bg-gradient-to-r from-[#F58529] via-[#DD2A7B] to-[#C5A880] bg-clip-text text-transparent font-bold">
-                Viral Campaigns
-              </span>
-              <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
-              <span className="text-[#F0E6D8] font-serif font-medium">
-                Luxury Brands
-              </span>
-              <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
-              <span className="bg-gradient-to-r from-[#C5A880] to-[#E8D7C1] bg-clip-text text-transparent italic font-normal">
-                Cinematic Production
-              </span>
-              <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
-              <span className="text-white font-bold">
-                Brand Storytelling
-              </span>
-              <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
-              <span className="bg-gradient-to-r from-[#DD2A7B] via-[#8134AF] to-[#F58529] bg-clip-text text-transparent font-bold">
-                Social Growth
-              </span>
-              <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
-            </div>
-            {/* Duplicate for seamless infinite loop scroll */}
-            <div className="flex animate-marquee items-center gap-12 sm:gap-16 pr-12 sm:pr-16 text-2xl sm:text-4xl md:text-5xl font-serif font-extrabold tracking-wider uppercase" aria-hidden="true">
-              <span className="bg-gradient-to-r from-[#C5A880] via-[#F5E6D3] to-[#C5A880] bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(197,168,128,0.25)]">
-                Reels & Stories
-              </span>
-              <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
-              <span className="text-white drop-shadow-sm font-normal italic font-serif">
-                Content Strategy
-              </span>
-              <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
-              <span className="bg-gradient-to-r from-[#F58529] via-[#DD2A7B] to-[#C5A880] bg-clip-text text-transparent font-bold">
-                Viral Campaigns
-              </span>
-              <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
-              <span className="text-[#F0E6D8] font-serif font-medium">
-                Luxury Brands
-              </span>
-              <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
-              <span className="bg-gradient-to-r from-[#C5A880] to-[#E8D7C1] bg-clip-text text-transparent italic font-normal">
-                Cinematic Production
-              </span>
-              <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
-              <span className="text-white font-bold">
-                Brand Storytelling
-              </span>
-              <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
-              <span className="bg-gradient-to-r from-[#DD2A7B] via-[#8134AF] to-[#F58529] bg-clip-text text-transparent font-bold">
-                Social Growth
-              </span>
-              <span className="text-[#C5A880] text-sm sm:text-lg">✦</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. SERVICES SECTION */}
+      {/* 5. SERVICES SECTION */}
       <section className=" py-10">
         <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24">
           {/* Header */}
@@ -1444,12 +1442,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 11. CTA & PREMIUM COLLABORATION FORM */}
-      <section id="contact" className="bg-gradient-to-b from-[#070F1B] via-[#0A1628] to-[#070F1B] text-white py-10 relative overflow-hidden border-t border-[#C5A880]/20">
-        {/* Ambient Cinema Gold Spotlights */}
-        <div className="absolute top-1/4 left-10 w-[600px] h-[600px] bg-[#C5A880]/10 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-10 right-10 w-[500px] h-[500px] bg-[#DD2A7B]/8 rounded-full blur-[140px] pointer-events-none" />
-
+      {/* 11. CTA & PREMIUM COLLABORATION FORM (100% Identical Canvas to Footer) */}
+      <section id="contact" className="footer-gold-glow text-white pt-14 md:pt-20 pb-8 relative overflow-hidden border-t border-[#C5A880]/20">
         <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
             {/* CTA copy panel */}
