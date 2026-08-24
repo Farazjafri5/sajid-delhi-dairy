@@ -4,7 +4,7 @@ export * from "@/types/siteContent";
 
 export const defaultSiteContent: SiteContent = {
   "hero": {
-    "heading": "We make brands",
+    "heading": "We make brands 343",
     "headingItalic": "worth stopping",
     "subtitle": "Reels, content, social media, and creative campaigns for brands people remember. Built for restaurants, cafes, luxury hospitality, and D2C brands.",
     "mockReels": [
@@ -19,7 +19,7 @@ export const defaultSiteContent: SiteContent = {
     ]
   },
   "showreel": {
-    "heading": "This is what we do. anything 1233e342eew",
+    "heading": "This is what we do.323424388",
     "description": "We shoot short-form videos designed to convert casual scrollers into loyal customers. No stock templates, no boring structures.",
     "leftImages": [
       {
