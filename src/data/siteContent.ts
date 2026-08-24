@@ -4,7 +4,7 @@ export * from "@/types/siteContent";
 
 export const defaultSiteContent: SiteContent = {
   "hero": {
-    "heading": "We make brands weewew",
+    "heading": "We make brands we can do.",
     "headingItalic": "worth stopping",
     "subtitle": "Reels, content, social media, and creative campaigns for brands people remember. Built for restaurants, cafes, luxury hospitality, and D2C brands.",
     "mockReels": [
@@ -14,6 +14,14 @@ export const defaultSiteContent: SiteContent = {
         "caption": "",
         "likes": "0",
         "comments": "0",
+        "active": true
+      },
+      {
+        "poster": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787577007/w2u1psn9twlx8ktmocwy.png",
+        "videoUrl": "https://res.cloudinary.com/yan3h0ri/video/upload/v1787577133/goq3qbihefesejzgznbk.mp4",
+        "caption": "",
+        "likes": "30k",
+        "comments": "1004",
         "active": true
       }
     ]
