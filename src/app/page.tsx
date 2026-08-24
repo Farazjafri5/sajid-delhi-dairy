@@ -276,7 +276,7 @@ export default function Home() {
         <div className="absolute bottom-10 right-1/4 w-[500px] h-[500px] bg-[#DD2A7B]/8 rounded-full blur-[140px] pointer-events-none" />
         <div className="absolute inset-0 z-0 opacity-[0.03] select-none pointer-events-none bg-[radial-gradient(#111111_1px,transparent_1px)] [background-size:24px_24px]" />
 
-        <div className="mx-auto w-full max-w-[1400px] px-8 md:px-16 lg:px-24 z-10 flex flex-1 flex-col justify-center">
+        <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-8 md:px-16 lg:px-24 z-10 flex flex-1 flex-col justify-center">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center w-full">
             {/* Left Column: Bold Editorial Copy */}
             <div className="lg:col-span-7 flex flex-col justify-center text-left">
@@ -450,7 +450,7 @@ export default function Home() {
         </div>
 
         {/* Floating Glass Editorial Metadata Ribbon */}
-        <div className="mx-auto w-full max-w-[1400px] px-8 md:px-16 lg:px-24 z-10 mt-12">
+        <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-8 md:px-16 lg:px-24 z-10 mt-12">
           <div className="bg-white/60 border border-[#C5A880]/30 rounded-2xl p-5 backdrop-blur-md shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-6 text-xs tracking-wider uppercase text-[#0A1628]/70">
             <div className="flex items-center gap-3">
               <span className="font-extrabold text-[#0A1628]">✦ Based In:</span>
@@ -489,7 +489,7 @@ export default function Home() {
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#C5A880]/10 rounded-full blur-[130px] pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-[#DD2A7B]/8 rounded-full blur-[130px] pointer-events-none" />
 
-        <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
+        <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
             <div className="text-left">
@@ -897,7 +897,7 @@ export default function Home() {
         {/* Subtle Ambient Gold Glow */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(197,168,128,0.08),transparent_70%)] pointer-events-none" />
 
-        <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 overflow-hidden">
+        <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 overflow-hidden">
           <div className="flex whitespace-nowrap">
             <div className="flex animate-marquee items-center gap-12 sm:gap-16 pr-12 sm:pr-16 text-2xl sm:text-4xl md:text-5xl font-serif font-extrabold tracking-wider uppercase">
               <span className="bg-gradient-to-r from-[#C5A880] via-[#F5E6D3] to-[#C5A880] bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(197,168,128,0.25)]">
@@ -966,7 +966,7 @@ export default function Home() {
 
       {/* 4. SERVICES SECTION */}
       <section className=" py-10">
-        <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24">
+        <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24">
           {/* Header */}
           <div className="max-w-3xl mb-16 max-sm:mb-10 text-left">
             <span className="text-xs font-semibold tracking-widest uppercase text-studio-muted">
@@ -992,7 +992,7 @@ export default function Home() {
         <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#C5A880]/10 rounded-full blur-[130px] pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-[#DD2A7B]/8 rounded-full blur-[130px] pointer-events-none" />
 
-        <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
+        <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
           {/* Header */}
           <div className="max-w-2xl mb-16 max-sm:mb-10 text-left">
             <div className="inline-flex items-center gap-2 bg-white/5 border border-[#C5A880]/35 px-4 py-1.5 rounded-full mb-3 backdrop-blur-md">
@@ -1008,7 +1008,7 @@ export default function Home() {
           </div>
 
           {/* Grid Layout */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6">
             {industriesList.map((ind, idx) => (
               <IndustryCard
                 key={idx}
@@ -1026,7 +1026,7 @@ export default function Home() {
         {/* Subtle Ambient Radial Gold Glow */}
         <div className="absolute top-0 right-1/3 w-[500px] h-[500px] bg-[#C5A880]/8 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
+        <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20 max-sm:mb-10 text-left">
             <div>
@@ -1112,7 +1112,7 @@ export default function Home() {
         {/* Subtle Ambient Glow */}
         <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-[#C5A880]/8 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
+        <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
           {/* Header */}
           <div className="max-w-2xl mb-16 max-sm:10 text-left">
             <div className="inline-flex items-center gap-2 bg-[#0A1628]/5 border border-[#C5A880]/35 px-4 py-1.5 rounded-full mb-3 backdrop-blur-md">
@@ -1180,7 +1180,7 @@ export default function Home() {
         <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-[#C5A880]/10 rounded-full blur-[130px] pointer-events-none" />
         <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] bg-[#DD2A7B]/8 rounded-full blur-[130px] pointer-events-none" />
 
-        <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
+        <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
           {/* Header */}
           <div className="max-w-3xl mb-16 max-sm:mb-10 text-left">
             <div className="inline-flex items-center gap-2 bg-white/5 border border-[#C5A880]/35 px-4 py-1.5 rounded-full mb-3 backdrop-blur-md">
@@ -1246,7 +1246,7 @@ export default function Home() {
         {/* Subtle Ambient Radial Gold Glow */}
         <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-[#C5A880]/8 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
+        <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-8 mb-16 text-left">
             <div>
               <div className="inline-flex items-center gap-2 bg-[#0A1628]/5 border border-[#C5A880]/35 px-4 py-1.5 rounded-full mb-3 backdrop-blur-md">
@@ -1312,7 +1312,7 @@ export default function Home() {
         {/* Subtle Ambient Radial Gold Glow */}
         <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-[#C5A880]/8 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
+        <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
           <div className="max-w-3xl mb-16 max-sm:mb-10 text-left">
             <div className="inline-flex items-center gap-2 bg-[#0A1628]/5 border border-[#C5A880]/35 px-4 py-1.5 rounded-full mb-3 backdrop-blur-md">
               <span className="text-[#C5A880] text-xs">✦</span>
@@ -1450,7 +1450,7 @@ export default function Home() {
         <div className="absolute top-1/4 left-10 w-[600px] h-[600px] bg-[#C5A880]/10 rounded-full blur-[140px] pointer-events-none" />
         <div className="absolute bottom-10 right-10 w-[500px] h-[500px] bg-[#DD2A7B]/8 rounded-full blur-[140px] pointer-events-none" />
 
-        <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
+        <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
             {/* CTA copy panel */}
             <div className="lg:col-span-5 flex flex-col justify-between h-full text-left">

@@ -6,7 +6,7 @@ import {
   ArrowLeft, Save, Key, Eye, EyeOff,
   LayoutDashboard, Sparkles, Film, Grid3X3, Briefcase,
   Globe, MessageSquare, Phone, Settings, LogOut,
-  Upload, Trash2, Plus, ChevronRight, Image as ImageIcon,
+  Upload, Trash2, Plus, ChevronRight, ChevronLeft, Image as ImageIcon,
   Video, Menu, X, Check, Eye as EyeIcon, EyeOff as EyeOffIcon,
   Copy, Download, Code, Play, Rocket, RefreshCw, CheckCircle2, AlertCircle, Edit3, Radio, ExternalLink
 } from "lucide-react";
@@ -319,6 +319,25 @@ export default function AdminPage() {
   // Navigation
   const [activePage, setActivePage] = useState<SidebarPage>("dashboard");
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Responsive mobile screen detection (Desktop: Open by default, Mobile: Closed with icons by default)
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+      if (mobile) {
+        setIsSidebarCollapsed(true);
+      } else {
+        const saved = localStorage.getItem("dd_admin_sidebar_collapsed");
+        setIsSidebarCollapsed(saved === "true");
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Data state
   const [projects, setProjects] = useState<Project[]>([]);
@@ -574,6 +593,9 @@ export default function AdminPage() {
   const navigateToTab = (tab: SidebarPage) => {
     setActivePage(tab);
     setMobileSidebarOpen(false);
+    if (isMobile) {
+      setIsSidebarCollapsed(true);
+    }
     setEditingProjectSlug(null);
     try {
       const isDashboardRoute = window.location.pathname.startsWith("/dashboard");
@@ -595,7 +617,26 @@ export default function AdminPage() {
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  // 1-Click Direct Save & Deploy to GitHub & Vercel Live for all devices worldwide
+  // 💾 Save Draft to Dashboard Only (Local & Admin persistence, does NOT publish to live site)
+  const handleSaveDraft = async () => {
+    try {
+      localStorage.setItem("dd_projects", JSON.stringify(projects));
+      localStorage.setItem("dd_site_content", JSON.stringify(siteContent));
+    } catch (e) {}
+
+    try {
+      await fetch("/api/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ siteContent, projects }),
+      });
+    } catch (e) {}
+
+    setIsSaved(true);
+    setTimeout(() => setIsSaved(false), 2500);
+  };
+
+  // 🚀 1-Click Direct Commit & Deploy to GitHub & Vercel Live for all devices worldwide
   const handleGitHubDeploy = async () => {
     setIsDeploying(true);
     setDeployStatus(null);
@@ -817,49 +858,107 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
   // ─── MAIN DASHBOARD ──────────────────────────────────────────
   return (
     <div className="flex h-screen bg-[#F5F3EF] overflow-hidden">
-      {/* Mobile sidebar overlay */}
-      {mobileSidebarOpen && (
-        <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setMobileSidebarOpen(false)} />
+      {/* Mobile backdrop when sidebar is expanded on mobile */}
+      {isMobile && !isSidebarCollapsed && (
+        <div 
+          className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-xs transition-opacity duration-300" 
+          onClick={() => setIsSidebarCollapsed(true)} 
+        />
       )}
 
       {/* ═══ SIDEBAR ═══ */}
-      <aside className={`fixed lg:static z-50 h-full w-64 bg-[#0A1628] text-white flex flex-col transition-transform duration-300 ${mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
+      <aside className={`relative z-30 h-full ${isSidebarCollapsed ? "w-16 sm:w-20" : "w-64"} bg-[#0A1628] text-white flex flex-col transition-all duration-300 shrink-0 shadow-2xl lg:shadow-none`}>
+        {/* Floating Orange Arrow Toggle Handle in exact vertical center */}
+        <button
+          type="button"
+          onClick={() => {
+            setIsSidebarCollapsed(prev => {
+              const next = !prev;
+              if (!isMobile) {
+                try { localStorage.setItem("dd_admin_sidebar_collapsed", String(next)); } catch (e) {}
+              }
+              return next;
+            });
+          }}
+          className="flex items-center justify-center absolute -right-3.5 top-1/2 -translate-y-1/2 z-50 w-7 h-7 rounded-full bg-[#F58529] hover:bg-[#E0731E] text-white shadow-[0_2px_12px_rgba(245,133,41,0.6)] border-2 border-[#0A1628] transition-all duration-200 hover:scale-110 cursor-pointer active:scale-95"
+          title={isSidebarCollapsed ? "Expand sidebar (Open)" : "Collapse sidebar (Icons only)"}
+          aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {isSidebarCollapsed ? <ChevronRight size={14} strokeWidth={2.5} /> : <ChevronLeft size={14} strokeWidth={2.5} />}
+        </button>
+
         {/* Logo */}
-        <div className="px-6 py-6 border-b border-white/5 flex items-center justify-between">
-          <div>
-            <h1 className="text-sm font-bold tracking-widest uppercase text-[#C5A880]">Social Diaries</h1>
-            <p className="text-[9px] text-white/30 tracking-wider uppercase mt-0.5">Admin Management</p>
-          </div>
-          <button onClick={() => setMobileSidebarOpen(false)} className="lg:hidden text-white/40 cursor-pointer">
-            <X size={20} />
-          </button>
+        <div className={`py-5 border-b border-white/5 flex items-center transition-all duration-300 ${isSidebarCollapsed ? "px-2 sm:px-3 justify-center" : "px-5 justify-between"}`}>
+          {!isSidebarCollapsed ? (
+            <div className="min-w-0 pr-2">
+              <h1 className="text-sm font-bold tracking-widest uppercase text-[#C5A880] truncate">Social Diaries</h1>
+              <p className="text-[9px] text-white/30 tracking-wider uppercase mt-0.5 truncate">Admin Management</p>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center">
+              <span className="text-sm font-black tracking-wider text-[#C5A880]">SD</span>
+              <span className="text-[7px] text-[#C5A880]/50 font-bold">✦</span>
+            </div>
+          )}
+
+          {/* Close button if expanded on mobile */}
+          {!isSidebarCollapsed && (
+            <button 
+              onClick={() => setIsSidebarCollapsed(true)} 
+              className="lg:hidden text-white/40 hover:text-white p-1 cursor-pointer"
+            >
+              <X size={20} />
+            </button>
+          )}
         </div>
 
         {/* Nav Items */}
-        <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
-          {sidebarItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => navigateToTab(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-bold tracking-wider uppercase transition-all cursor-pointer ${
-                activePage === item.id
-                  ? "bg-[#C5A880] text-[#0A1628]"
-                  : "text-white/50 hover:text-white hover:bg-white/5"
-              }`}
-            >
-              {item.icon}
-              {item.label}
-            </button>
-          ))}
+        <nav className="flex-1 py-4 px-2.5 space-y-1.5 overflow-y-auto overflow-x-hidden">
+          {sidebarItems.map((item) => {
+            const isActive = activePage === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => navigateToTab(item.id)}
+                title={item.label}
+                className={`w-full flex items-center ${isSidebarCollapsed ? "justify-center px-0 py-3" : "gap-3 px-3.5 py-2.5"} rounded-xl text-xs font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer group relative ${
+                  isActive
+                    ? "bg-[#C5A880] text-[#0A1628] shadow-md font-extrabold"
+                    : "text-white/50 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                <span className={`shrink-0 transition-transform duration-200 group-hover:scale-110 ${isActive ? "text-[#0A1628]" : ""}`}>
+                  {item.icon}
+                </span>
+                {!isSidebarCollapsed && (
+                  <span className="truncate text-left">{item.label}</span>
+                )}
+                {/* Active pill dot when collapsed */}
+                {isSidebarCollapsed && isActive && (
+                  <span className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-[#0A1628] rounded-full" />
+                )}
+              </button>
+            );
+          })}
         </nav>
 
         {/* Bottom */}
-        <div className="px-3 py-4 border-t border-white/5 space-y-2">
-          <Link href="/" className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-bold tracking-wider uppercase text-white/40 hover:text-white hover:bg-white/5 transition-all">
-            <ArrowLeft size={18} /> View Website
+        <div className="p-3 border-t border-white/5 space-y-2">
+          <Link
+            href="/"
+            title="View Website"
+            className={`w-full flex items-center ${isSidebarCollapsed ? "justify-center px-0 py-2.5" : "gap-3 px-3.5 py-2.5"} rounded-xl text-xs font-bold tracking-wider uppercase text-white/40 hover:text-white hover:bg-white/5 transition-all`}
+          >
+            <ArrowLeft size={18} className="shrink-0" />
+            {!isSidebarCollapsed && <span>View Website</span>}
           </Link>
-          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-bold tracking-wider uppercase text-red-400/60 hover:text-red-400 hover:bg-red-400/10 transition-all cursor-pointer">
-            <LogOut size={18} /> Logout
+          <button
+            onClick={handleLogout}
+            title="Logout"
+            className={`w-full flex items-center ${isSidebarCollapsed ? "justify-center px-0 py-2.5" : "gap-3 px-3.5 py-2.5"} rounded-xl text-xs font-bold tracking-wider uppercase text-red-400/60 hover:text-red-400 hover:bg-red-400/10 transition-all cursor-pointer`}
+          >
+            <LogOut size={18} className="shrink-0" />
+            {!isSidebarCollapsed && <span>Logout</span>}
           </button>
         </div>
       </aside>
@@ -868,56 +967,54 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top bar */}
         <header className="bg-white border-b border-[#0A1628]/5 px-3 sm:px-6 py-2.5 sm:py-4 flex items-center justify-between gap-2 shrink-0">
-          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
-            <button 
-              onClick={() => setMobileSidebarOpen(true)} 
-              className="lg:hidden text-[#0A1628] p-1.5 rounded-md hover:bg-[#0A1628]/5 shrink-0 cursor-pointer"
-              aria-label="Open navigation menu"
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <h2 className="text-xs sm:text-base md:text-lg font-bold text-[#0A1628] capitalize truncate">
+              {activePage === "dashboard" ? "Dashboard" : sidebarItems.find(s => s.id === activePage)?.label}
+            </h2>
+            <button
+              type="button"
+              onClick={() => copyCurrentSectionLink()}
+              title="Copy direct shareable link for this specific section"
+              className="hidden md:flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/50 hover:text-[#0A1628] bg-[#0A1628]/5 hover:bg-[#C5A880]/20 border border-[#0A1628]/10 hover:border-[#C5A880] rounded-md px-2 py-1 transition-all cursor-pointer shrink-0"
             >
-              <Menu size={20} />
+              {copiedLink ? <Check size={11} className="text-emerald-600" /> : <Copy size={11} />}
+              <span>{copiedLink ? "Copied!" : "Copy Link"}</span>
             </button>
-            <div className="flex items-center gap-2 min-w-0">
-              <h2 className="text-sm sm:text-lg font-bold text-[#0A1628] capitalize truncate">
-                {activePage === "dashboard" ? "Dashboard" : sidebarItems.find(s => s.id === activePage)?.label}
-              </h2>
-              <button
-                type="button"
-                onClick={() => copyCurrentSectionLink()}
-                title="Copy direct shareable link for this specific section"
-                className="hidden md:flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#0A1628]/50 hover:text-[#0A1628] bg-[#0A1628]/5 hover:bg-[#C5A880]/20 border border-[#0A1628]/10 hover:border-[#C5A880] rounded-md px-2 py-1 transition-all cursor-pointer shrink-0"
-              >
-                {copiedLink ? <Check size={11} className="text-emerald-600" /> : <Copy size={11} />}
-                <span>{copiedLink ? "Copied!" : "Copy Link"}</span>
-              </button>
-            </div>
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+            {/* 1. 🚀 PUBLISH BUTTON: Deploys all changes live to GitHub + Vercel for visitors */}
             <button
               type="button"
               disabled={isDeploying}
               onClick={handleGitHubDeploy}
-              className="flex items-center gap-1.5 bg-[#0A1628] text-[#C5A880] border border-[#C5A880]/40 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider hover:bg-[#111D30] transition-all cursor-pointer disabled:opacity-50 shadow-md whitespace-nowrap"
-              title="1-Click commit and auto-deploy to GitHub & Vercel live for all visitors"
+              className="flex items-center gap-1.5 bg-[#0A1628] text-[#C5A880] border border-[#C5A880]/40 px-2.5 sm:px-5 py-2 sm:py-2.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider hover:bg-[#111D30] transition-all cursor-pointer disabled:opacity-50 shadow-md whitespace-nowrap"
+              title="Publish all changes to Live Website (GitHub & Vercel)"
             >
               {isDeploying ? <RefreshCw size={12} className="animate-spin text-[#C5A880]" /> : <Rocket size={12} className="text-[#C5A880]" />}
-              <span>{isDeploying ? "Publishing..." : "🚀 Publish to Live Site"}</span>
+              <span>{isDeploying ? "Publishing..." : <><span className="hidden sm:inline">🚀 Publish to Live Site</span><span className="sm:hidden">Publish</span></>}</span>
             </button>
 
+            {/* 2. 💾 SAVE DRAFT BUTTON: Keeps data safe in dashboard only without publishing live */}
             <button
               type="button"
               disabled={isDeploying}
-              onClick={handleGitHubDeploy}
-              className="flex items-center gap-1.5 bg-[#C5A880] text-[#0A1628] px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider hover:bg-[#BCA078] transition-colors cursor-pointer shadow-sm whitespace-nowrap disabled:opacity-50"
+              onClick={handleSaveDraft}
+              className={`flex items-center gap-1.5 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer shadow-sm whitespace-nowrap ${
+                isSaved
+                  ? "bg-emerald-600 text-white"
+                  : "bg-[#C5A880] text-[#0A1628] hover:bg-[#BCA078]"
+              }`}
+              title="Save changes in Dashboard as Draft (does NOT update live website until Published)"
             >
               {isSaved ? <Check size={12} /> : <Save size={12} />}
-              <span>{isSaved ? "Saved Live!" : "Save"}</span>
+              <span>{isSaved ? "Saved Draft!" : <><span className="hidden sm:inline">💾 Save Draft</span><span className="sm:hidden">Save</span></>}</span>
             </button>
           </div>
         </header>
 
         {/* Scrollable Content */}
-        <main className="flex-1 overflow-y-auto p-6 md:p-8">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
 
           {/* ═══ DASHBOARD OVERVIEW ═══ */}
           {activePage === "dashboard" && (
@@ -1012,7 +1109,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               </div>
 
               {/* Text Content */}
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 mb-6 shadow-sm">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40 mb-4">Hero Text Content</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -1038,7 +1135,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                 {siteContent.hero.mockReels.map((reel, idx) => {
                   const isActive = reel.active !== false;
                   return (
-                    <div key={idx} className={`bg-white rounded-xl border p-6 transition-all shadow-sm ${isActive ? "border-[#0A1628]/5" : "border-red-200 bg-red-50/20 opacity-75"}`}>
+                    <div key={idx} className={`bg-white rounded-xl border p-4 sm:p-6 transition-all shadow-sm ${isActive ? "border-[#0A1628]/5" : "border-red-200 bg-red-50/20 opacity-75"}`}>
                       <div className="grid grid-cols-1 xl:grid-cols-[440px_1fr] gap-6">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           {/* 1. Cover Photo / Thumbnail */}
@@ -1173,7 +1270,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               <SectionHeader title="Studio Reel Showcase" subtitle="Manage left slider images, center video reels (Upload or Paste URL), and right images" />
 
               {/* Section Text */}
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 mb-6 shadow-sm">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40 mb-4">Section Text</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -1188,7 +1285,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               </div>
 
               {/* Left Images */}
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 mb-6 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40">Left Column Photos ({siteContent.showreel.leftImages.length})</h3>
                   <button
@@ -1244,7 +1341,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               </div>
 
               {/* Center Videos */}
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 mb-6 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40">Center Videos ({siteContent.showreel.centerVideos.length})</h3>
                   <button
@@ -1273,7 +1370,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                   {siteContent.showreel.centerVideos.map((vid, idx) => {
                     const isActive = vid.active !== false;
                     return (
-                      <div key={idx} className={`p-6 border rounded-xl shadow-sm transition-all ${isActive ? "border-[#0A1628]/5 bg-white" : "border-red-200 bg-red-50/20"}`}>
+                      <div key={idx} className={`p-4 sm:p-6 border rounded-xl shadow-sm transition-all ${isActive ? "border-[#0A1628]/5 bg-white" : "border-red-200 bg-red-50/20"}`}>
                         <div className="grid grid-cols-1 xl:grid-cols-[440px_1fr] gap-6">
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {/* 1. Thumbnail Photo / Poster */}
@@ -1401,7 +1498,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               </div>
 
               {/* Right Images */}
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40">Right Column Photos ({siteContent.showreel.rightImages.length})</h3>
                   <button
@@ -1486,7 +1583,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {siteContent.industries.map((ind, idx) => {
                   const isActive = ind.active !== false;
                   return (
@@ -1745,7 +1842,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               <SectionHeader title={`Editing: ${editingProject.client}`} subtitle={editingProject.title} />
 
               {/* Basic Info */}
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 mb-6 shadow-sm">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40 mb-4">Project Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -1783,7 +1880,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               </div>
 
               {/* Cover Image & Video Reel Upload */}
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 mb-6 shadow-sm">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40 mb-4">Cover Photo & Video Reel</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -1804,7 +1901,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               </div>
 
               {/* Gallery Images (Add / Remove / Toggle) */}
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 mb-6 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40">Case Study Gallery Photos ({editingProject.gallery.length})</h3>
                   <button
@@ -1876,7 +1973,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               </div>
 
               {/* Video Reels (Reels Tab) */}
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 mb-6 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40">Vertical Reel Videos ({editingProject.reels.length})</h3>
                   <button
@@ -1948,7 +2045,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               </div>
 
               {/* Case Story Texts */}
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 mb-6 shadow-sm">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40 mb-4">Case Study Story (The Brief, Idea & Execution)</h3>
                 <div className="space-y-4">
                   {(["brief", "idea", "execution"] as const).map((field) => (
@@ -1961,7 +2058,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               </div>
 
               {/* Results Metrics */}
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40">Campaign Results / Metrics</h3>
                   <button
@@ -2499,7 +2596,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                 {siteContent.testimonials.map((t, idx) => {
                   const isActive = t.active !== false;
                   return (
-                    <div key={idx} className={`bg-white rounded-xl border p-6 shadow-sm ${isActive ? "border-[#0A1628]/5" : "border-red-200 bg-red-50/20"}`}>
+                    <div key={idx} className={`bg-white rounded-xl border p-4 sm:p-6 shadow-sm ${isActive ? "border-[#0A1628]/5" : "border-red-200 bg-red-50/20"}`}>
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-xs font-bold uppercase tracking-wider text-[#0A1628]">Testimonial #{idx + 1}</span>
                         <div className="flex items-center gap-2">
@@ -2560,7 +2657,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
           {activePage === "contact" && (
             <div>
               <SectionHeader title="Global Contact & Channel Settings" subtitle="Edit official contact details — changing them here instantly updates the whole website (Footer, Contact page, Collaboration form & WhatsApp widget)" />
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 shadow-sm space-y-6">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 shadow-sm space-y-6">
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40">Live Contact Channels (Editable)</h3>
@@ -2836,7 +2933,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               </div>
 
               {/* GitHub Credentials Info */}
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 mb-6 shadow-sm">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40 mb-4">Repository Connection Settings</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
@@ -2874,7 +2971,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               </div>
 
               {/* Fallback Manual Copy */}
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 shadow-sm">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div>
                     <h4 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]">Export / Backup Code</h4>
@@ -3160,7 +3257,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 mb-6 shadow-sm">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40 mb-2">Instant Local Mode</h3>
                 <p className="text-sm text-[#0A1628]/70 leading-relaxed">
                   All changes and uploads you make in this dashboard are saved to your browser’s LocalStorage immediately when you click <strong>Save Changes</strong>.
@@ -3168,7 +3265,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                 </p>
               </div>
 
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 mb-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles size={16} className="text-[#C5A880]" />
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]">Fix Glitches & Optimize Performance</h3>
@@ -3212,7 +3309,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                 )}
               </div>
 
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 mb-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 mb-6 shadow-sm">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40 mb-3">Direct Section URLs & Bookmarks</h3>
                 <p className="text-xs text-[#0A1628]/60 mb-4">You can bookmark or directly navigate to any of these section links:</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -3239,7 +3336,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-6 shadow-sm">
+              <div className="bg-white rounded-xl border border-[#0A1628]/5 p-4 sm:p-6 shadow-sm">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/40 mb-2">Admin Security</h3>
                 <p className="text-xs text-[#0A1628]/60">Authorized passcode: <code className="bg-[#0A1628]/5 px-2 py-0.5 rounded font-bold">sajid123</code></p>
               </div>

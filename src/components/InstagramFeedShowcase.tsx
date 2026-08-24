@@ -271,7 +271,7 @@ export default function InstagramFeedShowcase({
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#C5A880]/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#833AB4]/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="mx-auto max-w-[1400px] w-full px-6 md:px-12 lg:px-20 relative z-10">
+      <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-12 lg:px-20 relative z-10">
         {/* ═══ 1. HEADER & INSTAGRAM BRANDING ═══ */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 text-left">
           <div>

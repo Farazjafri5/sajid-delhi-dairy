@@ -31,7 +31,7 @@ export default function CaseStudyClient({
     .map((item) => (typeof item === "string" ? item : item.src));
 
   return (
-    <article className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
+    <article className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
       {/* Subtle Ambient Gold Spotlight */}
       <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-[#C5A880]/12 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute top-1/2 right-10 w-[500px] h-[500px] bg-[#DD2A7B]/8 rounded-full blur-[140px] pointer-events-none" />
@@ -193,17 +193,17 @@ export default function CaseStudyClient({
             </span>
           </h2>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
             {project.results.map((result, idx) => {
               const parts = result.split(" ");
               const metric = parts[0];
               const label = parts.slice(1).join(" ");
               return (
-                <div key={idx} className="flex flex-col border-l-2 border-[#C5A880]/40 pl-6">
-                  <span className="font-serif text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#FFFFFF] via-[#F5E6D3] to-[#C5A880]">
+                <div key={idx} className="flex flex-col border-l-2 border-[#C5A880]/40 pl-3 sm:pl-6">
+                  <span className="font-serif text-3xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#FFFFFF] via-[#F5E6D3] to-[#C5A880]">
                     <AnimatedCounter value={metric} />
                   </span>
-                  <span className="text-xs tracking-wider uppercase text-[#C5A880] mt-3 font-semibold">
+                  <span className="text-[10px] sm:text-xs tracking-wider uppercase text-[#C5A880] mt-2 sm:mt-3 font-semibold leading-snug">
                     {label}
                   </span>
                 </div>

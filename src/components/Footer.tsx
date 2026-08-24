@@ -50,7 +50,7 @@ export default function Footer() {
 
   return (
     <footer className="footer-gold-glow text-white pt-16 pb-12 overflow-hidden">
-      <div className="relative z-10 mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24">
+      <div className="relative z-10 mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4 text-left">
           {/* Logo & Headline */}
           <div className="md:col-span-2">

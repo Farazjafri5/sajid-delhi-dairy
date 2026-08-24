@@ -54,7 +54,7 @@ export default function Navbar() {
             : "bg-transparent py-4"
         }`}
       >
-        <div className="mx-auto flex max-w-[1400px] w-full items-center justify-between px-6 sm:px-10 md:px-16 lg:px-24">
+        <div className="mx-auto flex max-w-[1400px] w-full items-center justify-between px-4 sm:px-10 md:px-16 lg:px-24">
           {/* Logo & Brand Wordmark */}
           <Link
             href="/"
