@@ -415,8 +415,8 @@ export default function AdminPage() {
   };
 
   const fetchLiveBeholdPosts = () => {
-    const currentCuratorId = siteContent.instagramSettings?.curatorFeedId || "94d8f687-7cf1-4d83-a2ee-334e1dbf323a";
-    const currentFeedId = siteContent.instagramSettings?.beholdFeedId || "jMYKX8SAVZtq7lMpJFRx";
+    const currentCuratorId = siteContent.instagramSettings?.curatorFeedId || process.env.NEXT_PUBLIC_CURATOR_FEED_ID || "94d8f687-7cf1-4d83-a2ee-334e1dbf323a";
+    const currentFeedId = siteContent.instagramSettings?.beholdFeedId || process.env.NEXT_PUBLIC_BEHOLD_FEED_ID || "jMYKX8SAVZtq7lMpJFRx";
 
     setIsLoadingBehold(true);
     if (currentCuratorId) {

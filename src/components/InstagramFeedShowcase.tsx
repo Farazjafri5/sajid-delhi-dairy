@@ -105,7 +105,7 @@ export default function InstagramFeedShowcase({
   const defaultLimit = isMobile ? 6 : 9;
   const stepCount = isMobile ? 6 : 9;
 
-  const activeCuratorId = curatorFeedId || "94d8f687-7cf1-4d83-a2ee-334e1dbf323a";
+  const activeCuratorId = curatorFeedId || process.env.NEXT_PUBLIC_CURATOR_FEED_ID || "94d8f687-7cf1-4d83-a2ee-334e1dbf323a";
   const activeBeholdId = beholdFeedId || process.env.NEXT_PUBLIC_BEHOLD_FEED_ID || "jMYKX8SAVZtq7lMpJFRx";
 
   // Live Auto-fetch and merge from Curator.io + Behold Feed APIs
