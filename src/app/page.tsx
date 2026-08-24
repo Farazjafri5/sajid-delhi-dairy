@@ -968,7 +968,7 @@ export default function Home() {
       <section className=" py-10">
         <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24">
           {/* Header */}
-          <div className="max-w-3xl mb-16 text-left">
+          <div className="max-w-3xl mb-16 max-sm:mb-10 text-left">
             <span className="text-xs font-semibold tracking-widest uppercase text-studio-muted">
               Our Capabilities
             </span>
@@ -994,7 +994,7 @@ export default function Home() {
 
         <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
           {/* Header */}
-          <div className="max-w-2xl mb-16 text-left">
+          <div className="max-w-2xl mb-16 max-sm:mb-10 text-left">
             <div className="inline-flex items-center gap-2 bg-white/5 border border-[#C5A880]/35 px-4 py-1.5 rounded-full mb-3 backdrop-blur-md">
               <span className="text-[#C5A880] text-xs">✦</span>
               <span className="text-[11px] font-bold tracking-widest uppercase text-[#C5A880]">Who We Create For</span>
@@ -1022,13 +1022,13 @@ export default function Home() {
       </section>
 
       {/* 6. FEATURED WORK SECTION (Extra desktop padding to prevent overlap) */}
-      <section className="py-20 md:py-28 bg-gradient-to-b from-[#FAF8F5] via-[#FFFFFF] to-[#FAF8F5] relative overflow-hidden">
+      <section className="py-10 bg-gradient-to-b from-[#FAF8F5] via-[#FFFFFF] to-[#FAF8F5] relative overflow-hidden">
         {/* Subtle Ambient Radial Gold Glow */}
         <div className="absolute top-0 right-1/3 w-[500px] h-[500px] bg-[#C5A880]/8 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
           {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20 text-left">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20 max-sm:mb-10 text-left">
             <div>
               <div className="inline-flex items-center gap-2 bg-[#0A1628]/5 border border-[#C5A880]/35 px-4 py-1.5 rounded-full mb-3 backdrop-blur-md">
                 <span className="text-[#C5A880] text-xs">✦</span>
@@ -1082,7 +1082,7 @@ export default function Home() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-start h-full">
                   {/* Column 1 - Slides Up Slow if > 1 project, else static */}
-                  <div className={`flex flex-col gap-12 lg:gap-24 ${shouldAnimateCol1 ? "md:animate-vertical-loop-slow md:pause-on-hover" : ""}`}>
+                  <div className={`flex flex-col gap-5 lg:gap-24 ${shouldAnimateCol1 ? "md:animate-vertical-loop-slow md:pause-on-hover" : ""}`}>
                     {col1.map((project) => (
                       <ProjectCard key={`${project.slug}-col1`} project={project} asymmetric={false} />
                     ))}
@@ -1092,7 +1092,7 @@ export default function Home() {
                   </div>
 
                   {/* Column 2 - Slides Down (Reverse loop) if > 1 project, else static */}
-                  <div className={`flex flex-col gap-12 lg:gap-24 ${shouldAnimateCol2 ? "md:animate-vertical-loop-reverse md:pause-on-hover md:mt-24" : "md:mt-16"}`}>
+                  <div className={`flex flex-col gap-12 max-sm:gap-5 lg:gap-24 ${shouldAnimateCol2 ? "md:animate-vertical-loop-reverse md:pause-on-hover md:mt-24" : "md:mt-16"}`}>
                     {col2.map((project) => (
                       <ProjectCard key={`${project.slug}-col2`} project={project} asymmetric={false} />
                     ))}
@@ -1114,7 +1114,7 @@ export default function Home() {
 
         <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
           {/* Header */}
-          <div className="max-w-2xl mb-16 text-left">
+          <div className="max-w-2xl mb-16 max-sm:10 text-left">
             <div className="inline-flex items-center gap-2 bg-[#0A1628]/5 border border-[#C5A880]/35 px-4 py-1.5 rounded-full mb-3 backdrop-blur-md">
               <span className="text-[#C5A880] text-xs">✦</span>
               <span className="text-[11px] font-bold tracking-widest uppercase text-[#0A1628]">How We Work</span>
@@ -1182,7 +1182,7 @@ export default function Home() {
 
         <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
           {/* Header */}
-          <div className="max-w-3xl mb-16 text-left">
+          <div className="max-w-3xl mb-16 max-sm:mb-10 text-left">
             <div className="inline-flex items-center gap-2 bg-white/5 border border-[#C5A880]/35 px-4 py-1.5 rounded-full mb-3 backdrop-blur-md">
               <span className="text-[#C5A880] text-xs">✦</span>
               <span className="text-[11px] font-bold tracking-widest uppercase text-[#C5A880]">Our Stance</span>
@@ -1313,7 +1313,7 @@ export default function Home() {
         <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-[#C5A880]/8 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
-          <div className="max-w-3xl mb-16 text-left">
+          <div className="max-w-3xl mb-16 max-sm:mb-10 text-left">
             <div className="inline-flex items-center gap-2 bg-[#0A1628]/5 border border-[#C5A880]/35 px-4 py-1.5 rounded-full mb-3 backdrop-blur-md">
               <span className="text-[#C5A880] text-xs">✦</span>
               <span className="text-[11px] font-bold tracking-widest uppercase text-[#0A1628]">Client Love</span>
@@ -1445,7 +1445,7 @@ export default function Home() {
       </section>
 
       {/* 11. CTA & PREMIUM COLLABORATION FORM */}
-      <section id="contact" className="bg-gradient-to-b from-[#070F1B] via-[#0A1628] to-[#070F1B] text-white py-24 md:py-32 relative overflow-hidden border-t border-[#C5A880]/20">
+      <section id="contact" className="bg-gradient-to-b from-[#070F1B] via-[#0A1628] to-[#070F1B] text-white py-10 relative overflow-hidden border-t border-[#C5A880]/20">
         {/* Ambient Cinema Gold Spotlights */}
         <div className="absolute top-1/4 left-10 w-[600px] h-[600px] bg-[#C5A880]/10 rounded-full blur-[140px] pointer-events-none" />
         <div className="absolute bottom-10 right-10 w-[500px] h-[500px] bg-[#DD2A7B]/8 rounded-full blur-[140px] pointer-events-none" />

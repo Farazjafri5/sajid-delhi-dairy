@@ -37,7 +37,7 @@ export default function CaseStudyClient({
       <div className="absolute top-1/2 right-10 w-[500px] h-[500px] bg-[#DD2A7B]/8 rounded-full blur-[140px] pointer-events-none" />
 
       {/* 1. Header (Brief Statement) */}
-      <header className="max-w-4xl mb-14 text-left">
+      <header className="max-w-4xl mb-14 max-sm:mb-10 text-left">
         <Link
           href="/work"
           className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-[#0A1628]/70 hover:text-[#0A1628] bg-white/80 border border-[#C5A880]/35 hover:border-[#C5A880] px-4 py-2 rounded-full mb-6 transition-all duration-300 shadow-sm hover:shadow group w-fit cursor-pointer backdrop-blur-md"
@@ -63,7 +63,7 @@ export default function CaseStudyClient({
       </header>
 
       {/* Hero Banner (Cinematic scale with rounded luxury frame) */}
-      <div className="relative aspect-[16/9] w-full overflow-hidden rounded-3xl border border-[#C5A880]/35 bg-[#0A1628] shadow-2xl mb-16 group">
+      <div className="relative aspect-[16/9] w-full overflow-hidden rounded-3xl border border-[#C5A880]/35 bg-[#0A1628] shadow-2xl mb-16 max-sm:mb-10 group">
         <Image
           src={project.image}
           alt={`${project.client} Case Study Hero`}
@@ -83,7 +83,7 @@ export default function CaseStudyClient({
       </div>
 
       {/* Campaign Metadata Grid (Luxury Frosted Ribbon) */}
-      <div className="rounded-3xl border border-[#C5A880]/30 bg-white/80 p-6 md:p-8 backdrop-blur-md shadow-sm mb-20 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+      <div className="rounded-3xl border border-[#C5A880]/30 bg-white/80 p-6 md:p-8 backdrop-blur-md shadow-sm mb-20 max-sm:mb-5 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
         <div>
           <div className="flex items-center gap-1.5 text-[10px] font-extrabold tracking-widest uppercase text-[#C5A880] mb-2">
             <span>✦</span>
@@ -117,7 +117,7 @@ export default function CaseStudyClient({
       </div>
 
       {/* The Brief & The Idea Sections (2 Luxury Editorial Cards) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-24 text-left">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-24 max-sm:mb-5 text-left">
         {/* Card 1: Challenge / Brief */}
         <div className="group relative rounded-3xl border border-[#C5A880]/25 hover:border-[#C5A880] bg-gradient-to-b from-[#FFFFFF] via-[#FAF6F1] to-[#F3ECE1] p-8 md:p-10 shadow-sm hover:shadow-[0_20px_45px_rgba(197,168,128,0.22)] transition-all duration-500 overflow-hidden flex flex-col justify-between">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#C5A880] via-[#F3E5D0] to-[#C5A880]" />
@@ -154,7 +154,7 @@ export default function CaseStudyClient({
       </div>
 
       {/* The Execution (Full Width Statement & Gallery) */}
-      <div className="border-t border-[#C5A880]/20 pt-16 mb-24 text-left">
+      <div className="border-t border-[#C5A880]/20 pt-16 mb-24 max-sm:pt-5 max-sm:mb-5 text-left">
         <div className="max-w-3xl mb-12">
           <div className="inline-flex items-center gap-2 bg-[#0A1628]/5 border border-[#C5A880]/40 px-4 py-1.5 rounded-full mb-3 backdrop-blur-md shadow-sm">
             <span className="text-[#C5A880] text-xs">✦</span>
@@ -177,7 +177,7 @@ export default function CaseStudyClient({
       </div>
 
       {/* Results Panel (Midnight Obsidian Luxury Metrics Card) */}
-      <div className="rounded-3xl border border-[#C5A880]/35 bg-gradient-to-b from-[#070F1B] via-[#0A1628] to-[#070F1B] text-white p-8 md:p-14 shadow-2xl relative overflow-hidden mb-24 text-left">
+      <div className="rounded-3xl border border-[#C5A880]/35 bg-gradient-to-b from-[#070F1B] via-[#0A1628] to-[#070F1B] text-white p-8 md:p-14 shadow-2xl relative overflow-hidden mb-24 max-sm:mb-5 text-left">
         {/* Ambient Cinema Spotlight */}
         <div className="absolute top-0 left-1/3 w-[400px] h-[400px] bg-[#C5A880]/12 rounded-full blur-[100px] pointer-events-none" />
 
@@ -214,7 +214,7 @@ export default function CaseStudyClient({
       </div>
 
       {/* Call to Action segment */}
-      <div className="rounded-3xl border border-[#C5A880]/30 bg-white/90 p-8 md:p-12 shadow-sm flex flex-col md:flex-row items-center justify-between gap-8 mb-24 text-left backdrop-blur-md">
+      <div className="rounded-3xl border border-[#C5A880]/30 bg-white/90 p-8 md:p-12 shadow-sm flex flex-col md:flex-row items-center justify-between gap-8 mb-24 max-sm:mb-5 text-left backdrop-blur-md">
         <div className="max-w-xl">
           <div className="inline-flex items-center gap-2 bg-[#0A1628]/5 border border-[#C5A880]/40 px-3.5 py-1 rounded-full mb-3">
             <span className="text-[#C5A880] text-xs">✦</span>

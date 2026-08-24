@@ -80,14 +80,14 @@ export default function WorkPage() {
   });
 
   return (
-    <main className="flex-1 bg-gradient-to-b from-[#FAF8F5] via-[#FFFFFF] to-[#FAF8F5] pt-32 pb-24 md:pt-40 md:pb-32 relative overflow-hidden">
+    <main className="flex-1 bg-gradient-to-b from-[#FAF8F5] via-[#FFFFFF] to-[#FAF8F5] max-sm:pb-10 pt-25 pb-24 md:pt-30 md:pb-32 relative overflow-hidden">
       {/* Subtle Ambient Gold Spotlight */}
       <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-[#C5A880]/12 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute top-1/2 right-10 w-[500px] h-[500px] bg-[#DD2A7B]/8 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
         {/* Header */}
-        <div className="max-w-3xl mb-16 text-left">
+        <div className="max-w-3xl mb-16 max-sm:mb-10 text-left">
           {/* Back Navigation Button */}
           <Link
             href="/"
@@ -115,7 +115,7 @@ export default function WorkPage() {
         </div>
 
         {/* Interactive Luxury Filter Pills */}
-        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 pb-6 mb-16 border-b border-[#C5A880]/20">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 pb-6 mb-16 max-sm:mb-10 border-b border-[#C5A880]/20">
           {filters.map((filter) => {
             const isSelected = activeFilter === filter;
             const label = filter === "ALL"
@@ -147,7 +147,7 @@ export default function WorkPage() {
 
         {/* Grid */}
         {filteredProjects.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-20 max-sm:gap-y-5 ">
             {filteredProjects.map((project) => (
               <ProjectCard key={project.slug} project={project} asymmetric={false} />
             ))}

@@ -5,14 +5,14 @@ import { ArrowRight, ArrowLeft } from "lucide-react";
 
 export default function ServicesPage() {
   return (
-    <main className="flex-1 bg-gradient-to-b from-[#FAF8F5] via-[#FFFFFF] to-[#FAF8F5] pt-32 pb-24 md:pt-40 md:pb-32 relative overflow-hidden">
+    <main className="flex-1 bg-gradient-to-b from-[#FAF8F5] via-[#FFFFFF] to-[#FAF8F5] max-sm:pb-10 pt-25 pb-24 md:pt-30 md:pb-32 relative overflow-hidden">
       {/* Subtle Ambient Gold Spotlights */}
       <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-[#C5A880]/12 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute top-1/2 right-10 w-[500px] h-[500px] bg-[#DD2A7B]/8 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
         {/* Header */}
-        <div className="max-w-3xl mb-16 text-left">
+        <div className="max-w-3xl mb-16 max-sm:mb-10 text-left">
           {/* Back Navigation Button */}
           <Link
             href="/"
@@ -40,14 +40,14 @@ export default function ServicesPage() {
         </div>
 
         {/* Services List Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-24 max-sm:mb-5">
           {services.map((service) => (
             <ServiceCard key={service.id} service={service} />
           ))}
         </div>
 
         {/* How We Shoot Section (Luxury Pathway Cards) */}
-        <div className="border-t border-[#C5A880]/20 pt-20">
+        <div className="border-t border-[#C5A880]/20 pt-20 max-sm:pt-5">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
             <div className="lg:col-span-5 text-left">
               <div className="inline-flex items-center gap-2 bg-[#0A1628]/5 border border-[#C5A880]/40 px-4 py-1.5 rounded-full mb-4 backdrop-blur-md shadow-sm">
@@ -91,7 +91,7 @@ export default function ServicesPage() {
         </div>
 
         {/* Bottom Luxury Midnight CTA banner */}
-        <div className="mt-28 relative rounded-3xl border border-[#C5A880]/30 bg-gradient-to-b from-[#070F1B] via-[#0A1628] to-[#070F1B] p-10 md:p-16 text-center text-white overflow-hidden shadow-2xl">
+        <div className="mt-28 max-sm:mt-5 relative rounded-3xl border border-[#C5A880]/30 bg-gradient-to-b from-[#070F1B] via-[#0A1628] to-[#070F1B] p-10 md:p-16 text-center text-white overflow-hidden shadow-2xl">
           <div className="absolute top-0 left-1/3 w-[400px] h-[400px] bg-[#C5A880]/15 rounded-full blur-[100px] pointer-events-none" />
           <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
             <div className="inline-flex items-center gap-2 bg-white/5 border border-[#C5A880]/35 px-4 py-1.5 rounded-full mb-4 backdrop-blur-md">

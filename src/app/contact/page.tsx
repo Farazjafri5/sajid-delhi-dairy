@@ -163,14 +163,14 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="flex-1 bg-gradient-to-b from-[#FAF8F5] via-[#FFFFFF] to-[#FAF8F5] pt-32 pb-24 md:pt-40 md:pb-32 relative overflow-hidden">
+    <main className="flex-1 bg-gradient-to-b from-[#FAF8F5] via-[#FFFFFF] to-[#FAF8F5] max-sm:pb-10 pt-25 pb-24 md:pt-30 md:pb-32 relative overflow-hidden">
       {/* Subtle Ambient Gold Spotlights */}
       <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-[#C5A880]/12 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-10 right-1/4 w-[500px] h-[500px] bg-[#DD2A7B]/8 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="mx-auto max-w-[1400px] w-full px-8 md:px-16 lg:px-24 relative z-10">
         {/* Header */}
-        <div className="max-w-3xl mb-16 text-left">
+        <div className="max-w-3xl mb-16 max-sm:mb-10 text-left">
           {/* Back Navigation Button */}
           <Link
             href="/"
