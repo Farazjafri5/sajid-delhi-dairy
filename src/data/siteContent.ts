@@ -285,10 +285,16 @@ export const defaultSiteContent: SiteContent = {
     "profileUrl": "https://www.instagram.com/socialdiariesagency.co/",
     "autoSync": true,
     "hiddenPostIds": [
-      "18618211240026905"
+      "18618211240026905",
+      "17979067344111629",
+      "17926858455393854",
+      "18173977357427485"
     ],
     "hiddenPermalinks": [
-      "https://www.instagram.com/reel/DcWlo88vWsD/"
+      "https://www.instagram.com/reel/DcWlo88vWsD/",
+      "https://www.instagram.com/p/DcWl4s2k9Ey/",
+      "https://www.instagram.com/p/DcUL-GYk0kJ/",
+      "https://www.instagram.com/p/DcUFQeHkyJ4/"
     ]
   },
   "contactSettings": {
