@@ -476,7 +476,9 @@ export default function Home() {
         initialTiles={siteContent?.instagramFeed || []}
         accountHandle={siteContent?.instagramSettings?.handle || "socialdiariesagency.co"}
         accountUrl={siteContent?.instagramSettings?.profileUrl || "https://www.instagram.com/socialdiariesagency.co/"}
+        curatorFeedId={siteContent?.instagramSettings?.curatorFeedId || "94d8f687-7cf1-4d83-a2ee-334e1dbf323a"}
         beholdFeedId={siteContent?.instagramSettings?.beholdFeedId || process.env.NEXT_PUBLIC_BEHOLD_FEED_ID || "jMYKX8SAVZtq7lMpJFRx"}
+        provider={siteContent?.instagramSettings?.provider || "curator"}
         hiddenPostIds={siteContent?.instagramSettings?.hiddenPostIds || []}
         hiddenPermalinks={siteContent?.instagramSettings?.hiddenPermalinks || []}
       />

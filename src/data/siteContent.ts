@@ -280,22 +280,14 @@ export const defaultSiteContent: SiteContent = {
     }
   ],
   "instagramSettings": {
+    "curatorFeedId": "94d8f687-7cf1-4d83-a2ee-334e1dbf323a",
     "beholdFeedId": "jMYKX8SAVZtq7lMpJFRx",
+    "provider": "curator",
     "handle": "socialdiariesagency.co",
     "profileUrl": "https://www.instagram.com/socialdiariesagency.co/",
     "autoSync": true,
-    "hiddenPostIds": [
-      "18618211240026905",
-      "17979067344111629",
-      "17926858455393854",
-      "18173977357427485"
-    ],
-    "hiddenPermalinks": [
-      "https://www.instagram.com/reel/DcWlo88vWsD/",
-      "https://www.instagram.com/p/DcWl4s2k9Ey/",
-      "https://www.instagram.com/p/DcUL-GYk0kJ/",
-      "https://www.instagram.com/p/DcUFQeHkyJ4/"
-    ]
+    "hiddenPostIds": [],
+    "hiddenPermalinks": []
   },
   "contactSettings": {
     "email": "kunwarsajid2@gmail.com",

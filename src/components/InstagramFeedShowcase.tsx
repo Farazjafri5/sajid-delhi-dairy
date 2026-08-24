@@ -36,6 +36,8 @@ interface InstagramFeedShowcaseProps {
   accountHandle?: string;
   accountUrl?: string;
   beholdFeedId?: string;
+  curatorFeedId?: string;
+  provider?: "curator" | "behold" | "hybrid";
   hiddenPostIds?: string[];
   hiddenPermalinks?: string[];
 }
@@ -45,13 +47,15 @@ export default function InstagramFeedShowcase({
   accountHandle = "socialdiariesagency.co",
   accountUrl = "https://www.instagram.com/socialdiariesagency.co/",
   beholdFeedId,
+  curatorFeedId = "94d8f687-7cf1-4d83-a2ee-334e1dbf323a",
+  provider = "curator",
   hiddenPostIds = [],
   hiddenPermalinks = [],
 }: InstagramFeedShowcaseProps) {
   const [activeTab, setActiveTab] = useState<"all" | "reels" | "photos">("all");
   const [isMobile, setIsMobile] = useState(false);
   const [userLimit, setUserLimit] = useState<number | null>(null);
-  const [feedList, setFeedList] = useState<InstagramTile[]>([]);
+  const [feedList, setFeedList] = useState<InstagramTile[]>(initialTiles || []);
   const [hiddenIds, setHiddenIds] = useState<string[]>(hiddenPostIds || []);
   const [hiddenLinks, setHiddenLinks] = useState<string[]>(hiddenPermalinks || []);
 
@@ -101,48 +105,90 @@ export default function InstagramFeedShowcase({
   const defaultLimit = isMobile ? 6 : 9;
   const stepCount = isMobile ? 6 : 9;
 
+  const activeCuratorId = curatorFeedId || "94d8f687-7cf1-4d83-a2ee-334e1dbf323a";
   const activeBeholdId = beholdFeedId || process.env.NEXT_PUBLIC_BEHOLD_FEED_ID || "jMYKX8SAVZtq7lMpJFRx";
 
-  // Live Auto-fetch from Behold Feed API
+  // Live Auto-fetch and merge from Curator.io + Behold Feed APIs
   React.useEffect(() => {
-    if (!activeBeholdId) {
-      setFeedList(initialTiles || []);
-      return;
-    }
-    fetch(`https://feeds.behold.so/${activeBeholdId}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Status " + res.status);
-        return res.json();
-      })
-      .then((data) => {
-        const postsArray = Array.isArray(data) ? data : (data?.posts || []);
-        if (postsArray.length > 0) {
-          const livePosts: InstagramTile[] = postsArray.map((item: any, i: number) => {
-            const isVideo = item.mediaType === "VIDEO" || item.mediaType === "REEL" || !!item.videoUrl || (item.mediaUrl && typeof item.mediaUrl === "string" && item.mediaUrl.includes(".mp4"));
-            const imgSrc = item.sizes?.large?.mediaUrl || item.sizes?.medium?.mediaUrl || item.thumbnailUrl || item.mediaUrl || "";
-            return {
-              id: item.id || `live-${i}`,
-              type: isVideo ? "Reel" : "Photo",
-              client: "Social Diaries",
-              campaign: item.caption ? (item.caption.slice(0, 35) + "...") : (isVideo ? "Instagram Reel" : "Instagram Photo"),
-              caption: item.caption || "Live from Instagram @socialdiariesagency.co",
-              image: imgSrc,
-              videoUrl: isVideo ? (item.mediaUrl || item.videoUrl) : undefined,
-              permalink: item.permalink || accountUrl,
-              likes: item.likeCount !== undefined ? `${item.likeCount}` : "0",
-              comments: item.commentsCount !== undefined ? `${item.commentsCount}` : "0",
-              active: true,
-            };
-          });
+    let isMounted = true;
+    const fetchAllFeeds = async () => {
+      const mergedTiles: InstagramTile[] = [];
+      const seenShortcodes = new Set<string>();
 
-          // Show ONLY real live posts from Instagram
-          setFeedList(livePosts);
-        }
-      })
-      .catch((err) => {
-        console.warn("Behold feed fetch note:", err);
-      });
-  }, [activeBeholdId, beholdFeedId, accountUrl, initialTiles]);
+      // 1. Fetch Curator Feed
+      if (activeCuratorId) {
+        try {
+          const cRes = await fetch(`https://api.curator.io/v1/feeds/${activeCuratorId}/posts`);
+          if (cRes.ok) {
+            const cJson = await cRes.json();
+            const posts = cJson?.posts || cJson?.data || [];
+            posts.forEach((item: any, i: number) => {
+              const cleanUrl = item.url || item.user_url || "";
+              const shortcode = cleanUrl.split("/").filter(Boolean).pop() || cleanUrl;
+              if (shortcode) seenShortcodes.add(shortcode);
+
+              const isVideo = item.has_video === 1 || !!item.video;
+              const imgSrc = item.image_large || item.image_xlarge || item.image || item.thumbnail || item.user_image || "";
+              mergedTiles.push({
+                id: `curator-${item.id || item.source_identifier || i}`,
+                type: isVideo ? "Reel" : "Photo",
+                client: item.user_full_name || item.user_screen_name || "Social Diaries",
+                campaign: item.text ? (item.text.slice(0, 35) + "...") : (isVideo ? "Instagram Reel" : "Instagram Photo"),
+                caption: item.text || "Live from Instagram @socialdiariesagency.co",
+                image: imgSrc,
+                videoUrl: isVideo ? (item.video || undefined) : undefined,
+                permalink: cleanUrl || accountUrl,
+                likes: item.likes !== undefined ? item.likes.toString() : "0",
+                comments: item.comments !== undefined ? item.comments.toString() : "0",
+                active: true,
+              });
+            });
+          }
+        } catch (e) {}
+      }
+
+      // 2. Fetch Behold Feed & merge missing posts
+      if (activeBeholdId) {
+        try {
+          const bRes = await fetch(`https://feeds.behold.so/${activeBeholdId}`);
+          if (bRes.ok) {
+            const bJson = await bRes.json();
+            const bPosts = Array.isArray(bJson) ? bJson : (bJson?.posts || []);
+            bPosts.forEach((item: any, i: number) => {
+              const cleanUrl = item.permalink || "";
+              const shortcode = cleanUrl.split("/").filter(Boolean).pop() || cleanUrl;
+              if (!shortcode || !seenShortcodes.has(shortcode)) {
+                if (shortcode) seenShortcodes.add(shortcode);
+
+                const isVideo = item.mediaType === "VIDEO" || item.mediaType === "REEL" || !!item.videoUrl || (item.mediaUrl && typeof item.mediaUrl === "string" && item.mediaUrl.includes(".mp4"));
+                const imgSrc = item.sizes?.large?.mediaUrl || item.sizes?.medium?.mediaUrl || item.thumbnailUrl || item.mediaUrl || "";
+                mergedTiles.push({
+                  id: item.id || `behold-${i}`,
+                  type: isVideo ? "Reel" : "Photo",
+                  client: "Social Diaries",
+                  campaign: item.caption ? (item.caption.slice(0, 35) + "...") : (isVideo ? "Instagram Reel" : "Instagram Photo"),
+                  caption: item.caption || "Live from Instagram @socialdiariesagency.co",
+                  image: imgSrc,
+                  videoUrl: isVideo ? (item.mediaUrl || item.videoUrl) : undefined,
+                  permalink: cleanUrl || accountUrl,
+                  likes: item.likeCount !== undefined ? `${item.likeCount}` : "0",
+                  comments: item.commentsCount !== undefined ? `${item.commentsCount}` : "0",
+                  active: true,
+                });
+              }
+            });
+          }
+        } catch (e) {}
+      }
+
+      if (isMounted && mergedTiles.length > 0) {
+        setFeedList(mergedTiles);
+      }
+    };
+
+    fetchAllFeeds();
+    return () => { isMounted = false; };
+  }, [activeCuratorId, activeBeholdId, beholdFeedId, curatorFeedId, accountUrl]);
 
   // Modals
   const [activeReel, setActiveReel] = useState<InstagramTile | null>(null);
@@ -430,17 +476,7 @@ export default function InstagramFeedShowcase({
             </button>
           )}
 
-          {/* View All Posts Button */}
-          {filteredItems.length > defaultLimit && activeLimit < filteredItems.length && (
-            <button
-              type="button"
-              onClick={handleViewAll}
-              className="flex items-center gap-2 bg-gradient-to-r from-[#C5A880]/20 via-[#C5A880]/30 to-[#C5A880]/20 text-[#C5A880] hover:text-white border border-[#C5A880]/50 hover:border-[#C5A880] px-5 sm:px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-xl cursor-pointer active:scale-95 hover:bg-[#C5A880]/30"
-            >
-              <Sparkles size={14} className="text-[#C5A880]" />
-              <span>View All Posts ({filteredItems.length})</span>
-            </button>
-          )}
+
 
           {/* View Less Button */}
           {isExpanded && (

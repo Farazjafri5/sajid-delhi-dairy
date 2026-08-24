@@ -97,6 +97,8 @@ export interface SiteContent {
   instagramFeed: InstagramTile[];
   instagramSettings?: {
     beholdFeedId?: string;
+    curatorFeedId?: string;
+    provider?: "curator" | "behold" | "hybrid";
     handle?: string;
     profileUrl?: string;
     autoSync?: boolean;

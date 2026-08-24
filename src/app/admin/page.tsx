@@ -160,6 +160,7 @@ function MediaBox({
 }) {
   const ref = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [showCardConfirm, setShowCardConfirm] = useState(false);
   const isVideo = src.startsWith("data:video") || src.endsWith(".mp4") || src.includes("mixkit") || src.includes("video") || src.includes("cloudinary.com") && (src.includes("/video/") || src.endsWith(".mp4"));
 
   return (
@@ -260,14 +261,39 @@ function MediaBox({
             </button>
           )}
           {onRemove && (
-            <button
-              type="button"
-              onClick={onRemove}
-              title="Delete item"
-              className="p-1.5 rounded text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-            >
-              <Trash2 size={14} />
-            </button>
+            <>
+              {showCardConfirm ? (
+                <div className="flex items-center gap-1 bg-red-50 p-1 rounded-lg border border-red-200">
+                  <span className="text-[9px] font-bold text-red-700 px-1">Delete?</span>
+                  <button
+                    type="button"
+                    onClick={() => setShowCardConfirm(false)}
+                    className="px-1.5 py-0.5 rounded bg-gray-200 hover:bg-gray-300 text-[#0A1628] text-[9px] font-bold cursor-pointer"
+                  >
+                    No
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowCardConfirm(false);
+                      onRemove();
+                    }}
+                    className="px-1.5 py-0.5 rounded bg-red-600 hover:bg-red-700 text-white text-[9px] font-bold cursor-pointer shadow-sm"
+                  >
+                    Yes
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowCardConfirm(true)}
+                  title="Delete item"
+                  className="p-1.5 rounded text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                >
+                  <Trash2 size={14} />
+                </button>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -371,33 +397,77 @@ export default function AdminPage() {
   const [liveBeholdPosts, setLiveBeholdPosts] = useState<any[]>([]);
   const [isLoadingBehold, setIsLoadingBehold] = useState<boolean>(false);
   const [manualHideInput, setManualHideInput] = useState<string>("");
+  const [deleteConfirmPost, setDeleteConfirmPost] = useState<{ id: string; permalink?: string; title?: string; image?: string } | null>(null);
+  const [globalDeleteConfirm, setGlobalDeleteConfirm] = useState<{
+    title: string;
+    description?: string;
+    image?: string;
+    onConfirm: () => void;
+  } | null>(null);
+
+  const requestGlobalDelete = (opts: {
+    title: string;
+    description?: string;
+    image?: string;
+    onConfirm: () => void;
+  }) => {
+    setGlobalDeleteConfirm(opts);
+  };
 
   const fetchLiveBeholdPosts = () => {
+    const currentCuratorId = siteContent.instagramSettings?.curatorFeedId || "94d8f687-7cf1-4d83-a2ee-334e1dbf323a";
     const currentFeedId = siteContent.instagramSettings?.beholdFeedId || "jMYKX8SAVZtq7lMpJFRx";
-    if (!currentFeedId) return;
+
     setIsLoadingBehold(true);
-    fetch(`https://feeds.behold.so/${currentFeedId}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Status " + res.status);
-        return res.json();
-      })
-      .then((data) => {
-        const postsArray = Array.isArray(data) ? data : (data?.posts || []);
-        setLiveBeholdPosts(postsArray);
-      })
-      .catch((err) => {
-        console.warn("Could not fetch Behold feed:", err);
-      })
-      .finally(() => {
-        setIsLoadingBehold(false);
-      });
+    if (currentCuratorId) {
+      fetch(`https://api.curator.io/v1/feeds/${currentCuratorId}/posts`)
+        .then((res) => {
+          if (!res.ok) throw new Error("Curator error");
+          return res.json();
+        })
+        .then((data) => {
+          const raw = data?.posts || data?.data || [];
+          if (raw.length > 0) {
+            const mapped = raw.map((item: any, i: number) => ({
+              id: item.id ? item.id.toString() : (item.source_identifier || `curator-${i}`),
+              mediaType: item.has_video === 1 || !!item.video ? "VIDEO" : "IMAGE",
+              sizes: {
+                medium: { mediaUrl: item.image_large || item.image || item.thumbnail || "" },
+                large: { mediaUrl: item.image_xlarge || item.image_large || item.image || "" }
+              },
+              mediaUrl: item.video || item.image_large || item.image || "",
+              videoUrl: item.video || "",
+              caption: item.text || "",
+              permalink: item.url || item.user_url || ""
+            }));
+            setLiveBeholdPosts(mapped);
+            return;
+          }
+          throw new Error("Curator empty");
+        })
+        .catch(() => {
+          if (currentFeedId) {
+            fetch(`https://feeds.behold.so/${currentFeedId}`)
+              .then(res => res.json())
+              .then(d => setLiveBeholdPosts(Array.isArray(d) ? d : (d?.posts || [])))
+              .catch(() => {});
+          }
+        })
+        .finally(() => setIsLoadingBehold(false));
+    } else if (currentFeedId) {
+      fetch(`https://feeds.behold.so/${currentFeedId}`)
+        .then((res) => res.json())
+        .then((data) => setLiveBeholdPosts(Array.isArray(data) ? data : (data?.posts || [])))
+        .catch(() => {})
+        .finally(() => setIsLoadingBehold(false));
+    }
   };
 
   useEffect(() => {
     if (activePage === "livesocial" || activePage === "instagram") {
       fetchLiveBeholdPosts();
     }
-  }, [activePage, siteContent.instagramSettings?.beholdFeedId]);
+  }, [activePage, siteContent.instagramSettings?.curatorFeedId, siteContent.instagramSettings?.beholdFeedId]);
 
   const toggleHidePost = async (postId: string, permalink?: string) => {
     const currentHidden = siteContent.instagramSettings?.hiddenPostIds || [];
@@ -445,10 +515,14 @@ export default function AdminPage() {
     setTimeout(() => setIsSaved(false), 2000);
   };
 
-  const deleteLivePost = async (postId: string, permalink?: string) => {
-    if (!window.confirm("Are you sure you want to permanently remove this post from your website?")) {
-      return;
-    }
+  const deleteLivePost = (postId: string, permalink?: string, title?: string, image?: string) => {
+    setDeleteConfirmPost({ id: postId, permalink, title, image });
+  };
+
+  const confirmExecuteDelete = async () => {
+    if (!deleteConfirmPost) return;
+    const { id: postId, permalink } = deleteConfirmPost;
+
     const currentHidden = siteContent.instagramSettings?.hiddenPostIds || [];
     const currentHiddenLinks = siteContent.instagramSettings?.hiddenPermalinks || [];
 
@@ -465,6 +539,7 @@ export default function AdminPage() {
     };
 
     setSiteContent(updatedContent);
+    setDeleteConfirmPost(null);
 
     try {
       localStorage.setItem("dd_hidden_instagram_ids", JSON.stringify(newHiddenIds));
@@ -1031,13 +1106,17 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                               </button>
                               <button
                                 type="button"
-                                onClick={() => updateContent(c => ({
-                                  ...c,
-                                  hero: {
-                                    ...c.hero,
-                                    mockReels: c.hero.mockReels.filter((_, i) => i !== idx)
-                                  }
-                                }))}
+                                onClick={() => requestGlobalDelete({
+                                  title: `Delete Hero Reel #${idx + 1}?`,
+                                  description: "Kya aap is video reel ko delete karna chahte hain?",
+                                  onConfirm: () => updateContent(c => ({
+                                    ...c,
+                                    hero: {
+                                      ...c.hero,
+                                      mockReels: c.hero.mockReels.filter((_, i) => i !== idx)
+                                    }
+                                  }))
+                                })}
                                 className="text-red-400 hover:text-red-600 p-1 cursor-pointer"
                                 title="Delete this reel"
                               >
@@ -1263,13 +1342,17 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                                 </button>
                                 <button
                                   type="button"
-                                  onClick={() => updateContent(c => ({
-                                    ...c,
-                                    showreel: {
-                                      ...c.showreel,
-                                      centerVideos: c.showreel.centerVideos.filter((_, i) => i !== idx)
-                                    }
-                                  }))}
+                                  onClick={() => requestGlobalDelete({
+                                    title: `Delete Showreel Video #${idx + 1}?`,
+                                    description: "Kya aap is showreel video ko delete karna chahte hain?",
+                                    onConfirm: () => updateContent(c => ({
+                                      ...c,
+                                      showreel: {
+                                        ...c.showreel,
+                                        centerVideos: c.showreel.centerVideos.filter((_, i) => i !== idx)
+                                      }
+                                    }))
+                                  })}
                                   className="text-red-400 hover:text-red-600 p-1 cursor-pointer"
                                   title="Delete video reel"
                                 >
@@ -1541,11 +1624,12 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                         </button>
                         <button
                           type="button"
-                          onClick={() => {
-                            if (confirm(`Delete project "${proj.client || "Untitled"}"?`)) {
-                              setProjects(prev => prev.filter(p => p.slug !== proj.slug));
-                            }
-                          }}
+                          onClick={() => requestGlobalDelete({
+                            title: `Delete "${proj.client || "Untitled"}"?`,
+                            description: "Kya aap is project ko website se permanently remove / delete karna chahte hain?",
+                            image: proj.image,
+                            onConfirm: () => setProjects(prev => prev.filter(p => p.slug !== proj.slug))
+                          })}
                           className="flex items-center justify-center text-red-500 bg-red-50 hover:bg-red-100 border border-red-200 h-9 w-9 rounded-lg cursor-pointer transition-colors shrink-0"
                           title="Delete project"
                         >
@@ -1611,11 +1695,12 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                                 Edit
                               </button>
                               <button
-                                onClick={() => {
-                                  if (confirm(`Delete project "${proj.client || "Untitled"}"?`)) {
-                                    setProjects(prev => prev.filter(p => p.slug !== proj.slug));
-                                  }
-                                }}
+                                onClick={() => requestGlobalDelete({
+                                  title: `Delete "${proj.client || "Untitled"}"?`,
+                                  description: "Kya aap is project ko website se permanently remove / delete karna chahte hain?",
+                                  image: proj.image,
+                                  onConfirm: () => setProjects(prev => prev.filter(p => p.slug !== proj.slug))
+                                })}
                                 className="text-[10px] font-bold uppercase tracking-wider text-red-400 hover:text-red-600 p-1.5 cursor-pointer"
                                 title="Delete project"
                               >
@@ -1899,11 +1984,16 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                       })} className="w-full border border-[#0A1628]/10 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#C5A880]" />
                       <button
                         type="button"
-                        onClick={() => updateProject(editingProject.slug, p => ({
-                          ...p,
-                          results: p.results.filter((_, i) => i !== idx)
-                        }))}
+                        onClick={() => requestGlobalDelete({
+                          title: `Delete Metric "${res || "Metric"}"?`,
+                          description: "Kya aap is case study metric ko delete karna chahte hain?",
+                          onConfirm: () => updateProject(editingProject.slug, p => ({
+                            ...p,
+                            results: p.results.filter((_, i) => i !== idx)
+                          }))
+                        })}
                         className="text-red-400 hover:text-red-600 p-1 cursor-pointer"
+                        title="Delete metric"
                       >
                         <Trash2 size={14} />
                       </button>
@@ -1945,10 +2035,29 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
                   <div>
                     <label className="block text-xs font-bold text-white/80 uppercase tracking-wider mb-2">
-                      Behold Feed ID
+                      Curator.io Feed ID (Free 24+ Posts)
+                    </label>
+                    <input
+                      value={siteContent.instagramSettings?.curatorFeedId || "94d8f687-7cf1-4d83-a2ee-334e1dbf323a"}
+                      onChange={(e) => updateContent(c => ({
+                        ...c,
+                        instagramSettings: {
+                          ...c.instagramSettings,
+                          curatorFeedId: e.target.value
+                        }
+                      }))}
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#C5A880]"
+                      placeholder="e.g. 94d8f687-7cf1-4d83-a2ee-334e1dbf323a"
+                    />
+                    <span className="text-[10px] text-white/40 mt-1 block">Curator.io Free Multi-Post Feed</span>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-white/80 uppercase tracking-wider mb-2">
+                      Behold Feed ID (Backup)
                     </label>
                     <input
                       value={siteContent.instagramSettings?.beholdFeedId || "jMYKX8SAVZtq7lMpJFRx"}
@@ -2183,7 +2292,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                                   </button>
                                   <button
                                     type="button"
-                                    onClick={() => deleteLivePost(postId, permalink)}
+                                    onClick={() => deleteLivePost(postId, permalink, post.caption, imgSrc)}
                                     title="Permanently remove from website"
                                     className="p-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 transition-colors cursor-pointer shadow-sm"
                                   >
@@ -2199,6 +2308,42 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                   )}
                 </div>
               </div>
+
+              {/* 🛑 Delete Confirmation Modal */}
+              {deleteConfirmPost && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in">
+                  <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-[#0A1628]/10 text-center relative overflow-hidden">
+                    <div className="w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 shadow-inner">
+                      <Trash2 size={28} />
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-bold text-[#0A1628]">Delete Post from Website?</h3>
+                    <p className="text-xs sm:text-sm text-[#0A1628]/70 mt-2">
+                      Kya aap is Instagram post ko website se remove / delete karna chahte hain?
+                    </p>
+                    {deleteConfirmPost.image && (
+                      <div className="my-4 mx-auto w-24 h-24 rounded-xl overflow-hidden border border-[#0A1628]/10 shadow-sm bg-black/5">
+                        <img src={deleteConfirmPost.image} alt="Preview" className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <div className="flex items-center justify-center gap-3 mt-6">
+                      <button
+                        type="button"
+                        onClick={() => setDeleteConfirmPost(null)}
+                        className="flex-1 bg-gray-100 hover:bg-gray-200 text-[#0A1628] font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                      >
+                        ❌ No (Cancel)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={confirmExecuteDelete}
+                        className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider transition-colors shadow-md cursor-pointer"
+                      >
+                        🗑️ Yes (Delete)
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -2371,10 +2516,14 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                           </button>
                           <button
                             type="button"
-                            onClick={() => updateContent(c => ({
-                              ...c,
-                              testimonials: c.testimonials.filter((_, i) => i !== idx)
-                            }))}
+                            onClick={() => requestGlobalDelete({
+                              title: `Delete Testimonial from "${t.author || "Client"}"?`,
+                              description: "Kya aap is testimonial review ko delete karna chahte hain?",
+                              onConfirm: () => updateContent(c => ({
+                                ...c,
+                                testimonials: c.testimonials.filter((_, i) => i !== idx)
+                              }))
+                            })}
                             className="text-red-400 hover:text-red-600 p-1 cursor-pointer"
                             title="Delete testimonial"
                           >
@@ -3096,6 +3245,46 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               </div>
             </div>
           )}
+
+        {/* 🛑 Global Universal Delete Confirmation Modal */}
+        {globalDeleteConfirm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in">
+            <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-[#0A1628]/10 text-center relative overflow-hidden">
+              <div className="w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 shadow-inner">
+                <Trash2 size={28} />
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-[#0A1628]">{globalDeleteConfirm.title || "Delete Item?"}</h3>
+              <p className="text-xs sm:text-sm text-[#0A1628]/70 mt-2">
+                {globalDeleteConfirm.description || "Kya aap ise permanently remove / delete karna chahte hain?"}
+              </p>
+              {globalDeleteConfirm.image && (
+                <div className="my-4 mx-auto w-24 h-24 rounded-xl overflow-hidden border border-[#0A1628]/10 shadow-sm bg-black/5">
+                  <img src={globalDeleteConfirm.image} alt="Preview" className="w-full h-full object-cover" />
+                </div>
+              )}
+              <div className="flex items-center justify-center gap-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setGlobalDeleteConfirm(null)}
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-[#0A1628] font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                >
+                  ❌ No (Cancel)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const cb = globalDeleteConfirm.onConfirm;
+                    setGlobalDeleteConfirm(null);
+                    cb();
+                  }}
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider transition-colors shadow-md cursor-pointer"
+                >
+                  🗑️ Yes (Delete)
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         </main>
       </div>
