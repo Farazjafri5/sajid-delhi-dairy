@@ -36,6 +36,8 @@ interface InstagramFeedShowcaseProps {
   accountHandle?: string;
   accountUrl?: string;
   beholdFeedId?: string;
+  hiddenPostIds?: string[];
+  hiddenPermalinks?: string[];
 }
 
 export default function InstagramFeedShowcase({
@@ -43,11 +45,49 @@ export default function InstagramFeedShowcase({
   accountHandle = "socialdiariesagency.co",
   accountUrl = "https://www.instagram.com/socialdiariesagency.co/",
   beholdFeedId,
+  hiddenPostIds = [],
+  hiddenPermalinks = [],
 }: InstagramFeedShowcaseProps) {
   const [activeTab, setActiveTab] = useState<"all" | "reels" | "photos">("all");
   const [isMobile, setIsMobile] = useState(false);
   const [userLimit, setUserLimit] = useState<number | null>(null);
   const [feedList, setFeedList] = useState<InstagramTile[]>([]);
+  const [hiddenIds, setHiddenIds] = useState<string[]>(hiddenPostIds || []);
+  const [hiddenLinks, setHiddenLinks] = useState<string[]>(hiddenPermalinks || []);
+
+  useEffect(() => {
+    const syncHiddenFromStorage = () => {
+      try {
+        const directIds = localStorage.getItem("dd_hidden_instagram_ids");
+        const directLinks = localStorage.getItem("dd_hidden_instagram_links");
+        if (directIds) {
+          setHiddenIds(JSON.parse(directIds));
+        }
+        if (directLinks) {
+          setHiddenLinks(JSON.parse(directLinks));
+        }
+
+        const cached = localStorage.getItem("dd_site_content");
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (parsed?.instagramSettings?.hiddenPostIds) {
+            setHiddenIds(parsed.instagramSettings.hiddenPostIds);
+          }
+          if (parsed?.instagramSettings?.hiddenPermalinks) {
+            setHiddenLinks(parsed.instagramSettings.hiddenPermalinks);
+          }
+        }
+      } catch (e) {}
+    };
+
+    syncHiddenFromStorage();
+    window.addEventListener("instagram_hidden_changed", syncHiddenFromStorage);
+    window.addEventListener("storage", syncHiddenFromStorage);
+    return () => {
+      window.removeEventListener("instagram_hidden_changed", syncHiddenFromStorage);
+      window.removeEventListener("storage", syncHiddenFromStorage);
+    };
+  }, [hiddenPostIds, hiddenPermalinks]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -109,10 +149,15 @@ export default function InstagramFeedShowcase({
   const [isReelMuted, setIsReelMuted] = useState<boolean>(false);
   const [activePhoto, setActivePhoto] = useState<InstagramTile | null>(null);
 
-  // Filter active items
+  // Filter active and non-hidden items
   const activeItems = useMemo(() => {
-    return (feedList || []).filter((item) => item && item.active !== false);
-  }, [feedList]);
+    return (feedList || []).filter((item) => {
+      if (!item || item.active === false) return false;
+      if (item.id && hiddenIds.includes(item.id)) return false;
+      if (item.permalink && hiddenLinks.some(link => link && (item.permalink?.includes(link) || link.includes(item.permalink || "")))) return false;
+      return true;
+    });
+  }, [feedList, hiddenIds, hiddenLinks]);
 
   // Tab counts
   const reelsCount = useMemo(() => {

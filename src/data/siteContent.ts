@@ -283,7 +283,13 @@ export const defaultSiteContent: SiteContent = {
     "beholdFeedId": "jMYKX8SAVZtq7lMpJFRx",
     "handle": "socialdiariesagency.co",
     "profileUrl": "https://www.instagram.com/socialdiariesagency.co/",
-    "autoSync": true
+    "autoSync": true,
+    "hiddenPostIds": [
+      "18618211240026905"
+    ],
+    "hiddenPermalinks": [
+      "https://www.instagram.com/reel/DcWlo88vWsD/"
+    ]
   },
   "contactSettings": {
     "email": "kunwarsajid2@gmail.com",

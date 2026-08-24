@@ -100,6 +100,8 @@ export interface SiteContent {
     handle?: string;
     profileUrl?: string;
     autoSync?: boolean;
+    hiddenPostIds?: string[];
+    hiddenPermalinks?: string[];
   };
   contactSettings?: ContactSettings;
   branding?: BrandingSettings;

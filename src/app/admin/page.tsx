@@ -8,7 +8,7 @@ import {
   Globe, MessageSquare, Phone, Settings, LogOut,
   Upload, Trash2, Plus, ChevronRight, Image as ImageIcon,
   Video, Menu, X, Check, Eye as EyeIcon, EyeOff as EyeOffIcon,
-  Copy, Download, Code, Play, Rocket, RefreshCw, CheckCircle2, AlertCircle, Edit3, Radio
+  Copy, Download, Code, Play, Rocket, RefreshCw, CheckCircle2, AlertCircle, Edit3, Radio, ExternalLink
 } from "lucide-react";
 import { projects as initialProjects, Project } from "@/data/projects";
 import { defaultSiteContent, SiteContent } from "@/data/siteContent";
@@ -366,6 +366,124 @@ export default function AdminPage() {
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
+
+  // Live Behold feed items for interactive moderation
+  const [liveBeholdPosts, setLiveBeholdPosts] = useState<any[]>([]);
+  const [isLoadingBehold, setIsLoadingBehold] = useState<boolean>(false);
+  const [manualHideInput, setManualHideInput] = useState<string>("");
+
+  const fetchLiveBeholdPosts = () => {
+    const currentFeedId = siteContent.instagramSettings?.beholdFeedId || "jMYKX8SAVZtq7lMpJFRx";
+    if (!currentFeedId) return;
+    setIsLoadingBehold(true);
+    fetch(`https://feeds.behold.so/${currentFeedId}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Status " + res.status);
+        return res.json();
+      })
+      .then((data) => {
+        const postsArray = Array.isArray(data) ? data : (data?.posts || []);
+        setLiveBeholdPosts(postsArray);
+      })
+      .catch((err) => {
+        console.warn("Could not fetch Behold feed:", err);
+      })
+      .finally(() => {
+        setIsLoadingBehold(false);
+      });
+  };
+
+  useEffect(() => {
+    if (activePage === "livesocial" || activePage === "instagram") {
+      fetchLiveBeholdPosts();
+    }
+  }, [activePage, siteContent.instagramSettings?.beholdFeedId]);
+
+  const toggleHidePost = async (postId: string, permalink?: string) => {
+    const currentHidden = siteContent.instagramSettings?.hiddenPostIds || [];
+    const currentHiddenLinks = siteContent.instagramSettings?.hiddenPermalinks || [];
+    const isCurrentlyHidden = currentHidden.includes(postId) || (permalink && currentHiddenLinks.includes(permalink));
+
+    let newHiddenIds: string[];
+    let newHiddenLinks: string[];
+
+    if (isCurrentlyHidden) {
+      newHiddenIds = currentHidden.filter(id => id !== postId);
+      newHiddenLinks = permalink ? currentHiddenLinks.filter(l => l !== permalink) : currentHiddenLinks;
+    } else {
+      newHiddenIds = [...currentHidden, postId];
+      newHiddenLinks = permalink ? [...currentHiddenLinks, permalink] : currentHiddenLinks;
+    }
+
+    const updatedContent: SiteContent = {
+      ...siteContent,
+      instagramSettings: {
+        ...siteContent.instagramSettings,
+        hiddenPostIds: newHiddenIds,
+        hiddenPermalinks: newHiddenLinks
+      }
+    };
+
+    setSiteContent(updatedContent);
+
+    try {
+      localStorage.setItem("dd_hidden_instagram_ids", JSON.stringify(newHiddenIds));
+      localStorage.setItem("dd_hidden_instagram_links", JSON.stringify(newHiddenLinks));
+      localStorage.setItem("dd_site_content", JSON.stringify(updatedContent));
+      window.dispatchEvent(new Event("instagram_hidden_changed"));
+    } catch (e) {}
+
+    try {
+      await fetch("/api/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ siteContent: updatedContent, projects }),
+      });
+    } catch (e) {}
+
+    setIsSaved(true);
+    setTimeout(() => setIsSaved(false), 2000);
+  };
+
+  const deleteLivePost = async (postId: string, permalink?: string) => {
+    if (!window.confirm("Are you sure you want to permanently remove this post from your website?")) {
+      return;
+    }
+    const currentHidden = siteContent.instagramSettings?.hiddenPostIds || [];
+    const currentHiddenLinks = siteContent.instagramSettings?.hiddenPermalinks || [];
+
+    const newHiddenIds = currentHidden.includes(postId) ? currentHidden : [...currentHidden, postId];
+    const newHiddenLinks = (permalink && !currentHiddenLinks.includes(permalink)) ? [...currentHiddenLinks, permalink] : currentHiddenLinks;
+
+    const updatedContent: SiteContent = {
+      ...siteContent,
+      instagramSettings: {
+        ...siteContent.instagramSettings,
+        hiddenPostIds: newHiddenIds,
+        hiddenPermalinks: newHiddenLinks
+      }
+    };
+
+    setSiteContent(updatedContent);
+
+    try {
+      localStorage.setItem("dd_hidden_instagram_ids", JSON.stringify(newHiddenIds));
+      localStorage.setItem("dd_hidden_instagram_links", JSON.stringify(newHiddenLinks));
+      localStorage.setItem("dd_site_content", JSON.stringify(updatedContent));
+      window.dispatchEvent(new Event("instagram_hidden_changed"));
+    } catch (e) {}
+
+    try {
+      await fetch("/api/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ siteContent: updatedContent, projects }),
+      });
+    } catch (e) {}
+
+    setIsSaved(true);
+    setTimeout(() => setIsSaved(false), 2000);
+  };
 
   // Load custom token from localStorage if saved in UI
   useEffect(() => {
@@ -1833,7 +1951,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                       Behold Feed ID
                     </label>
                     <input
-                      value={siteContent.instagramSettings?.beholdFeedId || "q88GcAmOqigPmc14PJ3O"}
+                      value={siteContent.instagramSettings?.beholdFeedId || "jMYKX8SAVZtq7lMpJFRx"}
                       onChange={(e) => updateContent(c => ({
                         ...c,
                         instagramSettings: {
@@ -1842,7 +1960,7 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                         }
                       }))}
                       className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#C5A880]"
-                      placeholder="e.g. q88GcAmOqigPmc14PJ3O"
+                      placeholder="e.g. jMYKX8SAVZtq7lMpJFRx"
                     />
                     <span className="text-[10px] text-white/40 mt-1 block">Your Behold.so connected Feed ID</span>
                   </div>
@@ -1884,6 +2002,201 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
                     />
                     <span className="text-[10px] text-white/40 mt-1 block">Opens on "Explore All" button</span>
                   </div>
+                </div>
+              </div>
+
+              {/* 🛠️ LIVE INSTAGRAM POST MODERATION & HIDE/DELETE MANAGER */}
+              <div className="bg-white rounded-2xl border border-[#0A1628]/10 p-6 sm:p-8 mb-8 shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#0A1628]/10">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="h-3 w-3 rounded-full bg-emerald-500 animate-pulse" />
+                      <h3 className="text-base font-bold text-[#0A1628] uppercase tracking-wider">
+                        Live Instagram Posts Moderation & Deletion
+                      </h3>
+                    </div>
+                    <p className="text-xs text-[#0A1628]/60 mt-1">
+                      Instagram se aayi hui kisi bhi post ya reel ko yahan se **1-Click mein Hide ya Delete** karein. Wo website se turant gayab ho jayegi.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={fetchLiveBeholdPosts}
+                    disabled={isLoadingBehold}
+                    className="flex items-center gap-2 bg-[#0A1628]/5 hover:bg-[#0A1628]/10 text-[#0A1628] border border-[#0A1628]/15 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer self-start sm:self-auto"
+                  >
+                    <Sparkles size={14} className={isLoadingBehold ? "animate-spin text-[#C5A880]" : "text-[#C5A880]"} />
+                    <span>{isLoadingBehold ? "Checking..." : "Re-Check Feed"}</span>
+                  </button>
+                </div>
+
+                {/* Quick Manual URL Block/Hide Input */}
+                <div className="mt-6 p-4 bg-[#FAF8F5] rounded-xl border border-[#C5A880]/30 flex flex-col sm:flex-row items-center gap-3">
+                  <input
+                    type="text"
+                    value={manualHideInput}
+                    onChange={(e) => setManualHideInput(e.target.value)}
+                    placeholder="Paste Instagram post/reel link to delete/hide (e.g. https://www.instagram.com/reel/DcUKFnLTbzT/)"
+                    className="w-full bg-white border border-[#0A1628]/15 rounded-lg px-3 py-2 text-xs font-medium text-[#0A1628] focus:outline-none focus:border-[#C5A880]"
+                  />
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (!manualHideInput.trim()) return;
+                      const link = manualHideInput.trim();
+                      const currentHidden = siteContent.instagramSettings?.hiddenPermalinks || [];
+                      if (!currentHidden.includes(link)) {
+                        const newHiddenLinks = [...currentHidden, link];
+                        const updatedContent: SiteContent = {
+                          ...siteContent,
+                          instagramSettings: {
+                            ...siteContent.instagramSettings,
+                            hiddenPermalinks: newHiddenLinks
+                          }
+                        };
+                        setSiteContent(updatedContent);
+                        try {
+                          localStorage.setItem("dd_hidden_instagram_links", JSON.stringify(newHiddenLinks));
+                          localStorage.setItem("dd_site_content", JSON.stringify(updatedContent));
+                          window.dispatchEvent(new Event("instagram_hidden_changed"));
+                        } catch (e) {}
+                        try {
+                          await fetch("/api/save", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ siteContent: updatedContent, projects }),
+                          });
+                        } catch (e) {}
+                        setIsSaved(true);
+                        setTimeout(() => setIsSaved(false), 2000);
+                      }
+                      setManualHideInput("");
+                    }}
+                    className="w-full sm:w-auto shrink-0 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors shadow-sm cursor-pointer whitespace-nowrap"
+                  >
+                    🗑️ Delete / Block Link
+                  </button>
+                </div>
+
+                {/* Live Posts Grid */}
+                <div className="mt-8">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#0A1628]/70">
+                      Live Feed Posts ({liveBeholdPosts.length} Found in Feed)
+                    </span>
+                    <span className="text-xs text-[#0A1628]/50">
+                      Hidden / Deleted: <strong className="text-red-600 font-bold">{(siteContent.instagramSettings?.hiddenPostIds?.length || 0) + (siteContent.instagramSettings?.hiddenPermalinks?.length || 0)}</strong>
+                    </span>
+                  </div>
+
+                  {liveBeholdPosts.length === 0 ? (
+                    <div className="p-8 text-center bg-[#FAF8F5] rounded-xl border border-[#0A1628]/5 text-xs text-[#0A1628]/50">
+                      {isLoadingBehold ? "Loading posts from Instagram..." : "No posts found. Please make sure Behold Feed ID is correct."}
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                      {liveBeholdPosts.map((post: any, idx: number) => {
+                        const isVideo = post.mediaType === "VIDEO" || post.mediaType === "REEL" || !!post.videoUrl || (post.mediaUrl && typeof post.mediaUrl === "string" && post.mediaUrl.includes(".mp4"));
+                        const imgSrc = post.sizes?.medium?.mediaUrl || post.sizes?.large?.mediaUrl || post.thumbnailUrl || post.mediaUrl || "";
+                        const postId = post.id || `live-${idx}`;
+                        const permalink = post.permalink || "";
+                        const isHidden = (siteContent.instagramSettings?.hiddenPostIds || []).includes(postId) || (permalink && (siteContent.instagramSettings?.hiddenPermalinks || []).some((l: string) => l && (permalink.includes(l) || l.includes(permalink))));
+
+                        return (
+                          <div 
+                            key={postId}
+                            className={`relative rounded-xl overflow-hidden border transition-all duration-300 flex flex-col justify-between ${
+                              isHidden 
+                                ? "border-red-400 bg-red-50/60 opacity-60" 
+                                : "border-[#0A1628]/10 bg-white shadow-sm hover:border-[#C5A880]"
+                            }`}
+                          >
+                            <div className="relative aspect-square w-full bg-[#0A1628]/5 overflow-hidden">
+                              {imgSrc ? (
+                                <img 
+                                  src={imgSrc} 
+                                  alt="Instagram Media" 
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">
+                                  No Preview
+                                </div>
+                              )}
+
+                              {/* Media Type Badge */}
+                              <div className="absolute top-2 left-2 z-10">
+                                <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider backdrop-blur-md ${
+                                  isVideo 
+                                    ? "bg-purple-900/80 text-purple-200 border border-purple-400/30" 
+                                    : "bg-black/70 text-white border border-white/20"
+                                }`}>
+                                  {isVideo ? "🎬 Reel" : "📸 Photo"}
+                                </span>
+                              </div>
+
+                              {/* Hidden Overlay Ribbon */}
+                              {isHidden && (
+                                <div className="absolute inset-0 bg-red-950/75 flex items-center justify-center p-2 text-center z-20">
+                                  <span className="text-xs font-extrabold text-white uppercase tracking-wider bg-red-600 px-2.5 py-1 rounded-md shadow-md">
+                                    🚫 Deleted from Site
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Card Footer Actions */}
+                            <div className="p-3 space-y-2 bg-white">
+                              {post.caption && (
+                                <p className="text-[10px] text-[#0A1628]/70 line-clamp-2 leading-snug">
+                                  {post.caption}
+                                </p>
+                              )}
+
+                              <div className="flex items-center justify-between pt-1 border-t border-[#0A1628]/5">
+                                {permalink ? (
+                                  <a 
+                                    href={permalink} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer" 
+                                    className="text-[10px] text-[#C5A880] hover:underline font-bold flex items-center gap-1"
+                                  >
+                                    <span>Post Link</span>
+                                    <ExternalLink size={10} />
+                                  </a>
+                                ) : (
+                                  <span className="text-[10px] text-gray-400">ID: {postId.slice(-6)}</span>
+                                )}
+
+                                <div className="flex items-center gap-1.5">
+                                  <button
+                                    type="button"
+                                    onClick={() => toggleHidePost(postId, permalink)}
+                                    title={isHidden ? "Restore to website" : "Hide from website"}
+                                    className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors cursor-pointer shadow-sm ${
+                                      isHidden
+                                        ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                                        : "bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200"
+                                    }`}
+                                  >
+                                    {isHidden ? "✅ Unhide" : "👁️ Hide"}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => deleteLivePost(postId, permalink)}
+                                    title="Permanently remove from website"
+                                    className="p-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 transition-colors cursor-pointer shadow-sm"
+                                  >
+                                    <Trash2 size={13} />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
