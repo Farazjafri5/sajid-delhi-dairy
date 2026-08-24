@@ -739,9 +739,29 @@ export const projects: Project[] = ${JSON.stringify(projects, null, 2)};
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    // 1. Initial base live data
-    setProjects([...initialProjects]);
-    setSiteContent(defaultSiteContent);
+    // 1. Read localStorage first so user's typed changes are NEVER lost on refresh
+    let hasLocalContent = false;
+    let hasLocalProjects = false;
+
+    try {
+      const savedContent = localStorage.getItem("dd_site_content");
+      if (savedContent) {
+        setSiteContent(JSON.parse(savedContent));
+        hasLocalContent = true;
+      }
+      const savedProjects = localStorage.getItem("dd_projects");
+      if (savedProjects) {
+        setProjects(JSON.parse(savedProjects));
+        hasLocalProjects = true;
+      }
+    } catch (e) {}
+
+    if (!hasLocalContent) {
+      setSiteContent(defaultSiteContent);
+    }
+    if (!hasLocalProjects) {
+      setProjects([...initialProjects]);
+    }
 
     // 2. Fetch latest Cloud Draft synced across all phones and laptops
     const fetchCloudDraft = async () => {
@@ -752,7 +772,7 @@ export const projects: Project[] = ${JSON.stringify(projects, null, 2)};
         if (res.ok) {
           const data = await res.json();
           if (data.success && data.draft) {
-            if (data.draft.siteContent) {
+            if (data.draft.siteContent && typeof data.draft.siteContent === "object") {
               setSiteContent(data.draft.siteContent);
               try { localStorage.setItem("dd_site_content", JSON.stringify(data.draft.siteContent)); } catch (e) {}
             }
@@ -762,15 +782,7 @@ export const projects: Project[] = ${JSON.stringify(projects, null, 2)};
             }
           }
         }
-      } catch (e) {
-        // Fallback to local storage
-        try {
-          const savedContent = localStorage.getItem("dd_site_content");
-          if (savedContent) setSiteContent(JSON.parse(savedContent));
-          const savedProjects = localStorage.getItem("dd_projects");
-          if (savedProjects) setProjects(JSON.parse(savedProjects));
-        } catch (err) {}
-      }
+      } catch (e) {}
     };
 
     fetchCloudDraft();
@@ -825,9 +837,13 @@ export const projects: Project[] = ${JSON.stringify(projects, null, 2)};
     setTimeout(() => setIsSaved(false), 2000);
   };
 
-  // Update site content helper
+  // Update site content helper (Instantly persists to localStorage)
   const updateContent = (updater: (prev: SiteContent) => SiteContent) => {
-    setSiteContent((prev) => updater(prev));
+    setSiteContent((prev) => {
+      const next = updater(prev);
+      try { localStorage.setItem("dd_site_content", JSON.stringify(next)); } catch (e) {}
+      return next;
+    });
   };
 
   // ─── Stats for Dashboard ──────────────────────────────────────
@@ -835,10 +851,14 @@ export const projects: Project[] = ${JSON.stringify(projects, null, 2)};
   const totalVideos = (siteContent.showreel?.centerVideos?.length || 0) + (siteContent.hero?.mockReels?.length || 0);
   const activeProjects = projects.filter(p => !p.slug.startsWith("inactive:")).length;
 
-  // ─── Editing project helper ───────────────────────────────────
+  // ─── Editing project helper (Instantly persists to localStorage) ───
   const editingProject = editingProjectSlug ? projects.find(p => p.slug === editingProjectSlug) : null;
   const updateProject = (slug: string, updater: (p: Project) => Project) => {
-    setProjects(prev => prev.map(p => p.slug === slug ? updater(p) : p));
+    setProjects(prev => {
+      const next = prev.map(p => p.slug === slug ? updater(p) : p);
+      try { localStorage.setItem("dd_projects", JSON.stringify(next)); } catch (e) {}
+      return next;
+    });
   };
 
   // Generate code string for permanent git commit (Always declared in top-level hook scope)
