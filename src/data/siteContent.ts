@@ -19,7 +19,7 @@ export const defaultSiteContent: SiteContent = {
     ]
   },
   "showreel": {
-    "heading": "This is what we do. 34233",
+    "heading": "This is what we do. anything 1233e342eew",
     "description": "We shoot short-form videos designed to convert casual scrollers into loyal customers. No stock templates, no boring structures.",
     "leftImages": [
       {
@@ -55,7 +55,7 @@ export const defaultSiteContent: SiteContent = {
       },
       {
         "src": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787205166/jsegagbpnubdmwgkr6d9.png",
-        "label": "dd",
+        "label": "",
         "active": true
       }
     ]
