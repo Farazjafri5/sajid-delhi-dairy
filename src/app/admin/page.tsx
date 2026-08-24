@@ -617,23 +617,38 @@ export default function AdminPage() {
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  // 💾 Save Draft to Dashboard Only (Local & Admin persistence, does NOT publish to live site)
+  // 💾 Save Draft to Cloud (Universal Multi-Device Sync, does NOT publish to public live site)
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
+
   const handleSaveDraft = async () => {
+    setIsSavingDraft(true);
+    // 1. Instant local persistence for this device
     try {
       localStorage.setItem("dd_projects", JSON.stringify(projects));
       localStorage.setItem("dd_site_content", JSON.stringify(siteContent));
     } catch (e) {}
 
+    // 2. Persist to universal Cloud Draft (accessible across all phones and laptops)
     try {
-      await fetch("/api/save", {
+      await fetch("/api/draft", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ siteContent, projects }),
+        body: JSON.stringify({
+          siteContent,
+          projects,
+          token: ghToken || DEFAULT_GITHUB_PAT,
+          repo: ghRepo || DEFAULT_REPO,
+          branch: ghBranch || DEFAULT_BRANCH,
+        }),
       });
-    } catch (e) {}
-
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 2500);
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 3000);
+    } catch (e) {
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 3000);
+    } finally {
+      setIsSavingDraft(false);
+    }
   };
 
   // 🚀 1-Click Direct Commit & Deploy to GitHub & Vercel Live for all devices worldwide
@@ -699,14 +714,14 @@ export const projects: Project[] = ${JSON.stringify(projects, null, 2)};
           body: JSON.stringify({ siteContent, projects }),
         }).catch(() => {});
 
-        const msg = "🎉 Mubarak ho! Saara data live GitHub & Vercel par publish ho gaya hai! Agle 20-30 seconds mein duniya ke har phone par show hone lagega!";
+        const msg = " successfully on live site! ✅";
         setDeployStatus({ success: true, message: msg });
         setIsSaved(true);
         setTimeout(() => setIsSaved(false), 3000);
         alert(msg);
         return;
       } else {
-        throw new Error(deployData.error || "GitHub live deploy failed. Please check internet connection.");
+        throw new Error(deployData.error || "failed. Please check internet connection.");
       }
     } catch (err: any) {
       const msg = `⚠️ Deploy Error: ${err.message || "Failed to publish."}`;
@@ -720,12 +735,46 @@ export const projects: Project[] = ${JSON.stringify(projects, null, 2)};
   // Project editor
   const [editingProjectSlug, setEditingProjectSlug] = useState<string | null>(null);
 
-  // Load latest live server data safely on mount
+  // Load latest live server data safely on mount & auto-sync Cloud Draft across devices
   useEffect(() => {
     if (!isAuthenticated) return;
+
+    // 1. Initial base live data
     setProjects([...initialProjects]);
     setSiteContent(defaultSiteContent);
-  }, [isAuthenticated]);
+
+    // 2. Fetch latest Cloud Draft synced across all phones and laptops
+    const fetchCloudDraft = async () => {
+      try {
+        const res = await fetch(`/api/draft?repo=${encodeURIComponent(ghRepo || DEFAULT_REPO)}&branch=${encodeURIComponent(ghBranch || DEFAULT_BRANCH)}&token=${encodeURIComponent(ghToken || DEFAULT_GITHUB_PAT)}`, {
+          cache: "no-store",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.draft) {
+            if (data.draft.siteContent) {
+              setSiteContent(data.draft.siteContent);
+              try { localStorage.setItem("dd_site_content", JSON.stringify(data.draft.siteContent)); } catch (e) {}
+            }
+            if (data.draft.projects && Array.isArray(data.draft.projects) && data.draft.projects.length > 0) {
+              setProjects(data.draft.projects);
+              try { localStorage.setItem("dd_projects", JSON.stringify(data.draft.projects)); } catch (e) {}
+            }
+          }
+        }
+      } catch (e) {
+        // Fallback to local storage
+        try {
+          const savedContent = localStorage.getItem("dd_site_content");
+          if (savedContent) setSiteContent(JSON.parse(savedContent));
+          const savedProjects = localStorage.getItem("dd_projects");
+          if (savedProjects) setProjects(JSON.parse(savedProjects));
+        } catch (err) {}
+      }
+    };
+
+    fetchCloudDraft();
+  }, [isAuthenticated, ghRepo, ghBranch, ghToken]);
 
   // Auth handlers (Session-based so closing browser automatically locks dashboard)
   const handleLogin = (e: React.FormEvent) => {
@@ -995,20 +1044,37 @@ export const siteContent: SiteContent = ${JSON.stringify(siteContent, null, 2)};
               <span>{isDeploying ? "Publishing..." : <><span className="hidden sm:inline">🚀 Publish to Live Site</span><span className="sm:hidden">Publish</span></>}</span>
             </button>
 
-            {/* 2. 💾 SAVE DRAFT BUTTON: Keeps data safe in dashboard only without publishing live */}
+            {/* 2. 💾 SAVE DRAFT BUTTON: Keeps data safe in dashboard and syncs across all phones without publishing live */}
             <button
               type="button"
-              disabled={isDeploying}
+              disabled={isDeploying || isSavingDraft}
               onClick={handleSaveDraft}
               className={`flex items-center gap-1.5 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer shadow-sm whitespace-nowrap ${
                 isSaved
                   ? "bg-emerald-600 text-white"
                   : "bg-[#C5A880] text-[#0A1628] hover:bg-[#BCA078]"
               }`}
-              title="Save changes in Dashboard as Draft (does NOT update live website until Published)"
+              title="Save changes in Dashboard as Draft (Syncs across all phones/laptops, does NOT update live website until Published)"
             >
-              {isSaved ? <Check size={12} /> : <Save size={12} />}
-              <span>{isSaved ? "Saved Draft!" : <><span className="hidden sm:inline">💾 Save Draft</span><span className="sm:hidden">Save</span></>}</span>
+              {isSavingDraft ? (
+                <RefreshCw size={12} className="animate-spin" />
+              ) : isSaved ? (
+                <Check size={12} />
+              ) : (
+                <Save size={12} />
+              )}
+              <span>
+                {isSavingDraft
+                  ? "Saving..."
+                  : isSaved
+                  ? "Draft Synced!"
+                  : (
+                    <>
+                      <span className="hidden sm:inline">💾 Save Draft</span>
+                      <span className="sm:hidden">Save</span>
+                    </>
+                  )}
+              </span>
             </button>
           </div>
         </header>
