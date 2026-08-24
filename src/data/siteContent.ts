@@ -313,5 +313,9 @@ export const defaultSiteContent: SiteContent = {
       "Influencer Strategy",
       "Content Strategy & Consulting"
     ]
+  },
+  "branding": {
+    "logoUrl": "https://res.cloudinary.com/yan3h0ri/image/upload/v1787557687/omxozv4kndvzcbjalfjr.png",
+    "logoText": "Social Diaries"
   }
 };
