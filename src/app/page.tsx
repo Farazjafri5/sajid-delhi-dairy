@@ -271,9 +271,9 @@ export default function Home() {
     <main className="flex-1 bg-studio-bg overflow-hidden">
       {/* 1. HERO SECTION (Split-Screen Cinematic with Fluid Typography) */}
       <section className="relative flex min-h-[90vh] lg:min-h-screen flex-col justify-between pt-28 pb-12 max-sm:pb-6 lg:pt-36 bg-gradient-to-b from-[#FAF8F5] via-[#FFFFFF] to-[#FAF8F5] overflow-hidden">
-        {/* Subtle Ambient Gold Radial Lighting */}
-        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-[#C5A880]/12 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-10 right-1/4 w-[500px] h-[500px] bg-[#DD2A7B]/8 rounded-full blur-[140px] pointer-events-none" />
+        {/* Subtle Ambient Gold Radial Lighting (Desktop only for max mobile performance) */}
+        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-[#C5A880]/12 rounded-full blur-[140px] pointer-events-none hidden md:block" />
+        <div className="absolute bottom-10 right-1/4 w-[500px] h-[500px] bg-[#DD2A7B]/8 rounded-full blur-[140px] pointer-events-none hidden md:block" />
         <div className="absolute inset-0 z-0 opacity-[0.03] select-none pointer-events-none bg-[radial-gradient(#111111_1px,transparent_1px)] [background-size:24px_24px]" />
 
         <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-8 md:px-16 lg:px-24 z-10 flex flex-1 flex-col justify-center">
@@ -485,9 +485,9 @@ export default function Home() {
 
       {/* 3. SHOWREEL & MARQUEE CINEMA SECTION (Ultra-Luxury Unified Continuous Section) */}
       <section className="footer-gold-glow text-studio-bg relative overflow-hidden border-b border-[#C5A880]/20">
-        {/* Ambient Golden Cinema Spotlights */}
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#C5A880]/10 rounded-full blur-[130px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-[#DD2A7B]/8 rounded-full blur-[130px] pointer-events-none" />
+        {/* Ambient Golden Cinema Spotlights (Desktop only for 120fps mobile scroll) */}
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#C5A880]/10 rounded-full blur-[130px] pointer-events-none hidden md:block" />
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-[#DD2A7B]/8 rounded-full blur-[130px] pointer-events-none hidden md:block" />
 
         {/* ═══ Integrated Marquee Ribbon ═══ */}
         <div className="border-t border-[#C5A880]/25 py-6 sm:py-7 select-none relative overflow-hidden">
@@ -986,9 +986,9 @@ export default function Home() {
 
       {/* 5. INDUSTRIES SECTION (Ultra-Luxury Brand Sectors) */}
       <section className="bg-gradient-to-b from-[#070F1B] via-[#0A1628] to-[#070F1B] text-white py-10 relative overflow-hidden border-b border-[#C5A880]/20">
-        {/* Ambient Cinema Lighting */}
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#C5A880]/10 rounded-full blur-[130px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-[#DD2A7B]/8 rounded-full blur-[130px] pointer-events-none" />
+        {/* Ambient Cinema Lighting (Desktop only for max mobile performance) */}
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#C5A880]/10 rounded-full blur-[130px] pointer-events-none hidden md:block" />
+        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-[#DD2A7B]/8 rounded-full blur-[130px] pointer-events-none hidden md:block" />
 
         <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
           {/* Header */}
@@ -1021,8 +1021,8 @@ export default function Home() {
 
       {/* 6. FEATURED WORK SECTION (Extra desktop padding to prevent overlap) */}
       <section className="py-10 bg-gradient-to-b from-[#FAF8F5] via-[#FFFFFF] to-[#FAF8F5] relative overflow-hidden">
-        {/* Subtle Ambient Radial Gold Glow */}
-        <div className="absolute top-0 right-1/3 w-[500px] h-[500px] bg-[#C5A880]/8 rounded-full blur-[120px] pointer-events-none" />
+        {/* Subtle Ambient Radial Gold Glow (Desktop only) */}
+        <div className="absolute top-0 right-1/3 w-[500px] h-[500px] bg-[#C5A880]/8 rounded-full blur-[120px] pointer-events-none hidden md:block" />
 
         <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
           {/* Header */}
@@ -1107,8 +1107,8 @@ export default function Home() {
 
       {/* 7. PROCESS SECTION (Ultra-Luxury Step-by-Step Pathway) */}
       <section className="py-10 bg-gradient-to-b from-[#FAF8F5] via-[#F5EFE6] to-[#FAF8F5] border-t border-[#C5A880]/20 relative overflow-hidden">
-        {/* Subtle Ambient Glow */}
-        <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-[#C5A880]/8 rounded-full blur-[120px] pointer-events-none" />
+        {/* Subtle Ambient Glow (Desktop only) */}
+        <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-[#C5A880]/8 rounded-full blur-[120px] pointer-events-none hidden md:block" />
 
         <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
           {/* Header */}
@@ -1174,9 +1174,9 @@ export default function Home() {
 
       {/* 8. OUR STANCE SECTION (Ultra-Luxury Midnight & Metallic Gold Manifesto) */}
       <section className="py-10 bg-gradient-to-b from-[#070F1B] via-[#0A1628] to-[#070F1B] text-white relative overflow-hidden border-y border-[#C5A880]/20">
-        {/* Ambient Cinema Spotlights */}
-        <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-[#C5A880]/10 rounded-full blur-[130px] pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] bg-[#DD2A7B]/8 rounded-full blur-[130px] pointer-events-none" />
+        {/* Ambient Cinema Spotlights (Desktop only) */}
+        <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-[#C5A880]/10 rounded-full blur-[130px] pointer-events-none hidden md:block" />
+        <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] bg-[#DD2A7B]/8 rounded-full blur-[130px] pointer-events-none hidden md:block" />
 
         <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
           {/* Header */}
@@ -1241,8 +1241,8 @@ export default function Home() {
 
       {/* 9. SOCIAL PRESENCE (Original 3x3 Grid from Dashboard) */}
       <section className="py-10 bg-gradient-to-b from-[#FFFFFF] via-[#FAF6F0] to-[#F4EEE4] border-t border-[#C5A880]/20 relative overflow-hidden">
-        {/* Subtle Ambient Radial Gold Glow */}
-        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-[#C5A880]/8 rounded-full blur-[120px] pointer-events-none" />
+        {/* Subtle Ambient Radial Gold Glow (Desktop only) */}
+        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-[#C5A880]/8 rounded-full blur-[120px] pointer-events-none hidden md:block" />
 
         <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-8 mb-16 text-left">
@@ -1307,8 +1307,8 @@ export default function Home() {
 
       {/* 10. TESTIMONIALS (Ultra-Luxury Client Love Showcase) */}
       <section className="py-10 bg-gradient-to-b from-[#FAF8F5] via-[#F4EEE4] to-[#FAF8F5] border-t border-[#C5A880]/20 relative overflow-hidden">
-        {/* Subtle Ambient Radial Gold Glow */}
-        <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-[#C5A880]/8 rounded-full blur-[120px] pointer-events-none" />
+        {/* Subtle Ambient Radial Gold Glow (Desktop only) */}
+        <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-[#C5A880]/8 rounded-full blur-[120px] pointer-events-none hidden md:block" />
 
         <div className="mx-auto max-w-[1400px] w-full px-4 sm:px-8 md:px-16 lg:px-24 relative z-10">
           <div className="max-w-3xl mb-16 max-sm:mb-10 text-left">

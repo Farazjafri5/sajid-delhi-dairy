@@ -21,7 +21,7 @@ export default function Preloader() {
       setLoading(false);
       // Unlock scroll on complete
       document.body.style.overflow = "";
-    }, 2500);
+    }, 1600);
 
     return () => {
       clearTimeout(timer);
